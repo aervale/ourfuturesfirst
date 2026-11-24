@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
-<title>Our Future First</title>
+<title>Our Futures First</title>
 <link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -76,10 +76,11 @@ a{color:inherit}
 .card h2 label{cursor:text}
 .card>.field:last-child{margin-bottom:0}
 .field>.lab{display:block;margin-bottom:8px}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{font:inherit;font-size:.9375rem;color:var(--ink);background:var(--inset);border:1px solid var(--line2);border-radius:var(--r);padding:8px 12px;cursor:pointer;transition:background .2s,border-color .2s,color .2s}
-.chip:hover{border-color:var(--mute)}
-.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:600}
+select{width:100%;font:inherit;color:var(--ink);background:var(--inset) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23F4F2ED' stroke-opacity='.55' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 14px center/11px;border:1px solid var(--line2);border-radius:var(--r);padding:12px 36px 12px 14px;appearance:none;-webkit-appearance:none;cursor:pointer;transition:border-color .2s,opacity .2s}
+select:hover{border-color:var(--mute)}
+select:focus{outline:0;border-color:var(--accent)}
+select:disabled{opacity:.4;cursor:default;border-color:var(--line)}
+select option{background:#1B1B20;color:var(--ink)}
 .combo{position:relative;z-index:4}
 .menu{position:absolute;left:0;right:0;top:calc(100% + 6px);margin:0;padding:4px;list-style:none;max-height:248px;overflow:auto;background:#1B1B20;border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);scrollbar-width:thin;scrollbar-color:var(--line2) transparent;animation:fade .18s var(--ease) both}
 .menu li{padding:9px 10px;border-radius:4px;cursor:pointer;transition:background .12s}
@@ -98,6 +99,14 @@ a{color:inherit}
 .pick .key::after{content:"";width:9px;height:5px;border-left:2px solid transparent;border-bottom:2px solid transparent;transform:rotate(-45deg) translate(1px,-1px);transition:border-color .2s}
 .pick[aria-pressed="true"] .key::after{border-color:var(--on-accent)}
 .opt.pick[aria-pressed="true"]{border-color:var(--line2);background:var(--hover)}
+.slide .opt{position:relative;overflow:hidden}
+.slide .opt>*{position:relative}
+.slide .opt::before{content:"";position:absolute;inset:0 auto 0 0;width:0;background:rgba(244,242,237,.07);transition:width .7s var(--ease)}
+.slide.answered .opt::before{width:var(--p,0%)}
+.slide .opt[aria-pressed="true"]::before{background:rgba(255,90,54,.2)}
+.opct{margin-left:auto;font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;color:var(--mute);opacity:0;transition:opacity .4s}
+.slide.answered .opct{opacity:1}
+.opt[aria-pressed="true"] .opct{color:var(--accent);font-weight:700}
 .pnav{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin-top:22px;min-height:18px}
 .pnav #btnNext{justify-self:end}
 .pnav #btnBack{justify-self:start}
@@ -135,13 +144,17 @@ textarea{display:block;min-height:132px;resize:none}
 /* what appears after Count me in */
 .pop{display:grid;grid-template-rows:0fr;transition:grid-template-rows .6s var(--ease),margin-top .6s var(--ease)}
 .pop>div{overflow:hidden;min-height:0}
-.pop.open{grid-template-rows:1fr;margin-top:20px}
+.pop.open{grid-template-rows:1fr}
+.pop.settled>div{overflow:visible}
+.cols{scroll-margin-top:70px}
+#btnCancel{display:block;margin:16px auto 0}
+.signed{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;margin:24px 0 0;padding-top:18px;border-top:1px solid var(--line);font-size:.875rem;color:var(--mute)}
 #after{border-color:var(--accent)}
 #after>*{opacity:0;transform:translateY(12px);transition:opacity .45s ease,transform .45s var(--ease)}
 .pop.open #after>*{opacity:1;transform:none}
 .pop.open #after>*:nth-child(1){transition-delay:.18s}.pop.open #after>*:nth-child(2){transition-delay:.24s}
 .pop.open #after>*:nth-child(3){transition-delay:.30s}.pop.open #after>*:nth-child(4){transition-delay:.38s}
-.pop.open #after>*:nth-child(5){transition-delay:.46s}.pop.open #after>*:nth-child(6){transition-delay:.52s}
+.pop.open #after>*:nth-child(5){transition-delay:.46s}.pop.open #after>*:nth-child(n+6){transition-delay:.52s}
 #after h2{font-size:clamp(1.8rem,3.2vw,2.6rem);font-weight:var(--hx);text-transform:var(--hc);margin:10px 0 10px}
 .sub3{margin:24px 0 10px}
 #leadPop.open{margin-top:8px}
@@ -198,7 +211,9 @@ textarea{display:block;min-height:132px;resize:none}
 
 /* next steps */
 .share{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.share .btn{padding:12px 15px}
+.share .btn{display:inline-flex;align-items:center;gap:9px;padding:12px 15px}
+.ic{flex:none;width:17px;height:17px}
+.ask{font-size:clamp(1.35rem,2.1vw,1.7rem);margin:28px 0 8px;padding-top:24px;border-top:1px solid var(--line)}
 
 .about{max-width:66ch;padding:56px 0 80px}
 .about h1{font-size:clamp(2.1rem,4.4vw,3.4rem);font-weight:var(--hx);text-transform:var(--hc);margin-bottom:32px}
@@ -235,7 +250,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
 <body>
 
 <header class="top"><div class="wrap">
-  <span class="brand"><i></i>Our Future First</span>
+  <span class="brand"><i></i>Our Futures First</span>
   <nav class="tabs" aria-label="Sections">
     <a href="#interest" id="tabInterest">Interest</a>
     <a href="#about" id="tabAbout">About</a>
@@ -261,19 +276,20 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
 
   <div class="wrap cols">
     <div>
-      <form id="form" class="stack" novalidate>
+      <div class="pop open settled" id="formPop"><div><form id="form" class="stack" novalidate>
         <div class="card">
           <div class="two">
             <div class="field"><label class="lab" for="inName">Name <span class="req">*</span></label><input type="text" id="inName" autocomplete="name" maxlength="120" required></div>
             <div class="field"><label class="lab" for="inEmail">University email <span class="req">*</span></label><input type="email" id="inEmail" autocomplete="email" maxlength="160" placeholder="you@university.edu" required>
               <p class="hint" id="uniHint" role="status" hidden></p></div>
           </div>
-          <div class="two">
+          <div>
             <div class="field combo"><label class="lab" for="inMajor">Major or field</label><input type="text" id="inMajor" maxlength="80" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="majorMenu" aria-autocomplete="list"><ul class="menu" id="majorMenu" role="listbox" hidden></ul></div>
-            <div class="field"><label class="lab" for="inPhone">Phone</label><input type="tel" id="inPhone" autocomplete="tel" maxlength="30" placeholder="(555) 555-5555"></div>
           </div>
-          <div class="field" id="roleField"><span class="lab" id="roleLab">I am <span class="req">*</span></span><div class="chips" id="roleChips" role="group" aria-labelledby="roleLab"></div></div>
-          <div class="field" id="yearField" hidden><span class="lab" id="yearLab">Year</span><div class="chips" id="yearChips" role="group" aria-labelledby="yearLab"></div></div>
+          <div class="two">
+            <div class="field"><label class="lab" for="selRole">I am <span class="req">*</span></label><select id="selRole" required></select></div>
+            <div class="field"><label class="lab" for="selYear">Year</label><select id="selYear" disabled></select></div>
+          </div>
           <div id="showWrap"><button type="button" class="opt pick" id="pkShow" aria-pressed="true"><span class="key"></span><span>Show my name on the public list</span></button></div>
         </div>
 
@@ -285,8 +301,9 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
         <div>
           <button class="btn wide" type="submit" id="btnSubmit">Count me in</button>
           <p class="err" id="err" role="alert"></p>
+          <button type="button" class="link" id="btnCancel" hidden>Cancel</button>
         </div>
-      </form>
+      </form></div></div>
 
       <div class="pop" id="pop"><div><div class="card" id="after">
         <p class="lab" id="afterLab"></p>
@@ -296,26 +313,27 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
           <p class="lab sub3">Can you help it reach your campus?</p>
           <div class="opts" id="spread"></div>
           <div class="pop" id="leadPop"><div><div class="leadbox">
-            <p class="hint">Thank you. We will connect you with the other campus organizers at your university and start a group chat with all of you, then contact you about next steps. If your name is public, it is marked as a campus organizer on the list. <a href="#organizers">How this works</a></p>
-            <label class="lab" for="inPhone2">Your phone number, so we can reach you <span class="req">*</span></label>
+            <p class="hint">We'll connect you with other groups of campus organizers at your university and contact you about next steps. If your name is public, it'll be marked as a campus organizer on the list. <a href="#organizers">Click for information on what that means.</a></p>
+            <label class="lab" for="inPhone2">Phone number <span class="req">*</span></label>
             <input type="tel" id="inPhone2" autocomplete="tel" maxlength="30" placeholder="(555) 555-5555">
-            <button type="button" class="opt pick" id="pkSms" aria-pressed="false"><span class="key"></span><span>I agree to receive text messages from Our Future First</span><span class="saved">Saved</span></button>
             <p class="hint bad" id="leadHint" role="status"></p>
+            <p class="hint">By giving your number, you agree to receive text messages from Our Futures First.</p>
           </div></div></div>
         </div>
         <div>
-          <p class="lab sub3">Send it to someone</p>
+          <h3 class="ask">Know someone who should see this?</h3>
+          <p class="muted">Please send it to them. Sharing is the only way this reaches other students, and it's the most helpful thing you can do for us.</p>
           <div class="share">
-            <button class="btn" type="button" id="btnCopy">Copy link</button>
-            <a class="btn ghost" id="shSms">Text</a>
-            <a class="btn ghost" id="shMail">Email</a>
-            <a class="btn ghost" id="shWa" target="_blank" rel="noopener">WhatsApp</a>
-            <a class="btn ghost" id="shThreads" target="_blank" rel="noopener">Threads</a>
-            <button class="btn ghost" type="button" id="shInsta">Instagram</button>
-            <a class="btn ghost" id="shDorm">Dorm list email</a>
+            <button class="btn" type="button" id="btnCopy"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><span>Copy link</span></button>
+            <a class="btn ghost" id="shSms"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><span>Text</span></a>
+            <a class="btn ghost" id="shMail"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg><span>Email</span></a>
+            <a class="btn ghost" id="shWa" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg><span>WhatsApp</span></a>
+            <a class="btn ghost" id="shThreads" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z"/></svg><span>Threads</span></a>
+            <button class="btn ghost" type="button" id="shInsta"><svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg><span>Instagram</span></button>
           </div>
           <p class="hint" id="copyMsg" role="status"></p>
         </div>
+        <p class="signed" id="afterMine"><span id="mineText"></span><button type="button" class="link" id="btnEdit">Edit my answers</button></p>
       </div></div></div>
     </div>
 
@@ -344,24 +362,22 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
   <div class="wrap about">
     <h1>About</h1>
     <h2>What is this?</h2>
-    <p>An open letter on AI from people at American universities. It is not finished yet. This site is the first stage: a short form that asks what you think, and collects the email of everyone who wants to hear when the letter is ready to sign.</p>
+    <p>An open letter on AI from people at U.S. universities. The letter isn't finished. This form asks what you think should be in it and tells us who wants to sign when it's ready.</p>
     <h2 id="why-wait">Why isn't the letter out now?</h2>
-    <p>Because a letter that trickles out gets ignored. We are collecting interest first, so that on the day it is released it reaches as many people as possible at once.</p>
-    <p>That only works if this gets passed along, so we are counting on you to help. Thank you.</p>
+    <p>We want it to reach as many people as possible on the day it comes out, so we're gathering interest first. Please pass this along.</p>
     <h2 id="why-draft">Then why publish a draft?</h2>
-    <p>So you know what you are signing up for. <a href="#draft">The current wording is here</a>, with the date it was last changed. It will keep changing until launch day, and nobody signs anything until they have read the final version.</p>
+    <p>So you can see where it's heading. <a href="#draft">The current wording is here</a>, with the date it last changed. It will keep changing until launch day.</p>
     <h2>What happens on launch day?</h2>
-    <p>Everyone on the list hears from us at the same moment and can sign. The letter and its signatures are then published and announced publicly.</p>
+    <p>Everyone on the list gets an email at the same time and can sign. The letter and its signatures are then published.</p>
     <h2>Who can take part?</h2>
-    <p>Anyone with a U.S. university email who is part of campus life: undergraduates, graduate students, postdocs, faculty and staff.</p>
+    <p>Anyone with a U.S. university email: undergraduates, graduate students, postdocs, faculty and staff.</p>
     <h2>Who is behind this?</h2>
-    <p>It was started by students at MIT and is spreading to other universities from person to person. It is run by students.</p>
+    <p>It was started by students at MIT. It's run entirely by students.</p>
     <h2 id="organizers">What is a campus organizer?</h2>
-    <p>Someone who has offered to help with the letter at their own university. There is no single organizer per campus: a university can have several, and the more the better.</p>
-    <p>If you volunteer, we connect you with the other campus organizers at your university and start a group chat with all of you, so you can coordinate. That means your name is shared with them. We then contact you about what comes next. Organizers who show their name are also marked on the public list, so other people at their university can see who is involved.</p>
-    <p>We reach organizers by phone or text, which is why we ask for a number and your consent to texts. You can untick the box at any time.</p>
+    <p>Someone who has offered to help with the letter at their university. A university can have several.</p>
+    <p>If you volunteer, we connect you with other groups of campus organizers at your university, which means sharing your name with them, and contact you by phone or text about next steps. Organizers who show their name are marked on the public list.</p>
     <h2>What happens to my information?</h2>
-    <p>Your email is used to confirm you belong to a university and to contact you about the letter. Your name appears on the public list only if you choose to show it. Poll answers are shown only as totals. Your answer to “What concerns you most about AI?” will not be displayed publicly.</p>
+    <p>We use your email just to confirm your affiliation with your university and to tell you when the letter is ready. Your name is on the public list only if you choose to show it. Poll answers are shown as totals. Your answer to “What concerns you most about AI?” is not displayed publicly.</p>
   </div>
 </div>
 
@@ -377,7 +393,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
 </div>
 </main>
 
-<footer><div class="wrap"><p class="lab">Our Future First is a working title. Run by students at U.S. universities.</p></div></footer>
+<footer><div class="wrap"><p class="lab">Our Futures First is a working title. Run by students at U.S. universities.</p></div></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="config.js"></script>
@@ -421,7 +437,7 @@ function uniFromEmail(email){
 var CFG=window.OFF_CONFIG||{};
 var sb=CFG.url&&window.supabase?window.supabase.createClient(CFG.url,CFG.key):null;
 var EMPTY={total:0,named:0,unis:[],people:[],answers:{}};
-var S={live:!!sb,rows:[],remote:EMPTY,answers:{},spread:{},show:true,mine:null,panel:"people",slide:0,email:"",verified:false,submitted:false,token:null,sms:false,saving:false,role:"",year:""};
+var S={live:!!sb,rows:[],remote:EMPTY,answers:{},spread:{},show:true,mine:null,panel:"people",slide:0,email:"",verified:false,submitted:false,editing:false,token:null,sms:false,saving:false,role:"",year:""};
 
 /* sample rows so the page can be reviewed without a backend; never used when connected */
 function sample(){
@@ -459,14 +475,14 @@ function buildForm(){
     var sl=mk("section","slide"),h=mk("h2",null,q.q+" ");h.appendChild(mk("span","req","*"));sl.appendChild(h);
     var os=mk("div","opts");optBtns[q.id]={};
     q.o.forEach(function(o,oi){var b=mk("button","opt");b.type="button";b.setAttribute("aria-pressed","false");
-      b.appendChild(mk("span","key","ABCD".charAt(oi)));b.appendChild(mk("span",null,o));optBtns[q.id][o]=b;
-      b.addEventListener("click",function(){if(busy)return;pick(q,o);setTimeout(function(){go(qi+1);},CALM?0:340);});
+      b.appendChild(mk("span","key","ABCD".charAt(oi)));b.appendChild(mk("span",null,o));b.appendChild(mk("span","opct"));optBtns[q.id][o]=b;
+      b.addEventListener("click",function(){if(busy)return;pick(q,o);setTimeout(function(){go(qi+1);},CALM?0:1100);});
       os.appendChild(b);});
     sl.appendChild(os);add(sl);
   });
   TEXTQ.forEach(function(t){
     var sl=mk("section","slide"),h=mk("h2"),lab=mk("label",null,t.q);lab.htmlFor=t.id;h.appendChild(lab);sl.appendChild(h);
-    var ta=mk("textarea");ta.id=t.id;ta.maxLength=1500;ta.placeholder="Optional. Say whatever is on your mind.";ta.addEventListener("input",renderNav);sl.appendChild(ta);add(sl);
+    var ta=mk("textarea");ta.id=t.id;ta.maxLength=1500;ta.placeholder="Optional. This will not be displayed publicly.";ta.addEventListener("input",renderNav);sl.appendChild(ta);add(sl);
   });
   /* help checkboxes live in the panel that appears after submitting; each tick saves on its own */
   var sp=$("spread");
@@ -491,20 +507,14 @@ function ready(){return Q.every(function(q){return S.answers[q.id];});}
 function updateBtn(){var b=$("btnSubmit"),was=b.disabled;b.disabled=S.saving||!ready();if(was&&!b.disabled&&!S.saving&&!S.submitted)flash(b);}
 /* volunteering as a campus organizer asks for a phone number and consent to texts */
 function renderLead(){
-  var on=!!S.spread.lead,phone=$("inPhone").value.trim();
-  $("leadPop").classList.toggle("open",on);if($("inPhone2").value.trim()!==phone)$("inPhone2").value=phone;
-  $("pkSms").setAttribute("aria-pressed",String(S.sms&&!!phone));
+  var on=!!S.spread.lead,phone=$("inPhone2").value.trim();
+  $("leadPop").classList.toggle("open",on);
   $("leadHint").textContent=on&&!phone?"Add your phone number so we can reach you.":"";
 }
-$("inPhone").addEventListener("input",function(){this.value=fmtPhone(this.value);if(S.submitted)renderLead();});
-$("inPhone2").addEventListener("input",function(){this.value=fmtPhone(this.value);$("inPhone").value=this.value;$("leadHint").textContent="";});
-$("inPhone2").addEventListener("change",function(){var el=this,phone=el.value.trim();if(!phone)S.sms=false;
+$("inPhone2").addEventListener("input",function(){this.value=fmtPhone(this.value);$("leadHint").textContent="";});
+$("inPhone2").addEventListener("change",function(){var el=this,phone=el.value.trim();
   if(!phoneOk(phone)){$("leadHint").textContent="That phone number looks incomplete.";return;}
-  patch({phone:phone,sms_ok:S.sms}).then(function(){flash(el);renderLead();},function(){$("leadHint").textContent=FAIL.save;});});
-$("pkSms").addEventListener("click",function(){var b=this,phone=$("inPhone2").value.trim();
-  if(!phone||!phoneOk(phone)){$("leadHint").textContent=phone?"That phone number looks incomplete.":"Add your phone number first.";$("inPhone2").focus();return;}
-  S.sms=!S.sms;renderLead();
-  patch({phone:phone,sms_ok:S.sms}).then(function(){flash(b);},function(){S.sms=!S.sms;renderLead();$("leadHint").textContent=FAIL.save;});});
+  S.sms=!!phone;patch({phone:phone,sms_ok:S.sms}).then(function(){flash(el);renderLead();},function(){$("leadHint").textContent=FAIL.save;});});
 function go(i){
   if(busy||i===S.slide||i<0||i>=slides.length)return;
   var st=$("stage"),cur=slides[S.slide],nx=slides[i],dir=i>S.slide?1:-1;
@@ -523,14 +533,11 @@ function go(i){
 }
 /* who is answering: role, and year for undergraduates */
 var ROLES=["an undergraduate","a graduate student","a postdoc","faculty","staff"],YEARS=["First-year","Sophomore","Junior","Senior"];
-function paintChips(){
-  $("roleChips").querySelectorAll(".chip").forEach(function(b){b.setAttribute("aria-pressed",String(b.textContent===S.role));});
-  $("yearChips").querySelectorAll(".chip").forEach(function(b){b.setAttribute("aria-pressed",String(b.textContent===S.year));});
-  $("yearField").hidden=S.role!==ROLES[0];
-}
-function chips(box,items,key){items.forEach(function(t){var b=mk("button","chip",t);b.type="button";b.setAttribute("aria-pressed","false");
-  b.addEventListener("click",function(){S[key]=S[key]===t?"":t;if(S.role!==ROLES[0])S.year="";$("err").textContent="";paintChips();});box.appendChild(b);});}
-chips($("roleChips"),ROLES,"role");chips($("yearChips"),YEARS,"year");
+function paintChips(){var y=S.role===ROLES[0];$("selRole").value=S.role;$("selYear").disabled=!y;$("selYear").value=y?S.year:"";}
+function fillSel(el,items){el.appendChild(new Option("Select",""));items.forEach(function(t){el.appendChild(new Option(t,t));});}
+fillSel($("selRole"),ROLES);fillSel($("selYear"),YEARS);
+$("selRole").addEventListener("change",function(){S.role=this.value;if(S.role!==ROLES[0])S.year="";$("err").textContent="";paintChips();});
+$("selYear").addEventListener("change",function(){S.year=this.value;});
 $("btnBack").addEventListener("click",function(){go(S.slide-1);});
 $("btnNext").addEventListener("click",function(){go(S.slide+1);});
 $("pkShow").addEventListener("click",function(){S.show=!S.show;this.setAttribute("aria-pressed",String(S.show));});
@@ -647,7 +654,7 @@ function renderWidget(){
   var rows=B.people.filter(function(p){return !q||(p.name+" "+(p.uni||"")).toLowerCase().indexOf(q)>-1;});
   var pl=$("peopleList");clear(pl);
   rows.slice(0,200).forEach(function(p){var li=mk("li"),nm=mk(p.lead?"a":"span",p.lead?"lead":null,p.name);
-    if(p.lead){nm.href="#organizers";nm.setAttribute("data-tip","Campus organizer at "+(p.uni||"their university")+". Click to see what that means.");}
+    if(p.lead){nm.href="#organizers";nm.setAttribute("data-tip","Campus organizer at "+(p.uni||"their university")+". Click for information on what that means.");}
     li.appendChild(nm);li.appendChild(mk("span","u",p.uni||""));pl.appendChild(li);});
   if(!rows.length)pl.appendChild(mk("li","empty",q?"No one matches that search.":"No names yet. Yours can be the first."));
   /* private names can't be searched by name, but they still count toward a university you search for */
@@ -687,15 +694,18 @@ function updateResults(){
   Q.forEach(function(q){
     var c=B.answers[q.id]||{},tot=0;q.o.forEach(function(o){tot+=c[o]||0;});
     q.o.forEach(function(o){var x=R[q.id][o],pct=tot?Math.round((c[o]||0)/tot*100):0;
-      x.pct.textContent=pct+"%";grow(x.fill,pct+"%");x.row.classList.toggle("mine",S.answers[q.id]===o);});
+      x.pct.textContent=pct+"%";grow(x.fill,pct+"%");x.row.classList.toggle("mine",S.answers[q.id]===o);
+      var b=optBtns[q.id][o];b.lastChild.textContent=pct+"%";b.style.setProperty("--p",pct+"%");b.parentNode.parentNode.classList.toggle("answered",!!S.answers[q.id]);});
   });
 }
 
 /* ---------- after Count me in: confirmation, help checkboxes, sharing ---------- */
 function renderAfter(){
   var on=S.submitted,b=$("btnSubmit");
-  $("inEmail").readOnly=on;b.hidden=on&&!S.token;if(!S.saving)b.textContent=on?"Save changes":"Count me in";
-  if(!on){$("pop").classList.remove("open");return;}
+  $("inEmail").readOnly=on;if(!S.saving)b.textContent=on?"Save changes":"Count me in";
+  $("btnCancel").hidden=!S.editing;fold($("formPop"),!on||S.editing);
+  if(!on||S.editing){$("pop").classList.remove("open");return;}
+  $("afterMine").hidden=!S.token;$("mineText").textContent="Signed up as "+S.email;
   var u=S.mine;
   $("afterLab").textContent=S.verified?"Confirmed":"One step left";
   $("afterHead").textContent=S.verified?"You're in.":"Check your email.";
@@ -707,9 +717,17 @@ function renderAfter(){
   $("shMail").href="mailto:?subject="+e("Six questions: students and AI")+"&body="+e(msg+url);
   $("shWa").href="https://wa.me/?text="+e(msg+url);
   $("shThreads").href="https://www.threads.net/intent/post?text="+e(msg+url);
-  $("shDorm").href="mailto:?subject="+e("Students are writing an open letter on AI")+"&body="+e("Hi all,\n\nStudents across U.S. universities are putting together an open letter on AI, and before it is written they are asking what we think should be in it. It is six quick questions, and you can see how our university compares with others.\n\n"+url+"\n\nThanks!");
   $("pop").classList.add("open");
 }
+/* the form folds away once submitted; Edit my answers brings it back */
+function fold(el,open){
+  if(el.classList.contains("open")===open)return;
+  clearTimeout(el._t);el.classList.remove("settled");void el.offsetWidth;el.classList.toggle("open",open);
+  if(open)el._t=setTimeout(function(){el.classList.add("settled");},650);
+}
+function toTop(){setTimeout(function(){$("formPop").parentNode.parentNode.scrollIntoView({block:"start",behavior:CALM?"auto":"smooth"});},60);}
+$("btnEdit").addEventListener("click",function(){S.editing=true;$("err").textContent="";renderAfter();toTop();});
+$("btnCancel").addEventListener("click",function(){S.editing=false;renderAfter();toTop();});
 function copy(note){var url=location.href.split(/[?#]/)[0],m=$("copyMsg");
   try{navigator.clipboard.writeText(url).then(function(){m.textContent=note;},function(){m.textContent="Copy the address from your browser bar.";});}catch(x){m.textContent="Copy the address from your browser bar.";}}
 $("btnCopy").addEventListener("click",function(){copy("Link copied.");});
@@ -717,7 +735,7 @@ $("shInsta").addEventListener("click",function(){copy("Link copied. Paste it int
 
 /* ---------- backend ---------- */
 var FAIL={not_university:NOTUS,mail:"Your answers are saved, but we could not send the email. Wait a minute and try again.",save:"Could not save. Check your connection and try again."};
-function formRow(){return {name:$("inName").value.trim(),show_name:S.show,major:$("inMajor").value.trim(),role:S.role,year:S.year,phone:$("inPhone").value.trim(),
+function formRow(){return {name:$("inName").value.trim(),show_name:S.show,major:$("inMajor").value.trim(),role:S.role,year:S.year,
   answers:S.answers,concern:$("inConcern").value.trim(),spread:spreadList()};}
 /* first submit: stores the entry, then emails the confirmation link. Returns the university and an edit token. */
 function save(row){
@@ -741,13 +759,12 @@ $("form").addEventListener("submit",function(e){
   Q.forEach(function(q,i){if(miss<0&&!S.answers[q.id])miss=i;});
   if(!row.name){fail("Enter your name.",$("inName"));return;}
   if(!MAIL.test(email)){fail("Enter your university email.",$("inEmail"));return;}
-  if(!S.role){fail("Tell us what you are at your university.",$("roleField"));return;}
+  if(!S.role){fail("Tell us what you are at your university.",$("selRole"));return;}
   if(miss>-1){go(miss);fail("Answer the six questions first.",$("pollCard"));return;}
-  if(!phoneOk(row.phone)){fail("Finish your phone number, or leave it blank.",$("inPhone"));return;}
   S.saving=true;updateBtn();$("err").textContent="";
   function idle(){S.saving=false;updateBtn();}
   if(S.submitted){
-    patch(row).then(function(){b.textContent="Saved";flash(b);renderAll();setTimeout(function(){idle();renderAfter();},1500);},
+    patch(row).then(function(){b.textContent="Saved";flash(b);renderAll();setTimeout(function(){S.editing=false;idle();renderAfter();toTop();},900);},
       function(){idle();fail(FAIL.save);});
     return;
   }
@@ -755,13 +772,13 @@ $("form").addEventListener("submit",function(e){
   save(row).then(function(u){
     S.mine={dom:u.dom,name:u.name};S.email=email;S.token=u.token||null;S.submitted=true;S.panel="unis";idle();
     try{if(S.live&&S.token)localStorage.setItem("off_token",S.token);}catch(x){}
-    renderAll();setTimeout(function(){$("pop").scrollIntoView({block:"nearest",behavior:CALM?"auto":"smooth"});},350);
+    renderAll();toTop();
   },function(x){idle();fail(FAIL[x]||FAIL.save,x==="not_university"?$("inEmail"):null);});
 });
 /* fill the form from a stored entry: a returning visitor, or someone arriving from the emailed link */
 function applyEntry(c){
   S.email=c.email;S.verified=!!c.verified;S.token=c.token;S.submitted=true;
-  $("inEmail").value=c.email;$("inName").value=c.name||"";$("inMajor").value=c.major||"";$("inPhone").value=c.phone||"";
+  $("inEmail").value=c.email;$("inName").value=c.name||"";$("inMajor").value=c.major||"";$("inPhone2").value=c.phone||"";
   $("inConcern").value=c.concern||"";S.sms=!!c.sms_ok;S.role=c.role||"";S.year=c.year||"";paintChips();
   S.show=c.show_name!==false;$("pkShow").setAttribute("aria-pressed",String(S.show));
   Q.forEach(function(q){var a=c.answers&&c.answers[q.id];if(a&&optBtns[q.id][a])pick(q,a);});
