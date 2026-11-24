@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Our Future First</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a protest poster set on cold paper. Condensed display type carries the voice,
+   one signal red marks everything that is a pace or an action, mono carries every number. */
+:root{
+  --paper:#EDF0F3; --panel:#FFFFFF; --ink:#0E1420; --muted:#566173; --line:#C6CDD8;
+  --accent:#D92B21; --on-accent:#FFFFFF; --soft:#DDE2E9;
+  --display:"Big Shoulders Display","Arial Narrow","Helvetica Neue",Arial,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0C1017; --panel:#141A24; --ink:#E8ECF2; --muted:#94A0B2; --line:#2A3445;
+    --accent:#FF5448; --on-accent:#120504; --soft:#1C2431; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0C1017; --panel:#141A24; --ink:#E8ECF2; --muted:#94A0B2; --line:#2A3445;
+  --accent:#FF5448; --on-accent:#120504; --soft:#1C2431; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55}
+a{color:inherit;text-underline-offset:3px}
+a:hover{color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+h1,h2,h3{font-family:var(--display);text-transform:uppercase;line-height:.95;margin:0;text-wrap:balance;letter-spacing:.005em}
+h1{font-size:clamp(3rem,9.5vw,7rem);font-weight:800}
+h2{font-size:clamp(2.1rem,5.5vw,3.6rem);font-weight:800}
+h3{font-size:1.55rem;font-weight:700;line-height:1.05}
+p{margin:0;max-width:65ch}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.small{font-size:.86rem}
+.red{color:var(--accent)}
+
+.bar{border-bottom:2px solid var(--ink)}
+.bar .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;justify-content:space-between;padding-top:12px;padding-bottom:12px}
+.mark{font-family:var(--display);font-weight:800;font-size:1.35rem;text-transform:uppercase;letter-spacing:.03em}
+.chip{font-family:var(--mono);font-size:.8rem;border:1.5px solid var(--ink);padding:4px 10px;border-radius:2px}
+.chip.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+
+.hero{padding-top:48px;padding-bottom:48px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);gap:36px;align-items:end}
+.hero p.lede{font-size:1.2rem;margin-top:22px}
+.rail{border-left:2px solid var(--ink);padding-left:28px;display:flex;flex-direction:column;align-items:center;gap:20px}
+.rail .btn{align-self:stretch;text-align:center}
+.tally{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px}
+.tally .big{font-family:var(--display);font-weight:800;font-size:clamp(5rem,13vw,8.5rem);line-height:.82}
+.tally .lab{font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-size:1.25rem}
+.funnel{display:block;width:100%;max-width:300px;height:64px}
+.unis{display:flex;flex-direction:column;align-items:center;gap:6px}
+.uni-icons{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:260px}
+.uni-icons svg{width:34px;height:28px;color:var(--ink)}
+.uni-icons svg.none{color:var(--line)}
+.unis .n{font-family:var(--display);font-weight:800;font-size:3rem;line-height:.9}
+.board{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px}
+.board h3{padding-bottom:12px;border-bottom:2px solid var(--ink)}
+.board ol{list-style:none;margin:0;padding:0}
+.board li{display:grid;gap:4px 14px;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--line)}
+.recent li{grid-template-columns:minmax(0,1fr) auto}
+.recent .who{font-weight:600;overflow-wrap:anywhere}
+.recent .uni{grid-column:1/-1;color:var(--muted);font-size:.92rem;overflow-wrap:anywhere}
+.schools li{grid-template-columns:2.2em minmax(0,1fr) auto}
+.schools .rank{font-family:var(--mono);color:var(--muted)}
+.schools li:first-child .rank{color:var(--accent);font-weight:500}
+.schools .nm{font-weight:600;overflow-wrap:anywhere}
+.schools .track{grid-column:2/-1;height:8px}
+.board .empty{display:block;color:var(--muted);padding:16px 0;border-bottom:1px solid var(--line)}
+.btn{display:inline-block;font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:1.3rem;
+  background:var(--accent);color:var(--on-accent);border:2px solid var(--accent);padding:10px 20px;border-radius:2px;cursor:pointer;text-decoration:none}
+.btn:hover{filter:brightness(1.08);color:var(--on-accent)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:var(--paper)}
+.btn[disabled]{background:var(--soft);border-color:var(--line);color:var(--muted);cursor:not-allowed;filter:none}
+.btn.sm{font-size:1.05rem;padding:6px 14px}
+
+section{padding:64px 0;border-top:1px solid var(--line)}
+.sec-head{display:flex;flex-direction:column;gap:16px;margin-bottom:32px}
+
+.ruler-box{background:var(--panel);border:2px solid var(--ink);padding:24px}
+.ruler-scroll{overflow-x:auto}
+#ruler{display:block;min-width:720px;width:100%;height:auto}
+.classes{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+.classes button{font-family:var(--mono);font-size:.9rem;background:transparent;color:var(--ink);border:1.5px solid var(--ink);padding:6px 12px;border-radius:2px;cursor:pointer}
+.classes button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.readout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px}
+.readout div{border-top:2px solid var(--ink);padding-top:10px}
+.readout b{font-family:var(--display);font-size:2.6rem;line-height:1;font-weight:800;display:block}
+.readout .hot b{color:var(--accent)}
+
+.events{display:flex;flex-direction:column}
+.event{display:grid;grid-template-columns:130px minmax(0,1fr);gap:20px;padding:16px 0;border-top:1px solid var(--line)}
+.event:first-child{border-top:2px solid var(--ink)}
+.event .when{font-family:var(--mono);font-size:.9rem;padding-top:3px}
+.event p+p{margin-top:4px}
+
+.bars{display:flex;flex-direction:column;gap:14px}
+.barrow .lab{display:flex;justify-content:space-between;gap:12px;font-size:.95rem;margin-bottom:5px}
+.track{height:18px;background:var(--soft);border-radius:2px;overflow:hidden}
+.fill{height:100%;background:var(--accent)}
+.fill.ink{background:var(--ink)}
+
+.reasons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.reasons article{border-top:4px solid var(--ink);padding-top:16px;display:flex;flex-direction:column;gap:12px}
+
+.join{background:var(--panel);border:2px solid var(--ink);padding:24px;display:flex;flex-direction:column;gap:24px}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.field{display:flex;flex-direction:column;gap:6px}
+label{font-weight:600;font-size:.95rem}
+input[type=text],input[type=email],input[type=tel],input[type=datetime-local],textarea{font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:2px;padding:10px 12px;width:100%}
+textarea{min-height:110px;resize:vertical}
+.opt{color:var(--muted);font-weight:400}
+.check{display:flex;gap:10px;align-items:flex-start;font-weight:400}
+.check input{margin-top:5px;width:18px;height:18px;accent-color:var(--accent)}
+.err{color:var(--accent);font-weight:600;min-height:1.4em}
+.note{border-left:4px solid var(--accent);padding:8px 14px;background:var(--soft);font-size:.95rem}
+.opts{min-height:112px;align-content:start;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.opts button{font:inherit;text-align:left;background:var(--paper);color:var(--ink);border:1.5px solid var(--ink);padding:12px 14px;border-radius:2px;cursor:pointer}
+.opts button:hover{border-color:var(--accent)}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+[hidden]{display:none!important}
+
+.letter{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:36px}
+.letter-text{font-size:1.14rem;display:flex;flex-direction:column;gap:16px}
+p.filler-tag{font-family:var(--mono);font-size:.85rem;color:var(--accent)}
+.letter-text .ask{font-weight:600;border-left:4px solid var(--accent);padding-left:16px}
+.sign{display:flex;flex-direction:column;gap:14px;align-self:start;border:2px solid var(--ink);padding:24px;background:var(--panel)}
+
+.admin{border:2px dashed var(--muted);padding:24px;display:flex;flex-direction:column;gap:14px}
+footer{padding:28px 0 56px;border-top:2px solid var(--ink);font-size:.9rem;color:var(--muted)}
+
+@media (max-width:760px){
+  .hero-grid,.letter,.reasons,.fields,.readout,.board{grid-template-columns:minmax(0,1fr)}
+  .rail{border-left:0;border-top:2px solid var(--ink);padding:28px 0 0}
+  .event{grid-template-columns:minmax(0,1fr);gap:4px}
+  .opts{grid-template-columns:minmax(0,1fr)}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="uni" viewBox="0 0 48 40"><polygon points="24,1 47,13 1,13" fill="currentColor"/><rect x="5" y="16" width="5" height="15" fill="currentColor"/><rect x="16" y="16" width="5" height="15" fill="currentColor"/><rect x="27" y="16" width="5" height="15" fill="currentColor"/><rect x="38" y="16" width="5" height="15" fill="currentColor"/><rect x="1" y="33" width="46" height="6" fill="currentColor"/></symbol></svg>
+
+<header class="bar">
+  <div class="wrap">
+    <span class="mark">Our Future First</span>
+    <span class="chip" id="statusChip">Letter opening date to be announced</span>
+  </div>
+</header>
+
+<main>
+<div class="wrap hero">
+  <div class="hero-grid">
+    <div>
+      <h1>AI is moving <span class="red">faster</span> than we can learn to follow it.</h1>
+      <p class="lede">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio praesent libero sed cursus ante dapibus diam.</p>
+    </div>
+    <aside class="rail" aria-label="Campaign status">
+      <div class="tally">
+        <span class="big mono" id="cPledged">0</span>
+        <span class="lab" id="cPledgedLab">names so far</span>
+        <svg class="funnel" viewBox="0 0 300 64" preserveAspectRatio="none" aria-hidden="true"><polygon points="0,0 300,0 186,64 114,64" fill="var(--accent)"/></svg>
+        <div class="unis">
+          <div class="uni-icons" id="uniIcons" aria-hidden="true"></div>
+          <span class="n mono" id="cUnis">0</span>
+          <span class="lab">universities</span>
+        </div>
+      </div>
+      <a class="btn" href="#join">Leave your name</a>
+    </aside>
+  </div>
+</div>
+
+<section id="board">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 id="boardHead">Who is in so far</h2>
+    </div>
+    <div class="board">
+      <div><h3>Most recent</h3><ol class="recent" id="recentList"></ol></div>
+      <div><h3>Top schools</h3><ol class="schools" id="schoolList"></ol></div>
+    </div>
+  </div>
+</section>
+
+<section id="pace">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Count the doublings before you graduate</h2>
+      <p>METR measures the length of task an AI system can finish on its own. From 2019 to 2025 that length doubled about every seven months. Its November 2026 update puts the pace at about every 110 days, and the best public models at up to 27 hours on one set of its tasks. Each mark below is one doubling.</p>
+    </div>
+    <div class="ruler-box">
+      <div class="classes" role="group" aria-label="Your graduating class">
+        <span class="small muted">I graduate in</span>
+        <button type="button" data-y="2027">2027</button>
+        <button type="button" data-y="2028">2028</button>
+        <button type="button" data-y="2029">2029</button>
+        <button type="button" data-y="2030">2030</button>
+      </div>
+      <div class="ruler-scroll"><svg id="ruler" viewBox="0 0 1000 170" role="img" aria-label="Timeline of doublings in AI task length from 2019 to 2031"></svg></div>
+      <div class="readout">
+        <div class="hot"><b class="mono" id="rFast">&times;0</b><span id="rFastLab"></span></div>
+        <div><b class="mono" id="rSlow">&times;0</b><span id="rSlowLab"></span></div>
+      </div>
+      <p class="small muted" style="margin-top:14px">Marks from 2023 to today use METR's earlier 131-day estimate. Marks after today use the 110-day pace and are extrapolation. Trends can bend. Sources: <a href="https://metr.org/blog/2026-11-20-q4-2026-capability-update/">METR, November 2026 update</a>, <a href="https://metr.org/blog/2026-1-29-time-horizon-1-1">Time Horizon 1.1</a>.</p>
+    </div>
+  </div>
+</section>
+
+<section id="year">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>What happened in 2026</h2>
+      <p>The fields many of us came to university to study started moving at a different speed.</p>
+    </div>
+    <div class="events">
+      <div class="event"><div class="when">Jan 2026</div><div><p><strong>Fifteen Erd&#337;s problems are marked solved in under a month.</strong> Eleven of the solutions credit AI models.</p><p class="small muted"><a href="https://www.techcrunch.com/2026/01/14/ai-models-are-starting-to-crack-high-level-math-problems/">TechCrunch</a></p></div></div>
+      <div class="event"><div class="when">13 Feb 2026</div><div><p><strong>An AI model proposes a new formula in particle physics.</strong> It covers a gluon interaction many physicists expected to be zero. The authors checked it by hand.</p><p class="small muted"><a href="https://openai.com/index/new-result-theoretical-physics/">OpenAI preprint announcement</a></p></div></div>
+      <div class="event"><div class="when">20 May 2026</div><div><p><strong>A conjecture open since 1946 falls.</strong> OpenAI publishes a counterexample to the unit distance conjecture. Related techniques solve other problems within days.</p><p class="small muted"><a href="https://www.quantamagazine.org/how-ai-tore-through-a-mathematical-community-20260803/">Quanta Magazine</a></p></div></div>
+      <div class="event"><div class="when">Sep 2026</div><div><p><strong>OpenAI announces its AI has solved one of the hardest open problems in mathematics.</strong> NPR's headline on what mathematicians took from the proof: humanity has learned nothing, so far.</p><p class="small muted"><a href="https://www.npr.org/2026/09/22/nx-s1-5968588/openai-navier-stokes-problem-mathematicians-learn-little">NPR</a></p></div></div>
+      <div class="event"><div class="when">20 Nov 2026</div><div><p><strong>A proof of the Riemann hypothesis is announced.</strong> A mathematician at Anthropic says he and an AI model proved the most famous open problem in mathematics. The proof is about 17 million lines of machine-checked code. Mathematicians are still reviewing it.</p><p class="small muted"><a href="https://www.washingtonpost.com/technology/2026/11/20/using-anthropic-ai-mathematician-claims-have-solved-riemann-hypothesis/">The Washington Post</a></p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="why">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Why pacing</h2>
+    </div>
+    <div class="reasons">
+      <article><h3>Understanding takes time</h3><p>A degree takes four years. A proof takes months to check. Results now arrive faster than people can absorb them.</p></article>
+      <article><h3>No one can slow down alone</h3><p>Each company moves fast because its rivals do. Each country does the same. A pace has to be agreed across borders.</p></article>
+      <article><h3>The builders are asking too</h3><p>In July 2026, more than 1,100 employees of OpenAI, Anthropic, Google and Meta asked the U.S. government to support an international effort to build tools for pacing AI development. <a href="https://pacingthefrontier.com">Pacing the Frontier</a></p></article>
+    </div>
+  </div>
+</section>
+
+<section id="join">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Leave your name</h2>
+    </div>
+    <div class="join">
+      <div class="note" id="previewNote" hidden>Preview mode. Entries made from this view are not saved.</div>
+
+      <form id="fContact" novalidate>
+        <div class="fields">
+          <div class="field"><label for="inName">Full name</label><input type="text" id="inName" autocomplete="name" maxlength="120"></div>
+          <div class="field"><label for="inUni">University</label><input type="text" id="inUni" autocomplete="organization" maxlength="120"></div>
+          <div class="field"><label for="inEmail">Email</label><input type="email" id="inEmail" autocomplete="email" maxlength="160"></div>
+          <div class="field"><label for="inPhone">Phone <span class="opt">(optional)</span></label><input type="tel" id="inPhone" autocomplete="tel" maxlength="30"></div>
+        </div>
+        <label class="check" for="inOk" style="margin-top:16px"><input type="checkbox" id="inOk" checked><span>Contact me when the letter opens</span></label>
+        <p class="err" id="errContact" role="alert"></p>
+        <button class="btn" type="submit" id="btnContact">Continue</button>
+      </form>
+
+      <div id="pPoll" hidden>
+        <p class="mono small muted" id="qCount"></p>
+        <h3 id="qText" style="margin:8px 0 16px;text-transform:none;font-family:var(--body);font-weight:600;font-size:1.35rem;line-height:1.25"></h3>
+        <div class="opts" id="qOpts"></div>
+        <div class="field" id="qFree" hidden>
+          <textarea id="inWish" maxlength="1500" aria-labelledby="qText"></textarea>
+          <div class="row"><button class="btn" type="button" id="btnFinish">Finish</button><span class="small muted">You can finish without answering.</span></div>
+        </div>
+        <p class="err" id="errPoll" role="alert"></p>
+      </div>
+
+      <div id="pDone" hidden>
+        <h3 id="doneHead">You are on the list.</h3>
+        <p style="margin-top:10px" id="doneText">We will message everyone at the same moment when the letter opens. Sign it that day.</p>
+        <div style="margin-top:22px" class="field">
+          <label for="inIdea">One thing to think about before then: what would it take to convince your government to back a pacing proposal? Who would you need to reach, and what would move them?</label>
+          <textarea id="inIdea" maxlength="1500"></textarea>
+          <div class="row"><button class="btn sm ghost" type="button" id="btnIdea">Save my answer</button><span class="small muted" id="ideaMsg" role="status"></span></div>
+        </div>
+        <div class="row" style="margin-top:22px"><a class="btn sm" href="#letter">Read the letter</a><button class="btn sm ghost" type="button" id="btnCopy">Copy link to share</button><span class="small muted" id="copyMsg" role="status"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="letter">
+  <div class="wrap">
+    <div class="sec-head"><h2>The letter</h2></div>
+    <div class="letter">
+      <div class="letter-text">
+        <p class="filler-tag">Placeholder text. The letter has not been written yet.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio praesent libero sed cursus ante dapibus diam. Sed nisi nulla quis sem at nibh elementum imperdiet.</p>
+        <p>Duis sagittis ipsum praesent mauris fusce nec tellus sed augue semper porta. Mauris massa vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra.</p>
+        <p class="ask">Curabitur sodales ligula in libero sed dignissim lacinia nunc. Curabitur tortor pellentesque nibh aenean quam in scelerisque sem at dolor.</p>
+        <p>Maecenas mattis sed convallis tristique sem proin ut ligula vel nunc egestas porttitor. Morbi lectus risus iaculis vel suscipit quis luctus non massa.</p>
+      </div>
+      <div class="sign">
+        <p class="mono small" id="signStatus">Signing has not opened yet.</p>
+        <p class="mono" id="countdown" style="font-size:1.5rem" hidden></p>
+        <button class="btn" type="button" id="btnSign" disabled>Sign the letter</button>
+        <p class="err" id="errSign" role="alert"></p>
+        <p class="small muted"><span class="mono" id="cSigs">0</span> signatures</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="organizer" hidden>
+  <div class="wrap">
+    <div class="admin">
+      <h3>Organizer controls</h3>
+      <p class="small muted">Only you see this section.</p>
+      <div class="row">
+        <div class="field"><label for="inLaunch">Letter opens at (your local time)</label><input type="datetime-local" id="inLaunch"></div>
+        <button class="btn sm" type="button" id="btnLaunch">Set opening time</button>
+        <span class="small muted" id="launchMsg" role="status"></span>
+      </div>
+      <div class="row"><button class="btn sm ghost" type="button" id="btnCsv">Load contact list as CSV</button><span class="small muted" id="csvMsg" role="status"></span></div>
+      <textarea id="csvOut" readonly hidden aria-label="Contact list CSV"></textarea>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap">Our Future First is a working title. Organized by students in university AI safety groups. Contact details are used only to announce the letter.</div></footer>
+
+<script>
+(function(){
+"use strict";
+var $=function(id){return document.getElementById(id);};
+var DAY=86400000, FAST=110*DAY, MID=131*DAY, SLOW=196*DAY;
+
+/* ---------- doubling ruler ---------- */
+var NS="http://www.w3.org/2000/svg", gradYear=2030;
+function svg(tag,attrs,text){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;return e;}
+function fmtMult(n){var m=Math.pow(2,n);if(m>=100)m=Math.round(m/Math.pow(10,Math.floor(Math.log10(m))-1))*Math.pow(10,Math.floor(Math.log10(m))-1);else if(m>=10)m=Math.round(m);else m=Math.round(m*10)/10;return "×"+m.toLocaleString("en-US");}
+function drawRuler(){
+  var el=$("ruler");while(el.firstChild)el.removeChild(el.firstChild);
+  var t0=Date.UTC(2019,0,1),split=Date.UTC(2023,0,1),end=Date.UTC(2031,0,1),now=Date.now(),grad=Date.UTC(gradYear,5,1);
+  var L=24,R=976,base=118;
+  function x(t){return L+(t-t0)/(end-t0)*(R-L);}
+  var gx0=x(Math.min(now,end)),gx1=x(Math.min(grad,end));
+  if(grad>now){
+    el.appendChild(svg("rect",{x:gx0,y:34,width:Math.max(gx1-gx0,2),height:base-34,fill:"var(--accent)",opacity:".13"}));
+    el.appendChild(svg("line",{x1:gx0,y1:26,x2:gx1,y2:26,stroke:"var(--accent)","stroke-width":2}));
+    el.appendChild(svg("text",{x:Math.min((gx0+gx1)/2,R-60),y:18,"text-anchor":"middle","font-family":"var(--mono)","font-size":12,fill:"var(--accent)"},"today to June "+gradYear));
+  }
+  el.appendChild(svg("line",{x1:L,y1:base,x2:R,y2:base,stroke:"var(--ink)","stroke-width":2}));
+  var t;
+  for(t=t0;t<end;t+=(t<split?SLOW:(t+MID<=now?MID:FAST))){
+    var fut=t>now;
+    el.appendChild(svg("line",{x1:x(t),y1:fut?64:50,x2:x(t),y2:base,stroke:fut?"var(--accent)":"var(--ink)","stroke-width":fut?2:3,opacity:fut?".55":"1"}));
+  }
+  for(var y=2019;y<=2031;y++){
+    var xx=x(Date.UTC(y,0,1));
+    el.appendChild(svg("line",{x1:xx,y1:base,x2:xx,y2:base+6,stroke:"var(--muted)","stroke-width":1}));
+    el.appendChild(svg("text",{x:xx,y:base+22,"text-anchor":y===2019?"start":(y===2031?"end":"middle"),"font-family":"var(--mono)","font-size":12,fill:"var(--muted)"},String(y)));
+  }
+  if(now<end){
+    el.appendChild(svg("line",{x1:gx0,y1:34,x2:gx0,y2:base,stroke:"var(--ink)","stroke-width":1.5,"stroke-dasharray":"3 3"}));
+    el.appendChild(svg("text",{x:gx0,y:base+46,"text-anchor":"middle","font-family":"var(--mono)","font-size":12,fill:"var(--ink)"},"today"));
+  }
+  var span=Math.max(grad-now,0),nf=span/FAST,ns=span/SLOW;
+  $("rFast").textContent=fmtMult(nf);
+  $("rFastLab").textContent=nf.toFixed(1)+" doublings before the class of "+gradYear+" graduates, if the current 110-day pace holds.";
+  $("rSlow").textContent=fmtMult(ns);
+  $("rSlowLab").textContent=ns.toFixed(1)+" doublings at the slower 2019 to 2025 rate.";
+  var bs=document.querySelectorAll(".classes button");
+  for(var i=0;i<bs.length;i++)bs[i].setAttribute("aria-pressed",String(+bs[i].dataset.y===gradYear));
+}
+document.querySelector(".classes").addEventListener("click",function(e){var y=e.target&&e.target.dataset&&e.target.dataset.y;if(y){gradYear=+y;drawRuler();}});
+drawRuler();
+
+/* ---------- poll questions ---------- */
+var Q=[
+ {id:"pace",q:"How fast is AI moving right now?",o:["Too fast","About right","Too slow","Not sure"]},
+ {id:"plans",q:"Has AI changed what you plan to study or do after you graduate?",o:["Yes, I changed plans","I am reconsidering","No"]},
+ {id:"job",q:"When do you expect AI to be able to do most of an entry-level job in your field?",o:["It already can","Before I graduate","Within ten years","Later, or never"]},
+ {id:"follow",q:"How well can you keep up with what AI can do in your own field?",o:["I can follow it","I follow some of it","I have lost track"]},
+ {id:"who",q:"Who should decide how fast the most capable AI advances?",o:["The companies building it","National governments","Countries, by agreement","Nobody can decide it"]},
+ {id:"act",q:"Would you contact your representative about pacing AI?",o:["Yes","Maybe, with a template","No"]}
+];
+
+/* ---------- state ---------- */
+var S={db:null,uid:null,live:false,owner:false,step:"contact",contact:null,answers:{},qi:0,polls:[],sigs:[],launchAt:null,signed:false};
+
+function setText(id,t){$(id).textContent=t;}
+function render(){
+  $("fContact").hidden=S.step!=="contact";$("pPoll").hidden=S.step!=="poll";$("pDone").hidden=S.step!=="done";
+  $("previewNote").hidden=S.live;
+  if(S.step==="poll")renderQuestion();
+  renderCounts();renderSign();
+}
+function ago(ts){if(!ts)return "";var m=Math.max(0,Math.floor((Date.now()-ts)/60000));if(m<1)return "just now";if(m<60)return m+" min ago";var h=Math.floor(m/60);if(h<24)return h+" h ago";return Math.floor(h/24)+" d ago";}
+function mk(tag,cls,text){var e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e;}
+function clear(e){while(e.firstChild)e.removeChild(e.firstChild);}
+function renderCounts(){
+  var open=S.launchAt!=null&&Date.now()>=S.launchAt;
+  var groups={},n=S.polls.length;
+  S.polls.forEach(function(p){var u=String(p.uni||"").trim();if(!u)return;var k=u.toLowerCase();if(!groups[k])groups[k]={name:u,n:0};});
+  var nu=Object.keys(groups).length;
+  setText("cPledged",n.toLocaleString("en-US"));
+  setText("cPledgedLab",n===1?"name so far":"names so far");
+  setText("cUnis",nu.toLocaleString("en-US"));
+  setText("cSigs",S.sigs.length.toLocaleString("en-US"));
+  var ic=$("uniIcons");clear(ic);
+  for(var i=0;i<Math.max(1,Math.min(nu,12));i++){var s=document.createElementNS(NS,"svg");s.setAttribute("viewBox","0 0 48 40");if(nu===0)s.setAttribute("class","none");var u=document.createElementNS(NS,"use");u.setAttribute("href","#uni");s.appendChild(u);ic.appendChild(s);}
+  /* board: people who signed once the letter is open, people who left names before that */
+  var rows=(open?S.sigs:S.polls).filter(function(r){return String(r.name||"").trim();});
+  setText("boardHead",open?"Who has signed":"Who is in so far");
+  var rec=$("recentList");clear(rec);
+  rows.slice().sort(function(a,b){return (b.ts||0)-(a.ts||0);}).slice(0,10).forEach(function(r){
+    var li=mk("li");li.appendChild(mk("span","who",String(r.name)));li.appendChild(mk("span","mono small muted",ago(r.ts)));li.appendChild(mk("span","uni",String(r.uni||"")));rec.appendChild(li);});
+  if(!rows.length)rec.appendChild(mk("li","empty",open?"No signatures yet.":"No names yet. Yours can be first."));
+  var by={};rows.forEach(function(r){var nm=String(r.uni||"").trim();if(!nm)return;var k=nm.toLowerCase();if(!by[k])by[k]={name:nm,n:0};by[k].n++;});
+  var top=Object.keys(by).map(function(k){return by[k];}).sort(function(a,b){return b.n-a.n||a.name.localeCompare(b.name);}).slice(0,10);
+  var sl=$("schoolList");clear(sl);
+  top.forEach(function(g,i){var li=mk("li");li.appendChild(mk("span","rank",String(i+1)));li.appendChild(mk("span","nm",g.name));li.appendChild(mk("span","mono",g.n.toLocaleString("en-US")));
+    var tr=mk("div","track"),f=mk("div","fill");f.style.width=Math.round(g.n/top[0].n*100)+"%";tr.appendChild(f);li.appendChild(tr);sl.appendChild(li);});
+  if(!top.length)sl.appendChild(mk("li","empty","No schools yet."));
+}
+var WISH="If there is one thing you would want in the letter, what would it be?";
+var chain=Promise.resolve();
+function queuePoll(){chain=chain.then(savePoll).then(function(){setText("errPoll","");},function(x){setText("errPoll",failMsg(x));});}
+function renderQuestion(){
+  var free=S.qi>=Q.length;
+  setText("qCount","Question "+(S.qi+1)+" of "+(Q.length+1));
+  setText("qText",free?WISH:Q[S.qi].q);
+  var box=$("qOpts");clear(box);box.hidden=free;$("qFree").hidden=!free;
+  if(free)return;
+  var q=Q[S.qi];
+  q.o.forEach(function(o){var b=mk("button",null,o);b.type="button";
+    b.addEventListener("click",function(){S.answers[q.id]=o;queuePoll();S.qi++;renderQuestion();});box.appendChild(b);});
+}
+function fmtLeft(ms){var s=Math.floor(ms/1000),d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60),x=s%60;function p(n){return n<10?"0"+n:String(n);}return (d?d+"d ":"")+p(h)+":"+p(m)+":"+p(x);}
+function renderSign(){
+  var now=Date.now(),open=S.launchAt!=null&&now>=S.launchAt,chip=$("statusChip"),cd=$("countdown"),btn=$("btnSign");
+  if(S.launchAt==null){chip.textContent="Letter opening date to be announced";chip.className="chip";setText("signStatus","Signing has not opened yet. Leave your name and we will tell you when it does.");cd.hidden=true;}
+  else if(!open){var when=new Date(S.launchAt).toLocaleString(undefined,{dateStyle:"medium",timeStyle:"short"});chip.textContent="Letter opens "+when;chip.className="chip";setText("signStatus","Signing opens "+when+".");cd.hidden=false;cd.textContent=fmtLeft(S.launchAt-now);}
+  else{chip.textContent="The letter is open. Sign today.";chip.className="chip on";setText("signStatus","The letter is open.");cd.hidden=true;}
+  if(S.signed){btn.disabled=true;btn.textContent="You signed";}
+  else if(!open){btn.disabled=true;btn.textContent="Sign the letter";}
+  else if(!S.contact){btn.disabled=false;btn.textContent="Leave your name to sign";}
+  else{btn.disabled=false;btn.textContent="Sign as "+S.contact.name;}
+  if(open){setText("doneHead","The letter is open.");setText("doneText","Everyone on the list is signing today. Add your signature below.");}
+}
+var wasOpen=false;setInterval(function(){if(S.launchAt==null)return;renderSign();var o=Date.now()>=S.launchAt;if(o!==wasOpen){wasOpen=o;renderCounts();}},1000);
+
+/* ---------- storage adapter: swap these four functions to move to another backend ---------- */
+function failMsg(e){if(e&&e.code==="invalid_argument"){S.live=false;$("previewNote").hidden=false;return "This view cannot save entries. Continuing in preview mode.";}
+  if(e&&e.code==="quota_exceeded")return "The list is full. Tell the organizers.";return "Could not save. Check your connection and try again.";}
+function localRow(c){S.polls=S.polls.filter(function(p){return p.id!=="local";});S.polls.push({id:"local",name:c.name,uni:c.uni,a:{},ts:c.ts});}
+function saveContact(c){if(!S.live){localRow(c);return Promise.resolve();}
+  return S.db.doc("contacts/"+S.uid).set(c).then(function(){return S.db.doc("polls/"+S.uid).set({name:c.name,uni:c.uni,a:S.answers,ts:c.ts});});}
+function savePoll(){if(!S.live)return Promise.resolve();return S.db.doc("polls/"+S.uid).set({name:S.contact.name,uni:S.contact.uni,a:S.answers,ts:S.contact.ts||Date.now()});}
+function saveWish(t){if(!S.live)return Promise.resolve();return S.db.doc("contacts/"+S.uid).update({wish:t});}
+function saveIdea(t){if(!S.live)return Promise.resolve();return S.db.doc("contacts/"+S.uid).update({idea:t});}
+function saveSignature(){if(!S.live)return Promise.resolve();return S.db.doc("signatures/"+S.uid).set({name:S.contact.name,uni:S.contact.uni,ts:Date.now()});}
+
+/* ---------- handlers ---------- */
+$("fContact").addEventListener("submit",function(e){
+  e.preventDefault();
+  var c={name:$("inName").value.trim(),uni:$("inUni").value.trim(),email:$("inEmail").value.trim(),phone:$("inPhone").value.trim(),ts:Date.now()};
+  var err="";
+  if(!c.name)err="Enter your name.";else if(!c.uni)err="Enter your university.";
+  else if(!c.email&&!c.phone)err="Enter an email or a phone number so we can reach you on launch day.";
+  else if(c.email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.email))err="That email address looks incomplete.";
+  else if(!$("inOk").checked)err="Tick the box so we can contact you when the letter opens.";
+  setText("errContact",err);if(err)return;
+  var b=$("btnContact");b.disabled=true;var jb=document.querySelector(".join");jb.style.minHeight=jb.offsetHeight+"px";
+  saveContact(c).then(function(){S.contact=c;S.step="poll";b.disabled=false;render();},
+    function(x){setText("errContact",failMsg(x));b.disabled=false;if(!S.live){localRow(c);S.contact=c;S.step="poll";render();}});
+});
+$("btnFinish").addEventListener("click",function(){
+  var b=$("btnFinish"),t=$("inWish").value.trim();b.disabled=true;
+  var done=function(){b.disabled=false;S.step="done";render();};
+  chain=chain.then(function(){return t?saveWish(t):null;}).then(done,function(x){b.disabled=false;setText("errPoll",failMsg(x));if(!S.live)done();});
+});
+$("btnIdea").addEventListener("click",function(){var t=$("inIdea").value.trim();if(!t){setText("ideaMsg","Write a sentence or two first.");return;}
+  saveIdea(t).then(function(){setText("ideaMsg",S.live?"Saved. Thank you.":"Preview mode: not saved.");},function(x){setText("ideaMsg",failMsg(x));});});
+$("btnCopy").addEventListener("click",function(){try{navigator.clipboard.writeText(location.href.split("#")[0]).then(function(){setText("copyMsg","Link copied.");},function(){setText("copyMsg","Copy the address from your browser bar.");});}catch(e){setText("copyMsg","Copy the address from your browser bar.");}});
+$("btnSign").addEventListener("click",function(){
+  if(!S.contact){location.hash="join";$("inName").focus();return;}
+  var b=$("btnSign");b.disabled=true;setText("errSign","");
+  saveSignature().then(function(){S.signed=true;if(!S.live)S.sigs.unshift({name:S.contact.name,uni:S.contact.uni,ts:Date.now()});render();},function(x){setText("errSign",failMsg(x));renderSign();});
+});
+
+/* organizer */
+$("btnLaunch").addEventListener("click",function(){var v=$("inLaunch").value;if(!v){setText("launchMsg","Pick a date and time.");return;}
+  var ms=new Date(v).getTime();if(isNaN(ms)){setText("launchMsg","That date is not valid.");return;}
+  S.db.doc("config/main").set({launchAt:ms}).then(function(){setText("launchMsg","Opening time set.");},function(){setText("launchMsg","Could not save the opening time.");});});
+function csvCell(v){return '"'+String(v==null?"":v).replace(/"/g,'""')+'"';}
+$("btnCsv").addEventListener("click",function(){setText("csvMsg","Loading.");
+  S.db.collection("contacts").limit(1000).get().then(function(q){
+    var rows=[["name","university","email","phone","letter_wish","idea","joined"].join(",")];
+    q.docs.forEach(function(d){var c=d.data()||{};rows.push([c.name,c.uni,c.email,c.phone,c.wish,c.idea,c.ts?new Date(c.ts).toISOString():""].map(csvCell).join(","));});
+    var out=$("csvOut");out.hidden=false;out.value=rows.join("\n");out.focus();out.select();
+    setText("csvMsg",q.size+" contacts. Select all and copy."+(q.size>=1000?" Showing the first 1,000.":""));
+  },function(){setText("csvMsg","Could not load the contact list.");});});
+
+/* ---------- boot ---------- */
+render();
+function connect(){
+  if(!window.claude||typeof window.claude.use!=="function")return;
+  Promise.all([window.claude.use("db"),window.claude.use("user")]).then(function(r){
+    var db=r[0],user=r[1];if(!db)return;S.db=db;
+    var lost=function(){};
+    db.collection("polls").limit(1000).onSnapshot(function(q){S.polls=q.docs.map(function(d){var x=d.data()||{};return {id:d.id,name:x.name,uni:x.uni,ts:x.ts,a:x.a||{}};});renderCounts();},lost);
+    db.collection("signatures").orderBy("ts","desc").limit(1000).onSnapshot(function(q){S.sigs=q.docs.map(function(d){return d.data()||{};});if(S.uid)S.signed=q.docs.some(function(d){return d.id===S.uid;})||S.signed;renderCounts();renderSign();},lost);
+    db.doc("config/main").onSnapshot(function(d){var x=d.exists?d.data():null;S.launchAt=x&&typeof x.launchAt==="number"?x.launchAt:null;renderSign();},lost);
+    if(!user)return;
+    Promise.all([user.id(),user.can("data.write"),user.isOwner()]).then(function(v){
+      S.uid=v[0];S.owner=!!v[2];S.live=!!S.uid&&v[1]!==false;
+      if(S.owner)$("organizer").hidden=false;
+      if(!S.uid){render();return;}
+      return Promise.all([db.doc("contacts/"+S.uid).get(),db.doc("polls/"+S.uid).get(),db.doc("signatures/"+S.uid).get()]).then(function(d){
+        if(d[0].exists&&!S.contact){S.contact=d[0].data();var a=(d[1].exists&&d[1].data().a)||{};S.answers=Object.assign({},a);
+          var left=Q.findIndex(function(q){return !S.answers[q.id];});
+          if(left===-1)S.step="done";else{S.step="poll";S.qi=left;}
+          if(S.contact.idea)$("inIdea").value=String(S.contact.idea);}
+        S.signed=d[2].exists;render();
+      });
+    }).catch(function(){render();});
+  }).catch(function(){});
+}
+connect();
+})();
+</script>
+</body>
+</html>
