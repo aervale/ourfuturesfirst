@@ -104,6 +104,7 @@ td.wide{white-space:normal;min-width:320px}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="config.js"></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 <script>
 (function(){
 "use strict";
@@ -187,7 +188,11 @@ $("inSearch").addEventListener("input",render);
 $("btnCsv").addEventListener("click",csv);
 $("btnOut").addEventListener("click",function(){sb.auth.signOut().then(function(){location.reload();});});
 $("btnIn").addEventListener("click",function(){var e=$("inEmail").value.trim();if(!e)return;$("msg").textContent="Sending";
-  sb.auth.signInWithOtp({email:e,options:{emailRedirectTo:location.href.split(/[?#]/)[0]}}).then(function(o){
+  /* the same spam check as the sign-up form */
+  var key=(window.OFF_CONFIG||{}).turnstile;
+  (key&&window.turnstile?new Promise(function(res){var box=document.body.appendChild(document.createElement("div"));
+    turnstile.render(box,{sitekey:key,theme:"dark",appearance:"interaction-only",callback:res,"error-callback":function(){res();}});}):Promise.resolve())
+  .then(function(t){return sb.auth.signInWithOtp({email:e,options:{emailRedirectTo:location.href.split(/[?#]/)[0],captchaToken:t}});}).then(function(o){
     $("msg").textContent=o.error?"Could not send. Wait a minute and try again.":"Check your email for the link.";});});
 sb.auth.getSession().then(function(r){if(r.data&&r.data.session)start(r.data.session);else $("signin").hidden=false;});
 })();

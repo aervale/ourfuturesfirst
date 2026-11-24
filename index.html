@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <title>Our Futures First</title>
+<meta name="description" content="Students are writing an open letter on AI and asking what belongs in it. Open to anyone at a U.S. university.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Our Futures First">
+<meta property="og:description" content="Students are writing an open letter on AI and asking what belongs in it. Open to anyone at a U.S. university.">
+<meta property="og:image" content="https://ourfuturesfirst.org/og.png">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -225,11 +231,26 @@ textarea{display:block;min-height:150px;resize:none}
 .rrow.mine .fill{background:var(--accent)}
 .h2b{margin-top:56px}
 .where{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px;margin-top:28px;align-items:start}
-#usMap{display:block;width:100%;height:auto}
-#mapLand .land{fill:rgba(244,242,237,.05)}
-#mapLand .edge{fill:none;stroke:var(--line2);stroke-width:.8;stroke-linejoin:round}
-#mapDots circle{fill:rgba(255,90,54,.4);stroke:var(--accent);stroke-width:1.2;transition:fill .2s}
-#mapDots circle:hover{fill:rgba(255,90,54,.8)}
+.mapcard{position:relative;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:44px 44px;background-position:-1px -1px}
+.mapcard .read{display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-bottom:6px}
+.mapcard .read b{color:var(--accent);font-weight:500}
+#usMap{display:block;width:100%;height:auto;overflow:visible}
+#mapLand .land{fill:url(#mapGrid);stroke:rgba(244,242,237,.3);stroke-width:.8;stroke-linejoin:round}
+#mapLand .edge{fill:none;stroke:rgba(244,242,237,.12);stroke-width:.6;stroke-linejoin:round}
+#mapDots g{cursor:pointer}
+#mapDots .area{fill:rgba(255,90,54,.16);stroke:var(--accent);stroke-width:1;transition:fill .2s}
+#mapDots .core{fill:var(--accent)}
+#mapDots .ping{fill:none;stroke:var(--accent);stroke-width:1;transform-box:fill-box;transform-origin:center;animation:ping 2.6s var(--ease) infinite}
+#mapDots g:hover .area,#mapDots g.on .area{fill:rgba(255,90,54,.4)}
+@keyframes ping{from{transform:scale(1);opacity:.7}to{transform:scale(2.2);opacity:0}}
+@media (prefers-reduced-motion:reduce){#mapDots .ping{display:none}}
+#mapTip{position:absolute;transform:translate(-50%,-100%);margin-top:-10px;padding:5px 9px;border:1px solid var(--line2);border-radius:var(--r);background:var(--bg);font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;pointer-events:none}
+#mapTip b{color:var(--accent);font-weight:500;margin-left:8px}
+.rcard.stu h3{margin-bottom:6px}
+.rcard .only{margin:0 0 16px;font-size:.8125rem;color:var(--faint)}
+.signed .acts{display:flex;gap:16px}
+#growth{margin-top:8px;color:var(--ink)}
+footer .lab a{color:inherit}
 .demo h3{font-family:var(--sans);font-weight:600;font-size:1.0625rem;letter-spacing:0;margin:26px 0 14px}
 .demo h3:first-child{margin-top:0}
 
@@ -239,7 +260,7 @@ textarea{display:block;min-height:150px;resize:none}
 .ic{flex:none;width:17px;height:17px}
 .ask{font-size:clamp(1.35rem,2.1vw,1.7rem);margin:28px 0 8px;padding-top:24px;border-top:1px solid var(--line)}
 
-.about{max-width:66ch;padding:56px 0 80px}
+.about{max-width:calc(66ch + 56px);padding:56px 28px 80px}
 .about h1{font-size:clamp(2.1rem,4.4vw,3.4rem);font-weight:var(--hx);text-transform:var(--hc);margin-bottom:32px}
 .about h2{font-size:1.4rem;font-weight:var(--hw);margin:36px 0 10px;scroll-margin-top:80px}
 .about p+p{margin-top:12px}
@@ -260,6 +281,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
 }
 @media (max-width:520px){
   .wrap{padding:0 16px}
+  .about{padding:44px 16px 64px}
   .card{padding:18px}
   .two{grid-template-columns:1fr;gap:0}
   .tabs{gap:18px}
@@ -329,6 +351,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
         </div>
       </form></div></div>
 
+      <div id="cap"></div>
       <div class="pop" id="pop"><div><div class="card" id="after">
         <p class="lab" id="afterLab"></p>
         <h2 id="afterHead"></h2>
@@ -353,7 +376,8 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
         </div>
         <div>
           <h3 class="ask">Know someone who should see this?</h3>
-          <p class="muted">Please send it to them. This only reaches other campuses when people pass it on, and it's the most helpful thing you can do for us.</p>
+          <p class="muted" id="askText"></p>
+          <p class="muted" id="growth" hidden></p>
           <div class="share">
             <button class="btn" type="button" id="btnCopy"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><span>Copy link</span></button>
             <a class="btn ghost" id="shSms"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><span>Text</span></a>
@@ -363,8 +387,10 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
             <button class="btn ghost" type="button" id="shInsta"><svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg><span>Instagram</span></button>
           </div>
           <p class="hint" id="copyMsg" role="status"></p>
+          <p class="hint" id="invited" hidden></p>
         </div>
-        <p class="signed" id="afterMine"><span id="mineText"></span><button type="button" class="link" id="btnEdit">Edit my answers</button></p>
+        <p class="signed" id="afterMine"><span id="mineText"></span><span class="acts"><button type="button" class="link" id="btnEdit">Edit my answers</button><button type="button" class="link" id="btnRemove">Remove me</button></span></p>
+        <p class="signed" id="removeRow" hidden><span>Remove your sign-up? This deletes your answers and can't be undone.</span><span class="acts"><button type="button" class="link" id="btnRemoveYes">Yes, remove me</button><button type="button" class="link" id="btnRemoveNo">Keep it</button></span></p>
       </div></div></div>
     </div>
 
@@ -388,8 +414,10 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
     <div class="rgrid" id="resGrid"></div>
     <h2 class="h2b">Who has signed up</h2>
     <div class="where">
-      <div class="card"><svg id="usMap" viewBox="0 0 975 610" role="img" aria-label="Map of the United States with a circle on each university that has sign-ups"><g id="mapLand"></g><g id="mapDots"></g></svg></div>
-      <div class="card demo"><h3>Role</h3><div id="dRole"></div><h3>Undergraduate year</h3><div id="dYear"></div><h3>Most common majors and fields</h3><div id="dMajor"></div></div>
+      <div class="card mapcard"><p class="read"><span id="mapRead"></span><span>Past 24 hours <b id="mapDay"></b></span></p>
+        <svg id="usMap" viewBox="0 0 975 610" role="img" aria-label="Map of the United States with a circle on each university that has sign-ups"><defs><pattern id="mapGrid" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="3.5" cy="3.5" r="1.15" fill="rgba(244,242,237,.3)"/></pattern></defs><g id="mapLand"></g><g id="mapDots"></g></svg>
+        <div id="mapTip" hidden></div></div>
+      <div class="card demo"><h3>Role and year</h3><div id="dRole"></div><h3>Most common majors and fields</h3><div id="dMajor"></div></div>
     </div>
   </div></section>
 </div>
@@ -413,7 +441,37 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
     <p>Someone who has offered to help with the letter at their university. A university can have several.</p>
     <p>If you volunteer, we connect you with other groups of campus organizers at your university, which means sharing your name with them, and contact you by phone or text about next steps. Organizers are listed by name on the public list and marked as organizers.</p>
     <h2>What happens to my information?</h2>
-    <p>We use your email just to confirm your affiliation with your university and to tell you when the letter is ready. Your first name and last initial are on the public list only if you choose to show them. Poll answers are shown as totals. Your answer to “What concerns you most about AI?” isn't displayed publicly.</p>
+    <p>We use your email just to confirm your affiliation with your university and to tell you when the letter is ready. Your first name and last initial are on the public list only if you choose to show them. Poll answers are shown as totals. Your answer to “What concerns you most about AI?” isn't displayed publicly. The <a href="#privacy">privacy notice</a> has the details.</p>
+    <h2>Press</h2>
+    <p>Write to <a href="mailto:media@ourfuturesfirst.org">media@ourfuturesfirst.org</a>.</p>
+  </div>
+</div>
+
+<div id="viewPrivacy" hidden>
+  <div class="wrap about">
+    <h1>Privacy notice</h1>
+    <p class="lab" style="margin-bottom:14px">Last updated November 24, 2026.</p>
+    <p>Our Futures First is run by students. This notice covers this site and the sign-up form on it.</p>
+    <h2>What we collect</h2>
+    <p>What you type into the form: your name, your university email, and your answers to the questions. If you choose to give them, also your major or field, your role, year or title, your phone number, and how you offered to help.</p>
+    <p>If you arrived through someone's share link, we record that their link brought you.</p>
+    <p>We don't use advertising or analytics trackers. The site keeps a key in your browser's storage so that you can come back and edit your answers on the same device.</p>
+    <h2>What is public</h2>
+    <p>The number of people signed up, in total and at each university. Poll answers, roles, years and majors, shown as totals only.</p>
+    <p>If you choose to show your name, the list shows your first name and last initial with your university. If you also choose to show them, it shows your year or title and your major. Campus organizers are always listed and marked as organizers.</p>
+    <p>Your email, your phone number and your written answer are never shown publicly. Anything that has been public may have been copied by others, and we can't delete their copies.</p>
+    <h2>How we use it</h2>
+    <p>Your email confirms that you are at a U.S. university, and we use it to tell you when the letter is ready to sign. Your phone number is used for a text when the letter is out, only if you agreed to be texted. If you volunteered as a campus organizer, we share your name with other organizers at your university and contact you by phone or text about next steps.</p>
+    <p>Your answers help us decide what goes in the letter. We don't sell your information or use it for advertising.</p>
+    <h2>Who else handles it</h2>
+    <p>The companies that run the site for us: Supabase stores the sign-ups and sends the confirmation email, Cloudflare checks that a sign-up isn't automated, and Google and jsDelivr serve fonts and scripts. They see technical details such as your IP address. We may also share information if the law requires it.</p>
+    <h2>How long we keep it</h2>
+    <p>Until the letter project ends, or until you remove yourself. A sign-up that is never confirmed is taken off the main list after 7 days.</p>
+    <h2>Your choices</h2>
+    <p>You can edit your answers or remove yourself at any time with “Edit my answers” and “Remove me” on the form, from the device you signed up on. Removing yourself deletes your sign-up. To be removed from another device, or to ask what we hold about you, write to us from your university email.</p>
+    <p>This site is for people at universities and isn't meant for anyone under 16.</p>
+    <h2>Changes and contact</h2>
+    <p>If this notice changes, the date at the top changes with it. Questions and requests go to <a href="mailto:contact@ourfuturesfirst.org">contact@ourfuturesfirst.org</a>.</p>
   </div>
 </div>
 
@@ -429,11 +487,12 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
 </div>
 </main>
 
-<footer><div class="wrap"><p class="lab">Our Futures First is a working title. Run by students at U.S. universities.</p></div></footer>
+<footer><div class="wrap"><p class="lab">Our Futures First is a working title. Run by students at U.S. universities. <a href="#privacy">Privacy</a></p></div></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 <script src="config.js"></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 <script>
 (function(){
 "use strict";
@@ -581,7 +640,7 @@ function go(i){
   },180);
 }
 /* who is answering: role, and year for undergraduates */
-var ROLES=["an undergraduate","a graduate student","a postdoc","faculty","staff"],YEARS=["First-year","Sophomore","Junior","Senior"];
+var ROLES=["an undergraduate","a graduate student","a postdoc","faculty","staff"],YEARS=["Freshman","Sophomore","Junior","Senior"];
 /* in-page dropdown: a button and a list, with arrow keys, Enter and Escape */
 function dropdown(btn,items,get,set){
   var menu=btn.nextElementSibling,on=-1;
@@ -764,7 +823,8 @@ var R={};
 function buildResults(){
   var grid=$("resGrid");
   Q.forEach(function(q,i){
-    var card=mk("div","card rcard");card.appendChild(mk("h3",null,q.q));R[q.id]={};
+    var card=mk("div","card rcard"+(q.stu?" stu":""));card.appendChild(mk("h3",null,q.q));R[q.id]={};
+    if(q.stu)card.appendChild(mk("p","only","Undergraduates and graduate students only"));
     q.o.forEach(function(o){var row=mk("div","rrow"),l=mk("div","l"),pct=mk("span","pct","0%");
       l.appendChild(mk("span",null,o));l.appendChild(pct);row.appendChild(l);
       var tr=mk("div","track"),f=mk("div","fill");tr.appendChild(f);row.appendChild(tr);card.appendChild(row);R[q.id][o]={row:row,pct:pct,fill:f};});
@@ -783,17 +843,29 @@ function renderDemo(B){
   if(key===demoKey)return;demoKey=key;
   function ordered(o,keys){return keys.filter(function(k){return o[k];}).map(function(k){return [k,o[k]];});}
   function sum(ps){return ps.reduce(function(a,p){return a+p[1];},0);}
-  var r=ordered(D.role,["Undergraduate","Graduate student","Postdoc","Faculty","Staff"]),y=ordered(D.year,YEARS);
-  demoBars($("dRole"),r,sum(r));demoBars($("dYear"),y,sum(y));demoBars($("dMajor"),D.major,B.total);
-  var g=$("mapDots"),top=B.unis.length?B.unis[0].n:1;clear(g);
-  B.unis.filter(function(u){return u.x!=null;}).forEach(function(u){var c=document.createElementNS(NS,"circle"),t=document.createElementNS(NS,"title");
-    c.setAttribute("cx",u.x);c.setAttribute("cy",u.y);c.setAttribute("r",(5+21*Math.sqrt(u.n/top)).toFixed(1));
-    t.textContent=u.name+": "+num(u.n);c.appendChild(t);g.appendChild(c);});
+  /* one chart: undergraduates by year, then the other roles */
+  var y=ordered(D.year,YEARS),rest=(D.role.Undergraduate||0)-sum(y),o=ordered(D.role,["Graduate student","Postdoc","Faculty","Staff"]),
+      r=y.concat(rest>0?[["Undergraduate, year not given",rest]]:[],o);
+  demoBars($("dRole"),r,sum(r));demoBars($("dMajor"),D.major,B.total);
+  var g=$("mapDots"),tip=$("mapTip"),top=B.unis.length?B.unis[0].n:1,on=null;clear(g);tip.hidden=true;
+  $("mapRead").textContent=num(B.unis.length)+(B.unis.length===1?" university":" universities");
+  $("mapDay").textContent="+"+num(B.unis.reduce(function(a,u){return a+(u.day||0);},0));
+  function svg(tag,cls,u,rad){var c=document.createElementNS(NS,tag);if(cls)c.setAttribute("class",cls);if(u){c.setAttribute("cx",u.x);c.setAttribute("cy",u.y);c.setAttribute("r",rad);}return c;}
+  function show(u,el){if(on)on.classList.remove("on");on=el;if(!u){tip.hidden=true;return;}el.classList.add("on");
+    clear(tip);tip.appendChild(document.createTextNode(u.name));tip.appendChild(mk("b",null,num(u.n)));
+    var m=$("usMap").getBoundingClientRect(),c=tip.parentNode.getBoundingClientRect();tip.style.top=m.top-c.top+u.y/610*m.height+"px";tip.hidden=false;
+    var half=tip.offsetWidth/2+8;tip.style.left=Math.max(half,Math.min(c.width-half,m.left-c.left+u.x/975*m.width))+"px";}
+  /* largest first, so smaller circles stay on top and can be pointed at */
+  B.unis.filter(function(u){return u.x!=null;}).forEach(function(u,i){var el=svg("g"),rad=(4+15*Math.sqrt(u.n/top)).toFixed(1);
+    if(i<3)el.appendChild(svg("circle","ping",u,rad));
+    el.appendChild(svg("circle","area",u,rad));el.appendChild(svg("circle","core",u,2.2));
+    el.addEventListener("mouseenter",function(){show(u,el);});el.addEventListener("mouseleave",function(){show(null);});
+    el.addEventListener("click",function(){on===el&&!tip.hidden?show(null):show(u,el);});g.appendChild(el);});
 }
-/* the outline comes from the us-atlas map file, which is already drawn on the same 975 by 610 grid as the stored positions */
+/* the outline comes from the us-atlas map file (us-states.json, kept beside this page), which is already drawn on the same 975 by 610 grid as the stored positions */
 function loadMap(){
   if(!window.topojson||!window.fetch)return;
-  fetch("https://cdn.jsdelivr.net/npm/us-atlas@3.0.1/states-albers-10m.json").then(function(r){return r.json();}).then(function(us){
+  fetch("us-states.json").then(function(r){return r.json();}).then(function(us){
     function path(geo){var polys=geo.type==="Polygon"?[geo.coordinates]:geo.type==="MultiPolygon"?geo.coordinates:[geo.coordinates],close=geo.type!=="MultiLineString";
       return polys.map(function(rings){return rings.map(function(ring){return "M"+ring.map(function(p){return p[0].toFixed(1)+","+p[1].toFixed(1);}).join("L")+(close?"Z":"");}).join("");}).join("");}
     function add(cls,d){var p=document.createElementNS(NS,"path");p.setAttribute("class",cls);p.setAttribute("d",d);$("mapLand").appendChild(p);}
@@ -826,7 +898,12 @@ function renderAfter(){
     :S.live?"We sent a link to "+S.email+". Open it within 24 hours and you're counted.":"Preview mode: no email is sent.";
   $("notifyText").textContent="We'll email you at "+S.email+" when the letter is ready. Want a text as well? Add your number.";
   $("afterHelp").hidden=!S.token;$("resendRow").hidden=S.verified||!S.live;
-  var url=location.href.split(/[?#]/)[0],msg="Students are writing an open letter on AI and asking what should be in it. It takes two minutes: ",e=encodeURIComponent;
+  var url=shareUrl(),msg="Students are writing an open letter on AI and asking what should be in it. It takes two minutes: ",e=encodeURIComponent;
+  $("askText").textContent="Help spread this to people at "+(u?u.name:"your university")+" and at other universities. It only reaches new campuses when people pass it on, and it's the most helpful thing you can do for us.";
+  var g=null;board().unis.forEach(function(x){if(u&&x.key===u.dom)g=x;});
+  $("growth").hidden=!g;if(g)$("growth").textContent=g.day>0?u.name+" has gained "+num(g.day)+(g.day===1?" sign-up":" sign-ups")+" in the past 24 hours.":num(g.n)+(g.n===1?" person":" people")+" from "+u.name+(g.n===1?" has":" have")+" signed up so far.";
+  $("invited").hidden=!S.invited;$("invited").textContent=num(S.invited||0)+(S.invited===1?" person has":" people have")+" signed up from your link.";
+  $("removeRow").hidden=true;
   $("shSms").href="sms:?&body="+e(msg+url);
   $("shMail").href="mailto:?subject="+e("Students are writing an open letter on AI")+"&body="+e(msg+url);
   $("shWa").href="https://wa.me/?text="+e(msg+url);
@@ -843,9 +920,32 @@ function toTop(){setTimeout(function(){$("formPop").parentNode.parentNode.scroll
 $("btnEdit").addEventListener("click",function(){S.editing=true;$("err").textContent="";renderAfter();toTop();});
 $("btnCancel").addEventListener("click",function(){S.editing=false;renderAfter();toTop();});
 $("btnResend").addEventListener("click",function(){var m=$("resendMsg");m.textContent="Sending";
-  sb.auth.signInWithOtp({email:S.email,options:{emailRedirectTo:location.href.split(/[?#]/)[0]}}).then(function(o){
+  sendLink(S.email).then(function(o){
     m.textContent=o.error?"Wait a minute, then try again.":"Sent. Check your spam folder too.";});});
-function copy(note){var url=location.href.split(/[?#]/)[0],m=$("copyMsg");
+/* each person's link carries their code, so we can tell them how many people it brought in */
+function shareUrl(){return location.href.split(/[?#]/)[0]+(S.ref?"?r="+S.ref:"");}
+var REF="";try{var rm=/[?&]r=([a-z0-9]{8})\b/.exec(location.search);if(rm)localStorage.setItem("off_ref",rm[1]);REF=localStorage.getItem("off_ref")||"";}catch(x){}
+/* spam check: a Cloudflare Turnstile token goes with every request for an emailed link */
+var capId=null,capWait=null;
+function captcha(){
+  if(!CFG.turnstile||!window.turnstile)return Promise.resolve();
+  return new Promise(function(res){
+    function done(t){if(capWait){var f=capWait;capWait=null;f(t);}}
+    capWait=res;
+    if(capId===null)capId=turnstile.render("#cap",{sitekey:CFG.turnstile,theme:"dark",appearance:"interaction-only",callback:done,"error-callback":function(){done();}});
+    else turnstile.reset(capId);
+  });
+}
+function sendLink(email){return captcha().then(function(t){return sb.auth.signInWithOtp({email:email,options:{emailRedirectTo:location.href.split(/[?#]/)[0],captchaToken:t}});});}
+$("btnRemove").addEventListener("click",function(){$("removeRow").hidden=false;});
+$("btnRemoveNo").addEventListener("click",function(){$("removeRow").hidden=true;});
+$("btnRemoveYes").addEventListener("click",function(){
+  function gone(){try{localStorage.removeItem("off_token");}catch(x){}location.href=location.href.split(/[?#]/)[0];}
+  if(!S.live){gone();return;}
+  sb.rpc("delete_interest",{p_token:S.token}).then(function(r){if(r.error){$("removeRow").firstChild.textContent="That didn't work. Check your connection and try again.";return;}
+    sb.auth.signOut().then(gone,gone);});
+});
+function copy(note){var url=shareUrl(),m=$("copyMsg");
   try{navigator.clipboard.writeText(url).then(function(){m.textContent=note;},function(){m.textContent="Copy the address from your browser bar.";});}catch(x){m.textContent="Copy the address from your browser bar.";}}
 $("btnCopy").addEventListener("click",function(){copy("Link copied.");});
 $("shInsta").addEventListener("click",function(){copy("Link copied. Paste it into your story or a DM.");});
@@ -853,7 +953,7 @@ $("shInsta").addEventListener("click",function(){copy("Link copied. Paste it int
 /* ---------- backend ---------- */
 var FAIL={not_university:NOTUS,mail:"Your answers are saved, but we couldn't send the email. Wait a minute and try again.",save:"That didn't save. Check your connection and try again."};
 function formRow(){return {name:$("inName").value.trim(),show_name:S.show,show_info:S.info,major:$("inMajor").value.trim(),role:S.role,year:S.year,title:S.role==="faculty"||S.role==="staff"?$("inTitle").value.trim():"",
-  answers:Q.reduce(function(a,q,k){if(asked(k)&&S.answers[q.id])a[q.id]=S.answers[q.id];return a;},{}),concern:$("inConcern").value.trim(),spread:spreadList()};}
+  answers:Q.reduce(function(a,q,k){if(asked(k)&&S.answers[q.id])a[q.id]=S.answers[q.id];return a;},{}),concern:$("inConcern").value.trim(),spread:spreadList(),ref_by:REF};}
 /* first submit: stores the entry, then emails the confirmation link. Returns the university and an edit token. */
 function save(row){
   if(!S.live){var u=uniFromEmail(row.email);if(!u)return Promise.reject("not_university");
@@ -861,7 +961,7 @@ function save(row){
     return Promise.resolve({dom:u.dom,name:u.name,token:"local"});}
   return sb.rpc("submit_interest",{p:row}).then(function(r){
     if(r.error)throw (/not_university/.test(r.error.message)?"not_university":"save");
-    return sb.auth.signInWithOtp({email:row.email,options:{emailRedirectTo:location.href.split(/[?#]/)[0]}}).then(function(o){if(o.error)throw "mail";return r.data;});
+    return sendLink(row.email).then(function(o){if(o.error)throw "mail";return r.data;});
   });
 }
 /* the public list shows first name and last initial */
@@ -889,14 +989,14 @@ $("form").addEventListener("submit",function(e){
   }
   row.email=email;
   save(row).then(function(u){
-    S.mine={dom:u.dom,name:u.name};S.email=email;S.token=u.token||null;S.submitted=true;S.panel="unis";idle();
+    S.mine={dom:u.dom,name:u.name};S.email=email;S.token=u.token||null;S.ref=u.ref||"";S.submitted=true;S.panel="unis";idle();
     try{if(S.live&&S.token)localStorage.setItem("off_token",S.token);}catch(x){}
     renderAll();toTop();
   },function(x){idle();fail(FAIL[x]||FAIL.save,x==="not_university"?$("inEmail"):null);});
 });
 /* fill the form from a stored entry: a returning visitor, or someone arriving from the emailed link */
 function applyEntry(c){
-  S.email=c.email;S.verified=!!c.verified;S.token=c.token;S.submitted=true;
+  S.email=c.email;S.verified=!!c.verified;S.token=c.token;S.ref=c.ref||"";S.invited=c.invited||0;S.submitted=true;
   $("inEmail").value=c.email;$("inName").value=c.name||"";$("inMajor").value=c.major||"";$("inPhone2").value=c.phone||"";
   $("inConcern").value=c.concern||"";S.sms=!!c.sms_ok;S.role=c.role||"";S.year=c.year||"";paintChips();
   S.show=c.show_name!==false;S.info=c.show_info!==false;$("inTitle").value=c.title||"";
@@ -910,8 +1010,8 @@ function applyEntry(c){
 /* ---------- tabs ---------- */
 var ANCH={"#organizers":1,"#why-wait":1,"#why-draft":1};
 function route(){
-  var h=location.hash,v=h==="#draft"?"viewDraft":(h==="#about"||ANCH[h])?"viewAbout":"viewInterest",el=$(v),about=v!=="viewInterest";
-  ["viewInterest","viewAbout","viewDraft"].forEach(function(id){$(id).hidden=id!==v;});
+  var h=location.hash,v=h==="#draft"?"viewDraft":h==="#privacy"?"viewPrivacy":(h==="#about"||ANCH[h])?"viewAbout":"viewInterest",el=$(v),about=v!=="viewInterest";
+  ["viewInterest","viewAbout","viewDraft","viewPrivacy"].forEach(function(id){$(id).hidden=id!==v;});
   el.classList.remove("fade");void el.offsetWidth;el.classList.add("fade");
   about?$("tabAbout").setAttribute("aria-current","page"):$("tabAbout").removeAttribute("aria-current");
   about?$("tabInterest").removeAttribute("aria-current"):$("tabInterest").setAttribute("aria-current","page");

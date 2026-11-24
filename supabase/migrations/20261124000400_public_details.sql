@@ -3486,13 +3486,13 @@ language sql stable security definer set search_path = public as $$
     select s.*, (select m.name from majors m where lower(m.name) = lower(s.major) limit 1) major_ok,
       case s.role when 'an undergraduate' then 'Undergraduate' when 'a graduate student' then 'Graduate student'
         when 'a postdoc' then 'Postdoc' when 'faculty' then 'Faculty' when 'staff' then 'Staff' else '' end role_label,
-      case when s.role = 'an undergraduate' and s.year in ('First-year', 'Sophomore', 'Junior', 'Senior') then s.year else '' end year_ok
+      case when s.role = 'an undergraduate' and s.year in ('Freshman', 'Sophomore', 'Junior', 'Senior') then s.year else '' end year_ok
     from signups s where s.verified_at is not null)
   select jsonb_build_object(
     'total', (select count(*) from v),
     'named', (select count(*) from v where show_name and name <> '' and not name_hidden),
-    'unis', coalesce((select jsonb_agg(jsonb_build_object('key', t.dom, 'name', t.uni, 'n', t.n, 'named', t.named, 'x', d.mx, 'y', d.my) order by t.n desc, t.uni)
-                      from (select dom, min(uni) uni, count(*) n, count(*) filter (where show_name and name <> '' and not name_hidden) named
+    'unis', coalesce((select jsonb_agg(jsonb_build_object('key', t.dom, 'name', t.uni, 'n', t.n, 'day', t.d24, 'named', t.named, 'x', d.mx, 'y', d.my) order by t.n desc, t.uni)
+                      from (select dom, min(uni) uni, count(*) n, count(*) filter (where verified_at > now() - interval '24 hours') as d24, count(*) filter (where show_name and name <> '' and not name_hidden) named
                             from v group by dom) t left join uni_domains d on d.domain = t.dom), '[]'::jsonb),
     'people', coalesce((select jsonb_agg(jsonb_build_object('name', name, 'uni', uni, 'lead', lead, 'info', info) order by verified_at desc)
                         from (select regexp_replace(trim(name), '^(\S+)\s+(?:.*\s)?(\S)\S*$', '\1 \2.') name, uni, verified_at, ('lead' = any(spread) and phone <> '') lead,

@@ -32,9 +32,21 @@ create table public.signups (
   spread      text[] not null default '{}',
   verified_at timestamptz,
   edit_token  uuid not null default gen_random_uuid(),
+  ref         text not null unique default substr(replace(gen_random_uuid()::text, '-', ''), 1, 8),  -- code in this person's share link
+  ref_by      text not null default '',           -- share-link code they arrived with
   created_at  timestamptz not null default now()
 );
 alter table public.signups enable row level security;
+
+-- Sign-ups that were never confirmed are moved here after 7 days, out of the main table.
+create table public.signups_unconfirmed (like public.signups, moved_at timestamptz not null default now());
+alter table public.signups_unconfirmed enable row level security;
+
+create function public.sweep_unconfirmed() returns void
+language sql security definer set search_path = public as $$
+  with d as (delete from signups where verified_at is null and created_at < now() - interval '7 days' returning *)
+  insert into signups_unconfirmed select d.*, now() from d;
+$$;
 
 -- U.S. universities only. University for an email address: longest matching listed domain,
 -- else any other .edu domain. Null when it is not a U.S. university address.
@@ -67,7 +79,8 @@ $$;
 create function public.entry_json(s public.signups) returns jsonb language sql stable as $$
   select jsonb_build_object('email', s.email, 'uni', s.uni, 'dom', s.dom, 'verified', s.verified_at is not null,
     'token', s.edit_token, 'name', s.name, 'show_name', s.show_name, 'major', s.major, 'role', s.role, 'year', s.year, 'title', s.title, 'show_info', s.show_info, 'phone', s.phone, 'sms_ok', s.sms_ok,
-    'answers', s.answers, 'concern', s.concern, 'letter', s.letter, 'spread', to_jsonb(s.spread));
+    'answers', s.answers, 'concern', s.concern, 'letter', s.letter, 'spread', to_jsonb(s.spread), 'ref', s.ref,
+    'invited', (select count(*) from signups x where x.ref_by = s.ref and x.verified_at is not null));
 $$;
 
 -- Store a submission as unverified. Resubmitting before verifying replaces it and restarts the 48 hours.
@@ -75,7 +88,7 @@ $$;
 -- the token can read and change the entry later (get_interest / update_interest).
 create function public.submit_interest(p jsonb) returns jsonb
 language plpgsql security definer set search_path = public as $$
-declare e text := lower(trim(coalesce(p->>'email', ''))); u jsonb; t uuid;
+declare e text := lower(trim(coalesce(p->>'email', ''))); u jsonb; t uuid; rf text;
 begin
   if e !~ '^[^\s@]+@[^\s@]+$' or length(e) > 160 then raise exception 'bad_email'; end if;
   u := lookup_uni(e);
@@ -84,8 +97,9 @@ begin
   if jsonb_typeof(p->'answers') is distinct from 'object' or length((p->'answers')::text) > 2000 then
     raise exception 'bad_answers';
   end if;
-  insert into signups (email, name, name_hidden, show_name, show_info, title, phone, major, role, year, uni, dom, answers, concern, letter, spread)
-  values (e, left(coalesce(p->>'name', ''), 120), not name_ok(left(coalesce(p->>'name', ''), 120)), coalesce((p->>'show_name')::boolean, true),
+  perform sweep_unconfirmed();
+  insert into signups (ref_by, email, name, name_hidden, show_name, show_info, title, phone, major, role, year, uni, dom, answers, concern, letter, spread)
+  values (coalesce((select ref from signups where ref = p->>'ref_by' and email <> e), ''), e, left(coalesce(p->>'name', ''), 120), not name_ok(left(coalesce(p->>'name', ''), 120)), coalesce((p->>'show_name')::boolean, true),
           coalesce((p->>'show_info')::boolean, true), left(trim(coalesce(p->>'title', '')), 80),
           left(coalesce(p->>'phone', ''), 30), norm_major(u->>'dom', p->>'major'),
           left(coalesce(p->>'role', ''), 30), left(coalesce(p->>'year', ''), 30), u->>'name', u->>'dom', p->'answers',
@@ -96,8 +110,8 @@ begin
     dom = excluded.dom, answers = excluded.answers, concern = excluded.concern, letter = excluded.letter,
     spread = excluded.spread, created_at = now(), edit_token = gen_random_uuid()
   where signups.verified_at is null
-  returning edit_token into t;
-  return u || jsonb_build_object('token', t);
+  returning edit_token, ref into t, rf;
+  return u || jsonb_build_object('token', t, 'ref', rf);
 end $$;
 
 -- Read or change an entry with its edit token. Email and university cannot be changed.
@@ -135,6 +149,16 @@ begin
     update signups set show_name = true where edit_token = p_token returning * into r;
   end if;
   return entry_json(r);
+end $$;
+
+-- Remove me: deletes the sign-up and the sign-in record for its address.
+create function public.delete_interest(p_token uuid) returns void
+language plpgsql security definer set search_path = public as $$
+declare e text;
+begin
+  delete from signups where edit_token = p_token returning email into e;
+  if e is null then raise exception 'not_found'; end if;
+  delete from auth.users where email = e;
 end $$;
 
 -- Called by the page when a visitor arrives signed in from the emailed link. Only that link gives a
@@ -175,9 +199,9 @@ end $$;
 
 revoke execute on function public.lookup_uni(text), public.submit_interest(jsonb),
   public.confirm_signup(), public.get_interest(uuid), public.update_interest(uuid, jsonb),
-  public.entry_json(public.signups), public.name_ok(text), public.is_admin(), public.admin_rows(),
+  public.entry_json(public.signups), public.name_ok(text), public.sweep_unconfirmed(), public.delete_interest(uuid), public.is_admin(), public.admin_rows(),
   public.admin_set_hidden(uuid, boolean) from public, anon, authenticated;
 grant execute on function public.lookup_uni(text), public.submit_interest(jsonb),
-  public.get_interest(uuid), public.update_interest(uuid, jsonb) to anon, authenticated;
+  public.get_interest(uuid), public.update_interest(uuid, jsonb), public.delete_interest(uuid) to anon, authenticated;
 grant execute on function public.confirm_signup(), public.is_admin(), public.admin_rows(),
   public.admin_set_hidden(uuid, boolean) to authenticated;
