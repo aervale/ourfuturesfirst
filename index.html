@@ -1,539 +1,819 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
 <title>Our Future First</title>
+<link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Space+Grotesk:wght@400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-/* Layout idea: a protest poster set on cold paper. Condensed display type carries the voice,
-   one signal red marks everything that is a pace or an action, mono carries every number. */
 :root{
-  --paper:#EDF0F3; --panel:#FFFFFF; --ink:#0E1420; --muted:#566173; --line:#C6CDD8;
-  --accent:#D92B21; --on-accent:#FFFFFF; --soft:#DDE2E9;
-  --display:"Big Shoulders Display","Arial Narrow","Helvetica Neue",Arial,sans-serif;
-  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --paper:#0C1017; --panel:#141A24; --ink:#E8ECF2; --muted:#94A0B2; --line:#2A3445;
-    --accent:#FF5448; --on-accent:#120504; --soft:#1C2431; color-scheme:dark;
-  }
-}
-:root[data-theme="dark"]{
-  --paper:#0C1017; --panel:#141A24; --ink:#E8ECF2; --muted:#94A0B2; --line:#2A3445;
-  --accent:#FF5448; --on-accent:#120504; --soft:#1C2431; color-scheme:dark;
+  --bg:#08080A; --card:#131317; --inset:rgba(244,242,237,.035); --ink:#F4F2ED; --mute:rgba(244,242,237,.62); --faint:rgba(244,242,237,.36);
+  --line:rgba(244,242,237,.13); --line2:rgba(244,242,237,.24); --hover:rgba(244,242,237,.05);
+  --accent:#FF5A36; --on-accent:#08080A; --tint:rgba(255,90,54,.13);
+  --head:"Barlow Condensed","Arial Narrow",sans-serif; --hw:700; --hx:800; --hs:100%; --hc:none; --sans:"Space Grotesk",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+  --r:6px; --rc:10px; --ease:cubic-bezier(.2,.7,.2,1);
+  color-scheme:dark;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55}
-a{color:inherit;text-underline-offset:3px}
-a:hover{color:var(--accent)}
-:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
-h1,h2,h3{font-family:var(--display);text-transform:uppercase;line-height:.95;margin:0;text-wrap:balance;letter-spacing:.005em}
-h1{font-size:clamp(3rem,9.5vw,7rem);font-weight:800}
-h2{font-size:clamp(2.1rem,5.5vw,3.6rem);font-weight:800}
-h3{font-size:1.55rem;font-weight:700;line-height:1.05}
-p{margin:0;max-width:65ch}
-.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
-.muted{color:var(--muted)}
-.small{font-size:.86rem}
-.red{color:var(--accent)}
-
-.bar{border-bottom:2px solid var(--ink)}
-.bar .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;justify-content:space-between;padding-top:12px;padding-bottom:12px}
-.mark{font-family:var(--display);font-weight:800;font-size:1.35rem;text-transform:uppercase;letter-spacing:.03em}
-.chip{font-family:var(--mono);font-size:.8rem;border:1.5px solid var(--ink);padding:4px 10px;border-radius:2px}
-.chip.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
-
-.hero{padding-top:48px;padding-bottom:48px}
-.hero-grid{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);gap:36px;align-items:end}
-.hero p.lede{font-size:1.2rem;margin-top:22px}
-.rail{border-left:2px solid var(--ink);padding-left:28px;display:flex;flex-direction:column;align-items:center;gap:20px}
-.rail .btn{align-self:stretch;text-align:center}
-.tally{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px}
-.tally .big{font-family:var(--display);font-weight:800;font-size:clamp(5rem,13vw,8.5rem);line-height:.82}
-.tally .lab{font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-size:1.25rem}
-.funnel{display:block;width:100%;max-width:300px;height:64px}
-.unis{display:flex;flex-direction:column;align-items:center;gap:6px}
-.uni-icons{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:260px}
-.uni-icons svg{width:34px;height:28px;color:var(--ink)}
-.uni-icons svg.none{color:var(--line)}
-.unis .n{font-family:var(--display);font-weight:800;font-size:3rem;line-height:.9}
-.board{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px}
-.board h3{padding-bottom:12px;border-bottom:2px solid var(--ink)}
-.board ol{list-style:none;margin:0;padding:0}
-.board li{display:grid;gap:4px 14px;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--line)}
-.recent li{grid-template-columns:minmax(0,1fr) auto}
-.recent .who{font-weight:600;overflow-wrap:anywhere}
-.recent .uni{grid-column:1/-1;color:var(--muted);font-size:.92rem;overflow-wrap:anywhere}
-.schools li{grid-template-columns:2.2em minmax(0,1fr) auto}
-.schools .rank{font-family:var(--mono);color:var(--muted)}
-.schools li:first-child .rank{color:var(--accent);font-weight:500}
-.schools .nm{font-weight:600;overflow-wrap:anywhere}
-.schools .track{grid-column:2/-1;height:8px}
-.board .empty{display:block;color:var(--muted);padding:16px 0;border-bottom:1px solid var(--line)}
-.btn{display:inline-block;font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:1.3rem;
-  background:var(--accent);color:var(--on-accent);border:2px solid var(--accent);padding:10px 20px;border-radius:2px;cursor:pointer;text-decoration:none}
-.btn:hover{filter:brightness(1.08);color:var(--on-accent)}
-.btn.ghost{background:transparent;color:var(--ink);border-color:var(--ink)}
-.btn.ghost:hover{background:var(--ink);color:var(--paper)}
-.btn[disabled]{background:var(--soft);border-color:var(--line);color:var(--muted);cursor:not-allowed;filter:none}
-.btn.sm{font-size:1.05rem;padding:6px 14px}
-
-section{padding:64px 0;border-top:1px solid var(--line)}
-.sec-head{display:flex;flex-direction:column;gap:16px;margin-bottom:32px}
-
-.ruler-box{background:var(--panel);border:2px solid var(--ink);padding:24px}
-.ruler-scroll{overflow-x:auto}
-#ruler{display:block;min-width:720px;width:100%;height:auto}
-.classes{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
-.classes button{font-family:var(--mono);font-size:.9rem;background:transparent;color:var(--ink);border:1.5px solid var(--ink);padding:6px 12px;border-radius:2px;cursor:pointer}
-.classes button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
-.readout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px}
-.readout div{border-top:2px solid var(--ink);padding-top:10px}
-.readout b{font-family:var(--display);font-size:2.6rem;line-height:1;font-weight:800;display:block}
-.readout .hot b{color:var(--accent)}
-
-.events{display:flex;flex-direction:column}
-.event{display:grid;grid-template-columns:130px minmax(0,1fr);gap:20px;padding:16px 0;border-top:1px solid var(--line)}
-.event:first-child{border-top:2px solid var(--ink)}
-.event .when{font-family:var(--mono);font-size:.9rem;padding-top:3px}
-.event p+p{margin-top:4px}
-
-.bars{display:flex;flex-direction:column;gap:14px}
-.barrow .lab{display:flex;justify-content:space-between;gap:12px;font-size:.95rem;margin-bottom:5px}
-.track{height:18px;background:var(--soft);border-radius:2px;overflow:hidden}
-.fill{height:100%;background:var(--accent)}
-.fill.ink{background:var(--ink)}
-
-.reasons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
-.reasons article{border-top:4px solid var(--ink);padding-top:16px;display:flex;flex-direction:column;gap:12px}
-
-.join{background:var(--panel);border:2px solid var(--ink);padding:24px;display:flex;flex-direction:column;gap:24px}
-.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.field{display:flex;flex-direction:column;gap:6px}
-label{font-weight:600;font-size:.95rem}
-input[type=text],input[type=email],input[type=tel],input[type=datetime-local],textarea{font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:2px;padding:10px 12px;width:100%}
-textarea{min-height:110px;resize:vertical}
-.opt{color:var(--muted);font-weight:400}
-.check{display:flex;gap:10px;align-items:flex-start;font-weight:400}
-.check input{margin-top:5px;width:18px;height:18px;accent-color:var(--accent)}
-.err{color:var(--accent);font-weight:600;min-height:1.4em}
-.note{border-left:4px solid var(--accent);padding:8px 14px;background:var(--soft);font-size:.95rem}
-.opts{min-height:112px;align-content:start;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.opts button{font:inherit;text-align:left;background:var(--paper);color:var(--ink);border:1.5px solid var(--ink);padding:12px 14px;border-radius:2px;cursor:pointer}
-.opts button:hover{border-color:var(--accent)}
-.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1200px;margin:0 auto;padding:0 28px}
+h1,h2,h3{margin:0;font-family:var(--head);font-weight:var(--hw);font-stretch:var(--hs);line-height:1.08;letter-spacing:0;text-wrap:balance}
+p{margin:0}
+a{color:inherit}
 [hidden]{display:none!important}
+.lab{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.muted{color:var(--mute)}
+.req{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.fade{animation:fade .45s var(--ease) both}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-.letter{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:36px}
-.letter-text{font-size:1.14rem;display:flex;flex-direction:column;gap:16px}
-p.filler-tag{font-family:var(--mono);font-size:.85rem;color:var(--accent)}
-.letter-text .ask{font-weight:600;border-left:4px solid var(--accent);padding-left:16px}
-.sign{display:flex;flex-direction:column;gap:14px;align-self:start;border:2px solid var(--ink);padding:24px;background:var(--panel)}
+/* header */
+.top{position:sticky;top:0;z-index:5;background:rgba(8,8,10,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--head);font-weight:var(--hw);font-stretch:var(--hs);font-size:.875rem;letter-spacing:.06em;text-transform:uppercase}
+.brand i{width:10px;height:10px;background:var(--accent)}
+.tabs{display:flex;gap:28px;align-self:stretch}
+.tabs a{display:flex;align-items:center;text-decoration:none;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .2s,border-color .2s}
+.tabs a:hover{color:var(--ink)}
+.tabs a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent)}
 
-.admin{border:2px dashed var(--muted);padding:24px;display:flex;flex-direction:column;gap:14px}
-footer{padding:28px 0 56px;border-top:2px solid var(--ink);font-size:.9rem;color:var(--muted)}
+/* banner */
+.banner{position:relative;border-bottom:1px solid var(--line);overflow:hidden}
+.banner::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:56px 56px;-webkit-mask-image:radial-gradient(120% 130% at 100% 0%,#000 0%,transparent 62%);mask-image:radial-gradient(120% 130% at 100% 0%,#000 0%,transparent 62%)}
+.banner .wrap{position:relative;display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:48px;align-items:end;padding-top:56px;padding-bottom:48px}
+.banner h1{font-size:clamp(2.7rem,5.6vw,4.9rem);font-weight:var(--hx);text-transform:var(--hc);letter-spacing:0;line-height:1.02}
+.banner h1 em{font-style:normal;color:var(--accent)}
+.banner .sub{margin-top:20px;max-width:60ch;font-size:1.0625rem;color:var(--mute)}
+.banner .sub b{color:var(--ink);font-weight:600}
+.tally{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--rc);padding:22px 22px 18px;box-shadow:inset 0 1px 0 rgba(244,242,237,.05)}
+.stat b{display:block;font-family:var(--head);font-weight:var(--hx);font-stretch:var(--hs);font-size:clamp(2.6rem,4.6vw,4rem);line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.stat .lab{display:block;margin-top:10px}
+.ticker{position:relative;border-top:1px solid var(--line);overflow:hidden;white-space:nowrap;padding:11px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.ticker div{display:inline-block;animation:tick 60s linear infinite}
+.ticker:hover div{animation-play-state:paused}
+.ticker span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-right:36px}
+.ticker span b{color:var(--accent);font-weight:500;margin-left:8px}
+@keyframes tick{to{transform:translateX(-50%)}}
+.note{margin:0;padding:10px 0;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--mute)}
+.note b{color:var(--accent);font-weight:500}
 
-@media (max-width:760px){
-  .hero-grid,.letter,.reasons,.fields,.readout,.board{grid-template-columns:minmax(0,1fr)}
-  .rail{border-left:0;border-top:2px solid var(--ink);padding:28px 0 0}
-  .event{grid-template-columns:minmax(0,1fr);gap:4px}
-  .opts{grid-template-columns:minmax(0,1fr)}
+/* cards */
+.card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--rc);padding:24px;box-shadow:inset 0 1px 0 rgba(244,242,237,.05);transition:border-color .3s}
+.card:hover{border-color:var(--line2)}
+.card .lab{transition:color .3s}
+.card:hover .lab{color:rgba(244,242,237,.82)}
+.card>*{position:relative}
+.cols{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,1fr);gap:20px;align-items:start;padding-top:36px;padding-bottom:56px}
+.stack{display:grid;gap:20px}
+.card h2{font-size:clamp(1.35rem,2.1vw,1.7rem);font-weight:var(--hw);margin-bottom:20px}
+.card h2 label{cursor:text}
+.card>.field:last-child{margin-bottom:0}
+.field>.lab{display:block;margin-bottom:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-size:.9375rem;color:var(--ink);background:var(--inset);border:1px solid var(--line2);border-radius:var(--r);padding:8px 12px;cursor:pointer;transition:background .2s,border-color .2s,color .2s}
+.chip:hover{border-color:var(--mute)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:600}
+.combo{position:relative;z-index:4}
+.menu{position:absolute;left:0;right:0;top:calc(100% + 6px);margin:0;padding:4px;list-style:none;max-height:248px;overflow:auto;background:#1B1B20;border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);scrollbar-width:thin;scrollbar-color:var(--line2) transparent;animation:fade .18s var(--ease) both}
+.menu li{padding:9px 10px;border-radius:4px;cursor:pointer;transition:background .12s}
+.menu li:hover,.menu li.on{background:var(--hover)}
+.menu li.on{color:var(--accent)}
+
+/* poll */
+.stage{transition:height .32s var(--ease)}
+.stage.moving{overflow:hidden}
+.opts{display:grid;gap:8px}
+.opt{display:flex;align-items:center;gap:14px;width:100%;font:inherit;text-align:left;color:var(--ink);background:var(--inset);border:1px solid var(--line);border-radius:var(--r);padding:13px 14px;cursor:pointer;transition:background .2s,border-color .2s}
+.opt:hover{border-color:var(--line2);background:var(--hover)}
+.opt .key{flex:none;display:grid;place-items:center;width:24px;height:24px;border:1px solid var(--line2);border-radius:4px;font-family:var(--mono);font-size:11px;color:var(--mute);transition:background .2s,border-color .2s,color .2s}
+.opt[aria-pressed="true"]{border-color:var(--accent);background:var(--tint)}
+.opt[aria-pressed="true"] .key{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.pick .key::after{content:"";width:9px;height:5px;border-left:2px solid transparent;border-bottom:2px solid transparent;transform:rotate(-45deg) translate(1px,-1px);transition:border-color .2s}
+.pick[aria-pressed="true"] .key::after{border-color:var(--on-accent)}
+.opt.pick[aria-pressed="true"]{border-color:var(--line2);background:var(--hover)}
+.pnav{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin-top:22px;min-height:18px}
+.pnav #btnNext{justify-self:end}
+.pnav #btnBack{justify-self:start}
+.dots{display:flex;gap:6px}
+.dots i{width:22px;height:3px;background:var(--line2);border-radius:2px;cursor:pointer;transition:background .3s;position:relative}
+.dots i::after{content:"";position:absolute;inset:-9px -3px}
+.dots i.done{background:var(--accent)}
+.dots i.cur{background:var(--ink)}
+.link{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);background:none;border:0;padding:0;cursor:pointer;transition:color .2s}
+.link:hover{color:var(--ink)}
+
+/* fields */
+.field{margin-bottom:18px}
+.field label{display:block;margin-bottom:8px}
+input[type=text],input[type=email],input[type=tel],input[type=search],textarea{width:100%;font:inherit;color:var(--ink);background:var(--inset);border:1px solid var(--line2);border-radius:var(--r);padding:12px 14px;transition:border-color .2s,background .2s}
+input:hover,textarea:hover{border-color:var(--mute)}
+input:focus,textarea:focus{outline:0;border-color:var(--accent)}
+::placeholder{color:var(--faint)}
+textarea{display:block;min-height:132px;resize:none}
+.hint{margin-top:8px;font-size:.875rem;color:var(--mute);transition:color .2s}
+.hint.bad{color:var(--accent)}
+.hint b{font-weight:600;color:var(--accent)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.btn{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--on-accent);background:var(--accent);border:1px solid var(--accent);border-radius:var(--r);padding:15px 22px;cursor:pointer;text-decoration:none;display:inline-block;transition:background .2s,color .2s,border-color .2s,opacity .2s}
+.btn:hover{background:var(--ink);border-color:var(--ink)}
+.btn.ghost{color:var(--ink);background:var(--inset);border-color:var(--line2);font-weight:500}
+.btn.ghost:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn:disabled{background:var(--line);border-color:var(--line);color:var(--faint);cursor:default}
+.btn.wide{display:block;width:100%;text-align:center;padding:18px 22px;font-size:13px}
+.saved{margin-left:auto;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);opacity:0}
+.flash{animation:ring .7s ease-out}
+.flash .saved{animation:saved 1.9s ease both}
+@keyframes ring{from{box-shadow:0 0 0 0 rgba(255,90,54,.55)}to{box-shadow:0 0 0 12px rgba(255,90,54,0)}}
+@keyframes saved{0%{opacity:0;transform:translateY(4px)}14%,72%{opacity:1;transform:none}100%{opacity:0}}
+/* what appears after Count me in */
+.pop{display:grid;grid-template-rows:0fr;transition:grid-template-rows .6s var(--ease),margin-top .6s var(--ease)}
+.pop>div{overflow:hidden;min-height:0}
+.pop.open{grid-template-rows:1fr;margin-top:20px}
+#after{border-color:var(--accent)}
+#after>*{opacity:0;transform:translateY(12px);transition:opacity .45s ease,transform .45s var(--ease)}
+.pop.open #after>*{opacity:1;transform:none}
+.pop.open #after>*:nth-child(1){transition-delay:.18s}.pop.open #after>*:nth-child(2){transition-delay:.24s}
+.pop.open #after>*:nth-child(3){transition-delay:.30s}.pop.open #after>*:nth-child(4){transition-delay:.38s}
+.pop.open #after>*:nth-child(5){transition-delay:.46s}.pop.open #after>*:nth-child(6){transition-delay:.52s}
+#after h2{font-size:clamp(1.8rem,3.2vw,2.6rem);font-weight:var(--hx);text-transform:var(--hc);margin:10px 0 10px}
+.sub3{margin:24px 0 10px}
+#leadPop.open{margin-top:8px}
+.leadbox{display:grid;gap:8px;padding:14px;border:1px solid var(--line);border-radius:var(--r)}
+.leadbox .hint{margin:0}
+.leadbox a{color:var(--ink)}
+.err{color:var(--accent);margin:12px 0 0;min-height:1.5em;font-size:.9375rem}
+
+/* board */
+.who{position:sticky;top:78px}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--inset);border:1px solid var(--line);border-radius:var(--r);padding:4px;margin-bottom:14px}
+.seg button{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);background:transparent;border:0;border-radius:4px;padding:9px;cursor:pointer;transition:color .2s,background .2s}
+.seg button:hover{color:var(--ink)}
+.seg button[aria-selected="true"]{color:var(--on-accent);background:var(--ink)}
+.list{list-style:none;margin:6px 0 0;padding:0;max-height:452px;overflow:auto;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
+.list li{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:10px 2px;border-bottom:1px solid var(--line)}
+.list .empty{display:block;padding:14px 2px}
+.list li:last-child{border-bottom:0}
+.list .u{color:var(--mute);font-size:.875rem;text-align:right}
+/* campus organizers: accent name, an explanation on hover or focus, and a link to About */
+.list .lead{position:relative;color:var(--accent);font-weight:600;cursor:pointer;text-decoration:underline dotted;text-underline-offset:4px;text-decoration-color:rgba(255,90,54,.5)}
+.list .lead::after{content:attr(data-tip);position:absolute;left:0;top:calc(100% + 8px);z-index:3;width:max-content;max-width:260px;padding:8px 10px;background:#1B1B20;border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);color:var(--ink);font-size:.8125rem;font-weight:400;line-height:1.4;opacity:0;pointer-events:none;transition:opacity .15s}
+.list .lead:hover::after,.list .lead:focus::after{opacity:1}
+.list li:nth-last-child(-n+2) .lead::after{top:auto;bottom:calc(100% + 8px)}
+.list .empty,.bars .empty{color:var(--mute)}
+.bars{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.bars li{display:grid;grid-template-columns:1fr auto;gap:7px 8px;align-items:baseline;padding:10px;border-radius:var(--r);cursor:pointer;transition:background .2s}
+.bars li:hover{background:var(--hover)}
+.bars li.empty{cursor:default;background:none}
+.bars .nm{font-weight:500}
+.bars .n{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
+.track{grid-column:1/3;height:4px;background:var(--line);border-radius:2px;overflow:hidden}
+.fill{height:100%;width:0;background:var(--ink);border-radius:2px;transition:width .7s var(--ease),background .3s}
+.bars li.me{background:var(--tint);box-shadow:inset 0 0 0 1px var(--accent)}
+.bars li.me .nm,.bars li.me .n{color:var(--accent);font-weight:700}
+.bars li.me .fill{background:var(--accent)}
+.bars li.gap{margin-top:8px}
+
+/* results */
+.results{border-top:1px solid var(--line);padding:48px 0 72px}
+.results h2{font-size:clamp(1.5rem,2.6vw,2.1rem)}
+.results h2 .count{color:var(--mute);font-family:var(--sans);font-weight:500;letter-spacing:0}
+.rgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:20px;margin-top:28px}
+.rcard{grid-column:span 2}
+.rcard h3{font-family:var(--sans);font-weight:600;font-size:1.0625rem;line-height:1.35;letter-spacing:0;margin:0 0 18px}
+.rrow{margin-bottom:13px}
+.rrow:last-child{margin-bottom:0}
+.rrow .l{display:flex;justify-content:space-between;gap:12px;font-size:.9375rem;margin-bottom:6px;color:var(--mute);transition:color .3s}
+.rrow .pct{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
+.rrow .track{height:6px;border-radius:3px}
+.rrow .fill{border-radius:3px;background:rgba(244,242,237,.5)}
+.rrow.mine .l{color:var(--accent);font-weight:600}
+.rrow.mine .fill{background:var(--accent)}
+
+/* next steps */
+.share{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.share .btn{padding:12px 15px}
+
+.about{max-width:66ch;padding:56px 0 80px}
+.about h1{font-size:clamp(2.1rem,4.4vw,3.4rem);font-weight:var(--hx);text-transform:var(--hc);margin-bottom:32px}
+.about h2{font-size:1.4rem;font-weight:var(--hw);margin:36px 0 10px;scroll-margin-top:80px}
+.about p+p{margin-top:12px}
+.about a{color:var(--ink)}
+.draft{margin:0 0 28px;padding:28px;border:1px solid var(--line2);border-left:3px solid var(--accent);border-radius:var(--r);font-family:var(--head);font-weight:700;font-size:clamp(1.4rem,2.6vw,2rem);line-height:1.3;color:var(--ink)}
+.fontpick{position:fixed;left:12px;bottom:12px;z-index:9;display:flex;flex-wrap:wrap;gap:4px;max-width:520px;padding:8px;background:#1B1B20;border:1px solid var(--line2);border-radius:var(--r)}
+.fontpick button{font:11px var(--mono);color:var(--ink);background:none;border:1px solid var(--line);border-radius:4px;padding:5px 7px;cursor:pointer}
+.fontpick button.on{border-color:var(--accent);color:var(--accent)}
+.about p{color:var(--mute);font-size:1.0625rem}
+footer{border-top:1px solid var(--line);padding:22px 0 36px}
+
+@media (max-width:920px){
+  .banner .wrap{grid-template-columns:1fr;gap:32px;padding-top:44px;padding-bottom:36px}
+  .cols{grid-template-columns:1fr}
+  .who{position:static}
+  .list{max-height:320px}
+  .rgrid{grid-template-columns:1fr}
+  .rcard{grid-column:auto}
+}
+@media (max-width:520px){
+  .wrap{padding:0 16px}
+  .card{padding:18px}
+  .two{grid-template-columns:1fr;gap:0}
+  .tabs{gap:18px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+  html{scroll-behavior:auto}
 }
 </style>
 </head>
 <body>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="uni" viewBox="0 0 48 40"><polygon points="24,1 47,13 1,13" fill="currentColor"/><rect x="5" y="16" width="5" height="15" fill="currentColor"/><rect x="16" y="16" width="5" height="15" fill="currentColor"/><rect x="27" y="16" width="5" height="15" fill="currentColor"/><rect x="38" y="16" width="5" height="15" fill="currentColor"/><rect x="1" y="33" width="46" height="6" fill="currentColor"/></symbol></svg>
-
-<header class="bar">
-  <div class="wrap">
-    <span class="mark">Our Future First</span>
-    <span class="chip" id="statusChip">Letter opening date to be announced</span>
-  </div>
-</header>
+<header class="top"><div class="wrap">
+  <span class="brand"><i></i>Our Future First</span>
+  <nav class="tabs" aria-label="Sections">
+    <a href="#interest" id="tabInterest">Interest</a>
+    <a href="#about" id="tabAbout">About</a>
+  </nav>
+</div></header>
 
 <main>
-<div class="wrap hero">
-  <div class="hero-grid">
-    <div>
-      <h1>AI is moving <span class="red">faster</span> than we can learn to follow it.</h1>
-      <p class="lede">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio praesent libero sed cursus ante dapibus diam.</p>
-    </div>
-    <aside class="rail" aria-label="Campaign status">
-      <div class="tally">
-        <span class="big mono" id="cPledged">0</span>
-        <span class="lab" id="cPledgedLab">names so far</span>
-        <svg class="funnel" viewBox="0 0 300 64" preserveAspectRatio="none" aria-hidden="true"><polygon points="0,0 300,0 186,64 114,64" fill="var(--accent)"/></svg>
-        <div class="unis">
-          <div class="uni-icons" id="uniIcons" aria-hidden="true"></div>
-          <span class="n mono" id="cUnis">0</span>
-          <span class="lab">universities</span>
-        </div>
+<div id="viewInterest">
+  <section class="banner">
+    <div class="wrap">
+      <div>
+        <h1>Students are writing an open letter on AI. <em>Tell us what belongs in it.</em></h1>
+        <p class="sub">This is the interest form, open to <b>anyone at a U.S. university</b>: students, postdocs, faculty and staff. Answer six questions and leave your university email, and we will contact you when the letter is ready to sign.</p>
       </div>
-      <a class="btn" href="#join">Leave your name</a>
+      <div class="tally">
+        <div class="stat"><b id="cPeople">0</b><span class="lab">People</span></div>
+        <div class="stat"><b id="cUnis">0</b><span class="lab">U.S. universities</span></div>
+      </div>
+    </div>
+    <div class="ticker" id="ticker" aria-hidden="true" hidden><div id="tickerRow"></div></div>
+  </section>
+  <div class="wrap"><p class="note" id="previewNote" hidden><b>Preview mode.</b> No backend is connected: the people and numbers are sample data, and entries are not saved.</p></div>
+
+  <div class="wrap cols">
+    <div>
+      <form id="form" class="stack" novalidate>
+        <div class="card">
+          <div class="two">
+            <div class="field"><label class="lab" for="inName">Name <span class="req">*</span></label><input type="text" id="inName" autocomplete="name" maxlength="120" required></div>
+            <div class="field"><label class="lab" for="inEmail">University email <span class="req">*</span></label><input type="email" id="inEmail" autocomplete="email" maxlength="160" placeholder="you@university.edu" required>
+              <p class="hint" id="uniHint" role="status" hidden></p></div>
+          </div>
+          <div class="two">
+            <div class="field combo"><label class="lab" for="inMajor">Major or field</label><input type="text" id="inMajor" maxlength="80" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="majorMenu" aria-autocomplete="list"><ul class="menu" id="majorMenu" role="listbox" hidden></ul></div>
+            <div class="field"><label class="lab" for="inPhone">Phone</label><input type="tel" id="inPhone" autocomplete="tel" maxlength="30" placeholder="(555) 555-5555"></div>
+          </div>
+          <div class="field" id="roleField"><span class="lab" id="roleLab">I am <span class="req">*</span></span><div class="chips" id="roleChips" role="group" aria-labelledby="roleLab"></div></div>
+          <div class="field" id="yearField" hidden><span class="lab" id="yearLab">Year</span><div class="chips" id="yearChips" role="group" aria-labelledby="yearLab"></div></div>
+          <div id="showWrap"><button type="button" class="opt pick" id="pkShow" aria-pressed="true"><span class="key"></span><span>Show my name on the public list</span></button></div>
+        </div>
+
+        <div class="card" id="pollCard">
+          <div class="stage" id="stage"></div>
+          <div class="pnav"><button type="button" class="link" id="btnBack">&larr; Back</button><div class="dots" id="dots"></div><button type="button" class="link" id="btnNext">Next &rarr;</button></div>
+        </div>
+
+        <div>
+          <button class="btn wide" type="submit" id="btnSubmit">Count me in</button>
+          <p class="err" id="err" role="alert"></p>
+        </div>
+      </form>
+
+      <div class="pop" id="pop"><div><div class="card" id="after">
+        <p class="lab" id="afterLab"></p>
+        <h2 id="afterHead"></h2>
+        <p class="muted" id="afterSub"></p>
+        <div id="afterHelp">
+          <p class="lab sub3">Can you help it reach your campus?</p>
+          <div class="opts" id="spread"></div>
+          <div class="pop" id="leadPop"><div><div class="leadbox">
+            <p class="hint">Thank you. We will connect you with the other campus organizers at your university and start a group chat with all of you, then contact you about next steps. If your name is public, it is marked as a campus organizer on the list. <a href="#organizers">How this works</a></p>
+            <label class="lab" for="inPhone2">Your phone number, so we can reach you <span class="req">*</span></label>
+            <input type="tel" id="inPhone2" autocomplete="tel" maxlength="30" placeholder="(555) 555-5555">
+            <button type="button" class="opt pick" id="pkSms" aria-pressed="false"><span class="key"></span><span>I agree to receive text messages from Our Future First</span><span class="saved">Saved</span></button>
+            <p class="hint bad" id="leadHint" role="status"></p>
+          </div></div></div>
+        </div>
+        <div>
+          <p class="lab sub3">Send it to someone</p>
+          <div class="share">
+            <button class="btn" type="button" id="btnCopy">Copy link</button>
+            <a class="btn ghost" id="shSms">Text</a>
+            <a class="btn ghost" id="shMail">Email</a>
+            <a class="btn ghost" id="shWa" target="_blank" rel="noopener">WhatsApp</a>
+            <a class="btn ghost" id="shThreads" target="_blank" rel="noopener">Threads</a>
+            <button class="btn ghost" type="button" id="shInsta">Instagram</button>
+            <a class="btn ghost" id="shDorm">Dorm list email</a>
+          </div>
+          <p class="hint" id="copyMsg" role="status"></p>
+        </div>
+      </div></div></div>
+    </div>
+
+    <aside class="card who" id="widget">
+      <div class="seg" role="tablist">
+        <button type="button" role="tab" id="segPeople" aria-selected="true">People</button>
+        <button type="button" role="tab" id="segUnis" aria-selected="false">Universities</button>
+      </div>
+      <div id="pPeople">
+        <input type="search" id="inSearch" placeholder="Search names or universities" aria-label="Search names or universities">
+        <p class="lab" id="pubNote" style="margin:14px 0 2px"></p>
+        <ul class="list" id="peopleList"></ul>
+        <p class="hint" id="anonNote"></p>
+      </div>
+      <div id="pUnis" hidden><ol class="bars" id="uniList"></ol></div>
     </aside>
+  </div>
+
+  <section class="results"><div class="wrap">
+    <h2>Results so far <span class="count" id="resCount"></span></h2>
+    <div class="rgrid" id="resGrid"></div>
+  </div></section>
+</div>
+
+<div id="viewAbout" hidden>
+  <div class="wrap about">
+    <h1>About</h1>
+    <h2>What is this?</h2>
+    <p>An open letter on AI from people at American universities. It is not finished yet. This site is the first stage: a short form that asks what you think, and collects the email of everyone who wants to hear when the letter is ready to sign.</p>
+    <h2 id="why-wait">Why isn't the letter out now?</h2>
+    <p>Because a letter that trickles out gets ignored. We are collecting interest first, so that on the day it is released it reaches as many people as possible at once.</p>
+    <p>That only works if this gets passed along, so we are counting on you to help. Thank you.</p>
+    <h2 id="why-draft">Then why publish a draft?</h2>
+    <p>So you know what you are signing up for. <a href="#draft">The current wording is here</a>, with the date it was last changed. It will keep changing until launch day, and nobody signs anything until they have read the final version.</p>
+    <h2>What happens on launch day?</h2>
+    <p>Everyone on the list hears from us at the same moment and can sign. The letter and its signatures are then published and announced publicly.</p>
+    <h2>Who can take part?</h2>
+    <p>Anyone with a U.S. university email who is part of campus life: undergraduates, graduate students, postdocs, faculty and staff.</p>
+    <h2>Who is behind this?</h2>
+    <p>It was started by students at MIT and is spreading to other universities from person to person. It is run by students.</p>
+    <h2 id="organizers">What is a campus organizer?</h2>
+    <p>Someone who has offered to help with the letter at their own university. There is no single organizer per campus: a university can have several, and the more the better.</p>
+    <p>If you volunteer, we connect you with the other campus organizers at your university and start a group chat with all of you, so you can coordinate. That means your name is shared with them. We then contact you about what comes next. Organizers who show their name are also marked on the public list, so other people at their university can see who is involved.</p>
+    <p>We reach organizers by phone or text, which is why we ask for a number and your consent to texts. You can untick the box at any time.</p>
+    <h2>What happens to my information?</h2>
+    <p>Your email is used to confirm you belong to a university and to contact you about the letter. Your name appears on the public list only if you choose to show it. Poll answers are shown only as totals. Your answer to “What concerns you most about AI?” will not be displayed publicly.</p>
   </div>
 </div>
 
-<section id="board">
-  <div class="wrap">
-    <div class="sec-head">
-      <h2 id="boardHead">Who is in so far</h2>
-    </div>
-    <div class="board">
-      <div><h3>Most recent</h3><ol class="recent" id="recentList"></ol></div>
-      <div><h3>Top schools</h3><ol class="schools" id="schoolList"></ol></div>
-    </div>
+<div id="viewDraft" hidden>
+  <div class="wrap about">
+    <h1>The letter, so far</h1>
+    <p class="lab" style="margin-bottom:14px">Working draft. Last updated November 24, 2026.</p>
+    <blockquote class="draft">We study, teach and do research at American universities, and we ask our government to slow the race toward AI smarter than humans until it can be shown to be safe and under human control.</blockquote>
+    <p>This is where the letter stands today. It will change as answers come in from the form.</p>
+    <p>Signing up does not put your name on this. On launch day you will see the final text and decide then whether to sign.</p>
+    <p><a href="#why-draft">Why publish a draft now?</a> &nbsp; <a href="#interest">Back to the form</a></p>
   </div>
-</section>
-
-<section id="pace">
-  <div class="wrap">
-    <div class="sec-head">
-      <h2>Count the doublings before you graduate</h2>
-      <p>METR measures the length of task an AI system can finish on its own. From 2019 to 2025 that length doubled about every seven months. Its November 2026 update puts the pace at about every 110 days, and the best public models at up to 27 hours on one set of its tasks. Each mark below is one doubling.</p>
-    </div>
-    <div class="ruler-box">
-      <div class="classes" role="group" aria-label="Your graduating class">
-        <span class="small muted">I graduate in</span>
-        <button type="button" data-y="2027">2027</button>
-        <button type="button" data-y="2028">2028</button>
-        <button type="button" data-y="2029">2029</button>
-        <button type="button" data-y="2030">2030</button>
-      </div>
-      <div class="ruler-scroll"><svg id="ruler" viewBox="0 0 1000 170" role="img" aria-label="Timeline of doublings in AI task length from 2019 to 2031"></svg></div>
-      <div class="readout">
-        <div class="hot"><b class="mono" id="rFast">&times;0</b><span id="rFastLab"></span></div>
-        <div><b class="mono" id="rSlow">&times;0</b><span id="rSlowLab"></span></div>
-      </div>
-      <p class="small muted" style="margin-top:14px">Marks from 2023 to today use METR's earlier 131-day estimate. Marks after today use the 110-day pace and are extrapolation. Trends can bend. Sources: <a href="https://metr.org/blog/2026-11-20-q4-2026-capability-update/">METR, November 2026 update</a>, <a href="https://metr.org/blog/2026-1-29-time-horizon-1-1">Time Horizon 1.1</a>.</p>
-    </div>
-  </div>
-</section>
-
-<section id="year">
-  <div class="wrap">
-    <div class="sec-head">
-      <h2>What happened in 2026</h2>
-      <p>The fields many of us came to university to study started moving at a different speed.</p>
-    </div>
-    <div class="events">
-      <div class="event"><div class="when">Jan 2026</div><div><p><strong>Fifteen Erd&#337;s problems are marked solved in under a month.</strong> Eleven of the solutions credit AI models.</p><p class="small muted"><a href="https://www.techcrunch.com/2026/01/14/ai-models-are-starting-to-crack-high-level-math-problems/">TechCrunch</a></p></div></div>
-      <div class="event"><div class="when">13 Feb 2026</div><div><p><strong>An AI model proposes a new formula in particle physics.</strong> It covers a gluon interaction many physicists expected to be zero. The authors checked it by hand.</p><p class="small muted"><a href="https://openai.com/index/new-result-theoretical-physics/">OpenAI preprint announcement</a></p></div></div>
-      <div class="event"><div class="when">20 May 2026</div><div><p><strong>A conjecture open since 1946 falls.</strong> OpenAI publishes a counterexample to the unit distance conjecture. Related techniques solve other problems within days.</p><p class="small muted"><a href="https://www.quantamagazine.org/how-ai-tore-through-a-mathematical-community-20260803/">Quanta Magazine</a></p></div></div>
-      <div class="event"><div class="when">Sep 2026</div><div><p><strong>OpenAI announces its AI has solved one of the hardest open problems in mathematics.</strong> NPR's headline on what mathematicians took from the proof: humanity has learned nothing, so far.</p><p class="small muted"><a href="https://www.npr.org/2026/09/22/nx-s1-5968588/openai-navier-stokes-problem-mathematicians-learn-little">NPR</a></p></div></div>
-      <div class="event"><div class="when">20 Nov 2026</div><div><p><strong>A proof of the Riemann hypothesis is announced.</strong> A mathematician at Anthropic says he and an AI model proved the most famous open problem in mathematics. The proof is about 17 million lines of machine-checked code. Mathematicians are still reviewing it.</p><p class="small muted"><a href="https://www.washingtonpost.com/technology/2026/11/20/using-anthropic-ai-mathematician-claims-have-solved-riemann-hypothesis/">The Washington Post</a></p></div></div>
-    </div>
-  </div>
-</section>
-
-<section id="why">
-  <div class="wrap">
-    <div class="sec-head">
-      <h2>Why pacing</h2>
-    </div>
-    <div class="reasons">
-      <article><h3>Understanding takes time</h3><p>A degree takes four years. A proof takes months to check. Results now arrive faster than people can absorb them.</p></article>
-      <article><h3>No one can slow down alone</h3><p>Each company moves fast because its rivals do. Each country does the same. A pace has to be agreed across borders.</p></article>
-      <article><h3>The builders are asking too</h3><p>In July 2026, more than 1,100 employees of OpenAI, Anthropic, Google and Meta asked the U.S. government to support an international effort to build tools for pacing AI development. <a href="https://pacingthefrontier.com">Pacing the Frontier</a></p></article>
-    </div>
-  </div>
-</section>
-
-<section id="join">
-  <div class="wrap">
-    <div class="sec-head">
-      <h2>Leave your name</h2>
-    </div>
-    <div class="join">
-      <div class="note" id="previewNote" hidden>Preview mode. Entries made from this view are not saved.</div>
-
-      <form id="fContact" novalidate>
-        <div class="fields">
-          <div class="field"><label for="inName">Full name</label><input type="text" id="inName" autocomplete="name" maxlength="120"></div>
-          <div class="field"><label for="inUni">University</label><input type="text" id="inUni" autocomplete="organization" maxlength="120"></div>
-          <div class="field"><label for="inEmail">Email</label><input type="email" id="inEmail" autocomplete="email" maxlength="160"></div>
-          <div class="field"><label for="inPhone">Phone <span class="opt">(optional)</span></label><input type="tel" id="inPhone" autocomplete="tel" maxlength="30"></div>
-        </div>
-        <label class="check" for="inOk" style="margin-top:16px"><input type="checkbox" id="inOk" checked><span>Contact me when the letter opens</span></label>
-        <p class="err" id="errContact" role="alert"></p>
-        <button class="btn" type="submit" id="btnContact">Continue</button>
-      </form>
-
-      <div id="pPoll" hidden>
-        <p class="mono small muted" id="qCount"></p>
-        <h3 id="qText" style="margin:8px 0 16px;text-transform:none;font-family:var(--body);font-weight:600;font-size:1.35rem;line-height:1.25"></h3>
-        <div class="opts" id="qOpts"></div>
-        <div class="field" id="qFree" hidden>
-          <textarea id="inWish" maxlength="1500" aria-labelledby="qText"></textarea>
-          <div class="row"><button class="btn" type="button" id="btnFinish">Finish</button><span class="small muted">You can finish without answering.</span></div>
-        </div>
-        <p class="err" id="errPoll" role="alert"></p>
-      </div>
-
-      <div id="pDone" hidden>
-        <h3 id="doneHead">You are on the list.</h3>
-        <p style="margin-top:10px" id="doneText">We will message everyone at the same moment when the letter opens. Sign it that day.</p>
-        <div style="margin-top:22px" class="field">
-          <label for="inIdea">One thing to think about before then: what would it take to convince your government to back a pacing proposal? Who would you need to reach, and what would move them?</label>
-          <textarea id="inIdea" maxlength="1500"></textarea>
-          <div class="row"><button class="btn sm ghost" type="button" id="btnIdea">Save my answer</button><span class="small muted" id="ideaMsg" role="status"></span></div>
-        </div>
-        <div class="row" style="margin-top:22px"><a class="btn sm" href="#letter">Read the letter</a><button class="btn sm ghost" type="button" id="btnCopy">Copy link to share</button><span class="small muted" id="copyMsg" role="status"></span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="letter">
-  <div class="wrap">
-    <div class="sec-head"><h2>The letter</h2></div>
-    <div class="letter">
-      <div class="letter-text">
-        <p class="filler-tag">Placeholder text. The letter has not been written yet.</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio praesent libero sed cursus ante dapibus diam. Sed nisi nulla quis sem at nibh elementum imperdiet.</p>
-        <p>Duis sagittis ipsum praesent mauris fusce nec tellus sed augue semper porta. Mauris massa vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra.</p>
-        <p class="ask">Curabitur sodales ligula in libero sed dignissim lacinia nunc. Curabitur tortor pellentesque nibh aenean quam in scelerisque sem at dolor.</p>
-        <p>Maecenas mattis sed convallis tristique sem proin ut ligula vel nunc egestas porttitor. Morbi lectus risus iaculis vel suscipit quis luctus non massa.</p>
-      </div>
-      <div class="sign">
-        <p class="mono small" id="signStatus">Signing has not opened yet.</p>
-        <p class="mono" id="countdown" style="font-size:1.5rem" hidden></p>
-        <button class="btn" type="button" id="btnSign" disabled>Sign the letter</button>
-        <p class="err" id="errSign" role="alert"></p>
-        <p class="small muted"><span class="mono" id="cSigs">0</span> signatures</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="organizer" hidden>
-  <div class="wrap">
-    <div class="admin">
-      <h3>Organizer controls</h3>
-      <p class="small muted">Only you see this section.</p>
-      <div class="row">
-        <div class="field"><label for="inLaunch">Letter opens at (your local time)</label><input type="datetime-local" id="inLaunch"></div>
-        <button class="btn sm" type="button" id="btnLaunch">Set opening time</button>
-        <span class="small muted" id="launchMsg" role="status"></span>
-      </div>
-      <div class="row"><button class="btn sm ghost" type="button" id="btnCsv">Load contact list as CSV</button><span class="small muted" id="csvMsg" role="status"></span></div>
-      <textarea id="csvOut" readonly hidden aria-label="Contact list CSV"></textarea>
-    </div>
-  </div>
-</section>
+</div>
 </main>
 
-<footer><div class="wrap">Our Future First is a working title. Organized by students in university AI safety groups. Contact details are used only to announce the letter.</div></footer>
+<footer><div class="wrap"><p class="lab">Our Future First is a working title. Run by students at U.S. universities.</p></div></footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
 <script>
 (function(){
 "use strict";
 var $=function(id){return document.getElementById(id);};
-var DAY=86400000, FAST=110*DAY, MID=131*DAY, SLOW=196*DAY;
-
-/* ---------- doubling ruler ---------- */
-var NS="http://www.w3.org/2000/svg", gradYear=2030;
-function svg(tag,attrs,text){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;return e;}
-function fmtMult(n){var m=Math.pow(2,n);if(m>=100)m=Math.round(m/Math.pow(10,Math.floor(Math.log10(m))-1))*Math.pow(10,Math.floor(Math.log10(m))-1);else if(m>=10)m=Math.round(m);else m=Math.round(m*10)/10;return "×"+m.toLocaleString("en-US");}
-function drawRuler(){
-  var el=$("ruler");while(el.firstChild)el.removeChild(el.firstChild);
-  var t0=Date.UTC(2019,0,1),split=Date.UTC(2023,0,1),end=Date.UTC(2031,0,1),now=Date.now(),grad=Date.UTC(gradYear,5,1);
-  var L=24,R=976,base=118;
-  function x(t){return L+(t-t0)/(end-t0)*(R-L);}
-  var gx0=x(Math.min(now,end)),gx1=x(Math.min(grad,end));
-  if(grad>now){
-    el.appendChild(svg("rect",{x:gx0,y:34,width:Math.max(gx1-gx0,2),height:base-34,fill:"var(--accent)",opacity:".13"}));
-    el.appendChild(svg("line",{x1:gx0,y1:26,x2:gx1,y2:26,stroke:"var(--accent)","stroke-width":2}));
-    el.appendChild(svg("text",{x:Math.min((gx0+gx1)/2,R-60),y:18,"text-anchor":"middle","font-family":"var(--mono)","font-size":12,fill:"var(--accent)"},"today to June "+gradYear));
-  }
-  el.appendChild(svg("line",{x1:L,y1:base,x2:R,y2:base,stroke:"var(--ink)","stroke-width":2}));
-  var t;
-  for(t=t0;t<end;t+=(t<split?SLOW:(t+MID<=now?MID:FAST))){
-    var fut=t>now;
-    el.appendChild(svg("line",{x1:x(t),y1:fut?64:50,x2:x(t),y2:base,stroke:fut?"var(--accent)":"var(--ink)","stroke-width":fut?2:3,opacity:fut?".55":"1"}));
-  }
-  for(var y=2019;y<=2031;y++){
-    var xx=x(Date.UTC(y,0,1));
-    el.appendChild(svg("line",{x1:xx,y1:base,x2:xx,y2:base+6,stroke:"var(--muted)","stroke-width":1}));
-    el.appendChild(svg("text",{x:xx,y:base+22,"text-anchor":y===2019?"start":(y===2031?"end":"middle"),"font-family":"var(--mono)","font-size":12,fill:"var(--muted)"},String(y)));
-  }
-  if(now<end){
-    el.appendChild(svg("line",{x1:gx0,y1:34,x2:gx0,y2:base,stroke:"var(--ink)","stroke-width":1.5,"stroke-dasharray":"3 3"}));
-    el.appendChild(svg("text",{x:gx0,y:base+46,"text-anchor":"middle","font-family":"var(--mono)","font-size":12,fill:"var(--ink)"},"today"));
-  }
-  var span=Math.max(grad-now,0),nf=span/FAST,ns=span/SLOW;
-  $("rFast").textContent=fmtMult(nf);
-  $("rFastLab").textContent=nf.toFixed(1)+" doublings before the class of "+gradYear+" graduates, if the current 110-day pace holds.";
-  $("rSlow").textContent=fmtMult(ns);
-  $("rSlowLab").textContent=ns.toFixed(1)+" doublings at the slower 2019 to 2025 rate.";
-  var bs=document.querySelectorAll(".classes button");
-  for(var i=0;i<bs.length;i++)bs[i].setAttribute("aria-pressed",String(+bs[i].dataset.y===gradYear));
-}
-document.querySelector(".classes").addEventListener("click",function(e){var y=e.target&&e.target.dataset&&e.target.dataset.y;if(y){gradYear=+y;drawRuler();}});
-drawRuler();
-
-/* ---------- poll questions ---------- */
-var Q=[
- {id:"pace",q:"How fast is AI moving right now?",o:["Too fast","About right","Too slow","Not sure"]},
- {id:"plans",q:"Has AI changed what you plan to study or do after you graduate?",o:["Yes, I changed plans","I am reconsidering","No"]},
- {id:"job",q:"When do you expect AI to be able to do most of an entry-level job in your field?",o:["It already can","Before I graduate","Within ten years","Later, or never"]},
- {id:"follow",q:"How well can you keep up with what AI can do in your own field?",o:["I can follow it","I follow some of it","I have lost track"]},
- {id:"who",q:"Who should decide how fast the most capable AI advances?",o:["The companies building it","National governments","Countries, by agreement","Nobody can decide it"]},
- {id:"act",q:"Would you contact your representative about pacing AI?",o:["Yes","Maybe, with a template","No"]}
-];
-
-/* ---------- state ---------- */
-var S={db:null,uid:null,live:false,owner:false,step:"contact",contact:null,answers:{},qi:0,polls:[],sigs:[],launchAt:null,signed:false};
-
-function setText(id,t){$(id).textContent=t;}
-function render(){
-  $("fContact").hidden=S.step!=="contact";$("pPoll").hidden=S.step!=="poll";$("pDone").hidden=S.step!=="done";
-  $("previewNote").hidden=S.live;
-  if(S.step==="poll")renderQuestion();
-  renderCounts();renderSign();
-}
-function ago(ts){if(!ts)return "";var m=Math.max(0,Math.floor((Date.now()-ts)/60000));if(m<1)return "just now";if(m<60)return m+" min ago";var h=Math.floor(m/60);if(h<24)return h+" h ago";return Math.floor(h/24)+" d ago";}
 function mk(tag,cls,text){var e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e;}
 function clear(e){while(e.firstChild)e.removeChild(e.firstChild);}
-function renderCounts(){
-  var open=S.launchAt!=null&&Date.now()>=S.launchAt;
-  var groups={},n=S.polls.length;
-  S.polls.forEach(function(p){var u=String(p.uni||"").trim();if(!u)return;var k=u.toLowerCase();if(!groups[k])groups[k]={name:u,n:0};});
-  var nu=Object.keys(groups).length;
-  setText("cPledged",n.toLocaleString("en-US"));
-  setText("cPledgedLab",n===1?"name so far":"names so far");
-  setText("cUnis",nu.toLocaleString("en-US"));
-  setText("cSigs",S.sigs.length.toLocaleString("en-US"));
-  var ic=$("uniIcons");clear(ic);
-  for(var i=0;i<Math.max(1,Math.min(nu,12));i++){var s=document.createElementNS(NS,"svg");s.setAttribute("viewBox","0 0 48 40");if(nu===0)s.setAttribute("class","none");var u=document.createElementNS(NS,"use");u.setAttribute("href","#uni");s.appendChild(u);ic.appendChild(s);}
-  /* board: people who signed once the letter is open, people who left names before that */
-  var rows=(open?S.sigs:S.polls).filter(function(r){return String(r.name||"").trim();});
-  setText("boardHead",open?"Who has signed":"Who is in so far");
-  var rec=$("recentList");clear(rec);
-  rows.slice().sort(function(a,b){return (b.ts||0)-(a.ts||0);}).slice(0,10).forEach(function(r){
-    var li=mk("li");li.appendChild(mk("span","who",String(r.name)));li.appendChild(mk("span","mono small muted",ago(r.ts)));li.appendChild(mk("span","uni",String(r.uni||"")));rec.appendChild(li);});
-  if(!rows.length)rec.appendChild(mk("li","empty",open?"No signatures yet.":"No names yet. Yours can be first."));
-  var by={};rows.forEach(function(r){var nm=String(r.uni||"").trim();if(!nm)return;var k=nm.toLowerCase();if(!by[k])by[k]={name:nm,n:0};by[k].n++;});
-  var top=Object.keys(by).map(function(k){return by[k];}).sort(function(a,b){return b.n-a.n||a.name.localeCompare(b.name);}).slice(0,10);
-  var sl=$("schoolList");clear(sl);
-  top.forEach(function(g,i){var li=mk("li");li.appendChild(mk("span","rank",String(i+1)));li.appendChild(mk("span","nm",g.name));li.appendChild(mk("span","mono",g.n.toLocaleString("en-US")));
-    var tr=mk("div","track"),f=mk("div","fill");f.style.width=Math.round(g.n/top[0].n*100)+"%";tr.appendChild(f);li.appendChild(tr);sl.appendChild(li);});
-  if(!top.length)sl.appendChild(mk("li","empty","No schools yet."));
-}
-var WISH="If there is one thing you would want in the letter, what would it be?";
-var chain=Promise.resolve();
-function queuePoll(){chain=chain.then(savePoll).then(function(){setText("errPoll","");},function(x){setText("errPoll",failMsg(x));});}
-function renderQuestion(){
-  var free=S.qi>=Q.length;
-  setText("qCount","Question "+(S.qi+1)+" of "+(Q.length+1));
-  setText("qText",free?WISH:Q[S.qi].q);
-  var box=$("qOpts");clear(box);box.hidden=free;$("qFree").hidden=!free;
-  if(free)return;
-  var q=Q[S.qi];
-  q.o.forEach(function(o){var b=mk("button",null,o);b.type="button";
-    b.addEventListener("click",function(){S.answers[q.id]=o;queuePoll();S.qi++;renderQuestion();});box.appendChild(b);});
-}
-function fmtLeft(ms){var s=Math.floor(ms/1000),d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60),x=s%60;function p(n){return n<10?"0"+n:String(n);}return (d?d+"d ":"")+p(h)+":"+p(m)+":"+p(x);}
-function renderSign(){
-  var now=Date.now(),open=S.launchAt!=null&&now>=S.launchAt,chip=$("statusChip"),cd=$("countdown"),btn=$("btnSign");
-  if(S.launchAt==null){chip.textContent="Letter opening date to be announced";chip.className="chip";setText("signStatus","Signing has not opened yet. Leave your name and we will tell you when it does.");cd.hidden=true;}
-  else if(!open){var when=new Date(S.launchAt).toLocaleString(undefined,{dateStyle:"medium",timeStyle:"short"});chip.textContent="Letter opens "+when;chip.className="chip";setText("signStatus","Signing opens "+when+".");cd.hidden=false;cd.textContent=fmtLeft(S.launchAt-now);}
-  else{chip.textContent="The letter is open. Sign today.";chip.className="chip on";setText("signStatus","The letter is open.");cd.hidden=true;}
-  if(S.signed){btn.disabled=true;btn.textContent="You signed";}
-  else if(!open){btn.disabled=true;btn.textContent="Sign the letter";}
-  else if(!S.contact){btn.disabled=false;btn.textContent="Leave your name to sign";}
-  else{btn.disabled=false;btn.textContent="Sign as "+S.contact.name;}
-  if(open){setText("doneHead","The letter is open.");setText("doneText","Everyone on the list is signing today. Add your signature below.");}
-}
-var wasOpen=false;setInterval(function(){if(S.launchAt==null)return;renderSign();var o=Date.now()>=S.launchAt;if(o!==wasOpen){wasOpen=o;renderCounts();}},1000);
+function num(n){return n.toLocaleString("en-US");}
+var CALM=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-/* ---------- storage adapter: swap these four functions to move to another backend ---------- */
-function failMsg(e){if(e&&e.code==="invalid_argument"){S.live=false;$("previewNote").hidden=false;return "This view cannot save entries. Continuing in preview mode.";}
-  if(e&&e.code==="quota_exceeded")return "The list is full. Tell the organizers.";return "Could not save. Check your connection and try again.";}
-function localRow(c){S.polls=S.polls.filter(function(p){return p.id!=="local";});S.polls.push({id:"local",name:c.name,uni:c.uni,a:{},ts:c.ts});}
-function saveContact(c){if(!S.live){localRow(c);return Promise.resolve();}
-  return S.db.doc("contacts/"+S.uid).set(c).then(function(){return S.db.doc("polls/"+S.uid).set({name:c.name,uni:c.uni,a:S.answers,ts:c.ts});});}
-function savePoll(){if(!S.live)return Promise.resolve();return S.db.doc("polls/"+S.uid).set({name:S.contact.name,uni:S.contact.uni,a:S.answers,ts:S.contact.ts||Date.now()});}
-function saveWish(t){if(!S.live)return Promise.resolve();return S.db.doc("contacts/"+S.uid).update({wish:t});}
-function saveIdea(t){if(!S.live)return Promise.resolve();return S.db.doc("contacts/"+S.uid).update({idea:t});}
-function saveSignature(){if(!S.live)return Promise.resolve();return S.db.doc("signatures/"+S.uid).set({name:S.contact.name,uni:S.contact.uni,ts:Date.now()});}
+/* ---------- content ---------- */
+var Q=[
+ {id:"feel",s:"Feeling",q:"When you think about where AI is headed, how do you feel?",o:["Mostly excited","A mix of both","Mostly worried","Haven't thought about it"]},
+ {id:"plans",s:"Plans",q:"Has AI changed what you plan to study or do after you graduate?",o:["Yes, I changed my plans","I am reconsidering","No","Not sure yet"]},
+ {id:"job",s:"Jobs",q:"When will AI be able to do most of an entry-level job in your field?",o:["It already can","Before I graduate","Within ten years","Later, or never"]},
+ {id:"control",s:"Control",q:"How likely is it that humans lose meaningful control of advanced AI in your lifetime?",o:["Very likely","Somewhat likely","Not very likely","Not at all likely"]},
+ {id:"risk",s:"Worry",q:"Which worries you more?",o:["AI misuse","AI loss of control","Both equally","Neither"]},
+ {id:"say",s:"Say",q:"How much say do people your age have in how AI is developed?",o:["A lot","Some","Very little","None"]}
+];
+var SPREAD=[
+ {id:"lists",t:"I can email my dorm, class or club lists"},
+ {id:"chats",t:"I can share it with friends and group chats"},
+ {id:"lead",t:"I would help organize this at my university"}
+];
+var TEXTQ=[{id:"inConcern",q:"What concerns you most about AI?"}];
 
-/* ---------- handlers ---------- */
-$("fContact").addEventListener("submit",function(e){
+/* ---------- university from email domain (U.S. only) ---------- */
+/* Used for preview mode and as a fallback. When connected, the backend decides (lookup_uni). */
+var KNOWN={"mit.edu":"MIT","harvard.edu":"Harvard","stanford.edu":"Stanford","berkeley.edu":"UC Berkeley","cmu.edu":"Carnegie Mellon","yale.edu":"Yale","princeton.edu":"Princeton","columbia.edu":"Columbia","cornell.edu":"Cornell","upenn.edu":"UPenn","brown.edu":"Brown","dartmouth.edu":"Dartmouth","caltech.edu":"Caltech","uchicago.edu":"UChicago","duke.edu":"Duke","northwestern.edu":"Northwestern","nyu.edu":"NYU","ucla.edu":"UCLA","ucsd.edu":"UC San Diego","umich.edu":"University of Michigan","gatech.edu":"Georgia Tech","illinois.edu":"UIUC","utexas.edu":"UT Austin","uw.edu":"University of Washington","washington.edu":"University of Washington","bu.edu":"Boston University","northeastern.edu":"Northeastern","tufts.edu":"Tufts","wellesley.edu":"Wellesley"};
+function uniFromEmail(email){
+  var m=/^[^\s@]+@([a-z0-9-]+(?:\.[a-z0-9-]+)+)$/i.exec(String(email).trim());if(!m)return null;
+  var L=m[1].toLowerCase().split(".");
+  for(var i=0;i<L.length-1;i++){var s=L.slice(i).join(".");if(KNOWN[s])return {dom:s,name:KNOWN[s]};}
+  if(L[L.length-1]!=="edu")return null;
+  var dom=L.slice(-2).join(".");return {dom:dom,name:dom};
+}
+
+/* ---------- state ---------- */
+var CFG=window.OFF_CONFIG||{};
+var sb=CFG.url&&window.supabase?window.supabase.createClient(CFG.url,CFG.key):null;
+var EMPTY={total:0,named:0,unis:[],people:[],answers:{}};
+var S={live:!!sb,rows:[],remote:EMPTY,answers:{},spread:{},show:true,mine:null,panel:"people",slide:0,email:"",verified:false,submitted:false,token:null,sms:false,saving:false,role:"",year:""};
+
+/* sample rows so the page can be reviewed without a backend; never used when connected */
+function sample(){
+  var seed=7,r=function(){seed=(seed*1664525+1013904223)%4294967296;return seed/4294967296;};
+  var fn=["Maya","Daniel","Priya","Lucas","Aisha","Ethan","Sofia","Noah","Mei","Omar","Hannah","Leo","Zara","Jonah","Ines","Kai"];
+  var ln=["Chen","Okafor","Patel","Rivera","Kim","Novak","Haddad","Brooks","Tanaka","Silva","Meyer","Osei","Lindqvist","Park","Romano","Shah"];
+  var un=[["mit.edu",34],["harvard.edu",21],["stanford.edu",17],["berkeley.edu",14],["cmu.edu",11],["columbia.edu",9],["uchicago.edu",8],["yale.edu",7],["princeton.edu",6],["umich.edu",6],["gatech.edu",5],["ucla.edu",4],["cornell.edu",3],["nyu.edu",2]];
+  var out=[],t=Date.now();
+  un.forEach(function(u){for(var i=0;i<u[1];i++){var a={};Q.forEach(function(q){a[q.id]=q.o[Math.floor(r()*r()*q.o.length)];});
+    out.push({name:r()<.6?fn[Math.floor(r()*16)]+" "+ln[Math.floor(r()*16)]:"",uni:KNOWN[u[0]],dom:u[0],a:a,lead:r()<.1,ts:t-Math.floor(r()*6e8)});}});
+  return out;
+}
+/* same shape the backend's board() returns */
+function toBoard(rows){
+  var by={},ans={},people=rows.filter(function(p){return p.name;}).sort(function(a,b){return b.ts-a.ts;});
+  rows.forEach(function(p){if(!by[p.dom])by[p.dom]={key:p.dom,name:p.uni,n:0,named:0};by[p.dom].n++;if(p.name)by[p.dom].named++;
+    Object.keys(p.a).forEach(function(q){ans[q]=ans[q]||{};ans[q][p.a[q]]=(ans[q][p.a[q]]||0)+1;});});
+  var unis=Object.keys(by).map(function(k){return by[k];}).sort(function(a,b){return b.n-a.n||a.name.localeCompare(b.name);});
+  return {total:rows.length,named:people.length,unis:unis,people:people,answers:ans};
+}
+function board(){return S.live?S.remote:toBoard(S.rows);}
+function uniCount(dom){var n=0;board().unis.forEach(function(x){if(x.key===dom)n=x.n;});return n;}
+
+/* ---------- carousel: five questions, then two written ones ---------- */
+var slides=[],busy=false,optBtns={},spreadBtns={};
+function spreadList(){return SPREAD.filter(function(s){return S.spread[s.id];}).map(function(s){return s.id;});}
+function flash(el){el.classList.remove("flash");void el.offsetWidth;el.classList.add("flash");}
+function pick(q,o){S.answers[q.id]=o;$("err").textContent="";
+  Object.keys(optBtns[q.id]).forEach(function(k){optBtns[q.id][k].setAttribute("aria-pressed",String(k===o));});updateResults();renderNav();}
+function buildForm(){
+  var stage=$("stage"),dots=$("dots");
+  function add(sl){var k=slides.length;sl.hidden=k>0;stage.appendChild(sl);slides.push(sl);
+    var d=mk("i");d.addEventListener("click",function(){go(k);});dots.appendChild(d);}
+  Q.forEach(function(q,qi){
+    var sl=mk("section","slide"),h=mk("h2",null,q.q+" ");h.appendChild(mk("span","req","*"));sl.appendChild(h);
+    var os=mk("div","opts");optBtns[q.id]={};
+    q.o.forEach(function(o,oi){var b=mk("button","opt");b.type="button";b.setAttribute("aria-pressed","false");
+      b.appendChild(mk("span","key","ABCD".charAt(oi)));b.appendChild(mk("span",null,o));optBtns[q.id][o]=b;
+      b.addEventListener("click",function(){if(busy)return;pick(q,o);setTimeout(function(){go(qi+1);},CALM?0:340);});
+      os.appendChild(b);});
+    sl.appendChild(os);add(sl);
+  });
+  TEXTQ.forEach(function(t){
+    var sl=mk("section","slide"),h=mk("h2"),lab=mk("label",null,t.q);lab.htmlFor=t.id;h.appendChild(lab);sl.appendChild(h);
+    var ta=mk("textarea");ta.id=t.id;ta.maxLength=1500;ta.placeholder="Optional. Say whatever is on your mind.";ta.addEventListener("input",renderNav);sl.appendChild(ta);add(sl);
+  });
+  /* help checkboxes live in the panel that appears after submitting; each tick saves on its own */
+  var sp=$("spread");
+  SPREAD.forEach(function(s){var b=mk("button","opt pick");b.type="button";b.setAttribute("aria-pressed","false");
+    b.appendChild(mk("span","key"));b.appendChild(mk("span",null,s.t));b.appendChild(mk("span","saved","Saved"));
+    function set(v){S.spread[s.id]=v;b.setAttribute("aria-pressed",String(v));}
+    b.addEventListener("click",function(){var was=!!S.spread[s.id];set(!was);renderLead();
+      patch({spread:spreadList()}).then(function(){flash(b);},function(){set(was);renderLead();$("copyMsg").textContent=FAIL.save;});});
+    sp.appendChild(b);spreadBtns[s.id]=b;});
+  renderNav();
+}
+function renderNav(){
+  var i=S.slide;
+  $("dots").querySelectorAll("i").forEach(function(x,k){
+    var filled=k<Q.length?S.answers[Q[k].id]:$(TEXTQ[k-Q.length].id).value.trim();x.className=k===i?"cur":filled?"done":"";});
+  $("btnBack").style.visibility=i>0?"visible":"hidden";
+  $("btnNext").style.visibility=i<slides.length-1&&(i>=Q.length||S.answers[Q[i].id])?"visible":"hidden";
+  updateBtn();
+}
+/* the main button stays grey until every question is answered */
+function ready(){return Q.every(function(q){return S.answers[q.id];});}
+function updateBtn(){var b=$("btnSubmit"),was=b.disabled;b.disabled=S.saving||!ready();if(was&&!b.disabled&&!S.saving&&!S.submitted)flash(b);}
+/* volunteering as a campus organizer asks for a phone number and consent to texts */
+function renderLead(){
+  var on=!!S.spread.lead,phone=$("inPhone").value.trim();
+  $("leadPop").classList.toggle("open",on);if($("inPhone2").value.trim()!==phone)$("inPhone2").value=phone;
+  $("pkSms").setAttribute("aria-pressed",String(S.sms&&!!phone));
+  $("leadHint").textContent=on&&!phone?"Add your phone number so we can reach you.":"";
+}
+$("inPhone").addEventListener("input",function(){this.value=fmtPhone(this.value);if(S.submitted)renderLead();});
+$("inPhone2").addEventListener("input",function(){this.value=fmtPhone(this.value);$("inPhone").value=this.value;$("leadHint").textContent="";});
+$("inPhone2").addEventListener("change",function(){var el=this,phone=el.value.trim();if(!phone)S.sms=false;
+  if(!phoneOk(phone)){$("leadHint").textContent="That phone number looks incomplete.";return;}
+  patch({phone:phone,sms_ok:S.sms}).then(function(){flash(el);renderLead();},function(){$("leadHint").textContent=FAIL.save;});});
+$("pkSms").addEventListener("click",function(){var b=this,phone=$("inPhone2").value.trim();
+  if(!phone||!phoneOk(phone)){$("leadHint").textContent=phone?"That phone number looks incomplete.":"Add your phone number first.";$("inPhone2").focus();return;}
+  S.sms=!S.sms;renderLead();
+  patch({phone:phone,sms_ok:S.sms}).then(function(){flash(b);},function(){S.sms=!S.sms;renderLead();$("leadHint").textContent=FAIL.save;});});
+function go(i){
+  if(busy||i===S.slide||i<0||i>=slides.length)return;
+  var st=$("stage"),cur=slides[S.slide],nx=slides[i],dir=i>S.slide?1:-1;
+  if(CALM){cur.hidden=true;nx.hidden=false;S.slide=i;renderNav();return;}
+  busy=true;st.classList.add("moving");st.style.height=st.offsetHeight+"px";
+  cur.style.transition="opacity .18s ease,transform .18s ease";cur.style.opacity="0";cur.style.transform="translateX("+(-28*dir)+"px)";
+  setTimeout(function(){
+    cur.hidden=true;cur.style.cssText="";
+    nx.style.opacity="0";nx.style.transform="translateX("+(28*dir)+"px)";nx.hidden=false;
+    S.slide=i;renderNav();st.style.height=nx.offsetHeight+"px";
+    setTimeout(function(){
+      nx.style.transition="opacity .32s ease,transform .32s cubic-bezier(.2,.7,.2,1)";nx.style.opacity="1";nx.style.transform="none";
+      setTimeout(function(){nx.style.cssText="";st.style.height="";st.classList.remove("moving");busy=false;},340);
+    },20);
+  },180);
+}
+/* who is answering: role, and year for undergraduates */
+var ROLES=["an undergraduate","a graduate student","a postdoc","faculty","staff"],YEARS=["First-year","Sophomore","Junior","Senior"];
+function paintChips(){
+  $("roleChips").querySelectorAll(".chip").forEach(function(b){b.setAttribute("aria-pressed",String(b.textContent===S.role));});
+  $("yearChips").querySelectorAll(".chip").forEach(function(b){b.setAttribute("aria-pressed",String(b.textContent===S.year));});
+  $("yearField").hidden=S.role!==ROLES[0];
+}
+function chips(box,items,key){items.forEach(function(t){var b=mk("button","chip",t);b.type="button";b.setAttribute("aria-pressed","false");
+  b.addEventListener("click",function(){S[key]=S[key]===t?"":t;if(S.role!==ROLES[0])S.year="";$("err").textContent="";paintChips();});box.appendChild(b);});}
+chips($("roleChips"),ROLES,"role");chips($("yearChips"),YEARS,"year");
+$("btnBack").addEventListener("click",function(){go(S.slide-1);});
+$("btnNext").addEventListener("click",function(){go(S.slide+1);});
+$("pkShow").addEventListener("click",function(){S.show=!S.show;this.setAttribute("aria-pressed",String(S.show));});
+
+var lookupSeq=0,lookupTimer=null;
+var NOTUS="That isn't a U.S. university address. This is open to U.S. universities only.";
+function showUni(u,complete){
+  var h=$("uniHint"),prev=S.mine&&S.mine.dom;S.mine=u;clear(h);h.hidden=!u&&!complete;loadMajors(u?u.dom:null);
+  if(u){h.hidden=true;if(u.dom!==prev)S.panel="unis";}
+  else if(complete){h.className="hint bad";h.textContent=NOTUS;}
+  else h.className="hint";
+  renderWidget();
+}
+/* only the domain is sent for the lookup, not the address */
+function resolveUni(v){
+  if(!S.live)return Promise.resolve(uniFromEmail(v));
+  return sb.rpc("lookup_uni",{p_email:"x@"+v.split("@").pop()}).then(function(r){return r.error?uniFromEmail(v):r.data;});
+}
+var MAIL=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+$("inEmail").addEventListener("input",function(){
+  var v=this.value.trim(),complete=MAIL.test(v),seq=++lookupSeq;
+  clearTimeout(lookupTimer);
+  if(!complete){showUni(null,false);return;}
+  lookupTimer=setTimeout(function(){resolveUni(v).then(function(u){if(seq===lookupSeq)showUni(u,true);});},S.live?250:0);
+});
+
+/* ---------- tidy inputs: name capitalisation, phone format, major suggestions ---------- */
+/* A name typed all in lower or upper case is capitalised once. If the person changes it back, it is left alone. */
+var nameFixed=false;
+$("inName").addEventListener("change",function(){
+  var v=this.value.trim().replace(/\s+/g," ");
+  if(!nameFixed&&v&&(v===v.toLowerCase()||v===v.toUpperCase())){nameFixed=true;
+    v=v.toLowerCase().replace(/(^|[\s'\u2019-])([a-z\u00e0-\u00ff])/g,function(m,a,b){return a+b.toUpperCase();});}
+  this.value=v;
+});
+/* U.S. numbers become (617) 555-0100 as you type; numbers starting with + are left as typed */
+function fmtPhone(v){
+  if(/^\s*\+/.test(v))return v.replace(/[^\d+ ()-]/g,"");
+  var d=v.replace(/\D/g,"");if(d.length===11&&d.charAt(0)==="1")d=d.slice(1);d=d.slice(0,10);
+  if(d.length<4)return d;if(d.length<7)return "("+d.slice(0,3)+") "+d.slice(3);
+  return "("+d.slice(0,3)+") "+d.slice(3,6)+"-"+d.slice(6);
+}
+function phoneOk(v){var d=v.replace(/\D/g,"").length;return !v||(/^\+/.test(v)?d>=8:d===10);}
+/* major: suggestions you can click, but anything typed is accepted */
+var BASIC=["Biology","Business","Chemistry","Computer Science","Economics","Electrical Engineering","English","History","Mathematics","Mechanical Engineering","Neuroscience","Philosophy","Physics","Political Science","Psychology","Sociology","Undeclared"];
+var MAJ={all:BASIC,own:[],dom:null};
+function loadMajors(dom){
+  if(!S.live||MAJ.dom===dom)return;MAJ.dom=dom;MAJ.own=[];
+  if(dom)sb.rpc("majors_for",{p_dom:dom}).then(function(r){if(!r.error&&r.data&&MAJ.dom===dom)MAJ.own=r.data;});
+}
+(function(){
+  var inp=$("inMajor"),menu=$("majorMenu"),on=-1,shown=[];
+  function close(){menu.hidden=true;inp.setAttribute("aria-expanded","false");on=-1;}
+  function choose(m){inp.value=m;close();}
+  function mark(){menu.querySelectorAll("li").forEach(function(li,i){li.classList.toggle("on",i===on);if(i===on)li.scrollIntoView({block:"nearest"});});}
+  function open(){
+    var q=inp.value.trim().toLowerCase(),seen={};
+    function match(list){return list.filter(function(m){var k=m.toLowerCase();if(seen[k]||k.indexOf(q)<0)return false;seen[k]=1;return true;});}
+    function starts(a,b){return (a.toLowerCase().indexOf(q)===0?0:1)-(b.toLowerCase().indexOf(q)===0?0:1);}
+    /* the university's own majors come first; with nothing typed, only those (or nothing) are shown */
+    var own=match(MAJ.own),rest=q?match(MAJ.all).sort(starts):[];
+    shown=own.concat(rest).slice(0,80);
+    if(shown.length===1&&shown[0].toLowerCase()===q)shown=[];
+    clear(menu);on=-1;
+    shown.forEach(function(m){var li=mk("li",null,m);li.setAttribute("role","option");
+      li.addEventListener("mousedown",function(e){e.preventDefault();choose(m);});menu.appendChild(li);});
+    menu.hidden=!shown.length;inp.setAttribute("aria-expanded",String(!!shown.length));
+  }
+  inp.addEventListener("focus",open);inp.addEventListener("input",open);
+  inp.addEventListener("keydown",function(e){
+    if(menu.hidden){if(e.key==="ArrowDown")open();return;}
+    if(e.key==="ArrowDown"){e.preventDefault();on=Math.min(shown.length-1,on+1);mark();}
+    else if(e.key==="ArrowUp"){e.preventDefault();on=Math.max(0,on-1);mark();}
+    else if(e.key==="Enter"){e.preventDefault();if(on>-1)choose(shown[on]);else close();}
+    else if(e.key==="Escape")close();
+  });
+  /* on leaving the field, snap to the listed spelling if it matches one; otherwise keep what was typed */
+  inp.addEventListener("blur",function(){close();var v=inp.value.trim().replace(/\s+/g," "),hit=null;
+    MAJ.own.concat(MAJ.all).forEach(function(m){if(!hit&&m.toLowerCase()===v.toLowerCase())hit=m;});inp.value=hit||v;});
+})();
+
+/* ---------- board ---------- */
+function tween(el,to){
+  var from=+el.dataset.v||0;el.dataset.v=to;
+  if(CALM||from===to){el.textContent=num(to);return;}
+  var t0=null;requestAnimationFrame(function f(t){if(t0===null)t0=t;var k=Math.min(1,(t-t0)/700);k=1-Math.pow(1-k,3);
+    el.textContent=num(Math.round(from+(to-from)*k));if(k<1&&+el.dataset.v===to)requestAnimationFrame(f);});
+}
+function grow(f,w){if(CALM){f.style.width=w;return;}setTimeout(function(){f.style.width=w;},30);}
+/* clicking a university opens the people list filtered to it */
+function showPeopleOf(name){S.panel="people";$("inSearch").value=name;renderWidget();}
+function uniRow(g,me,top){
+  var li=mk("li",me?"me":null);li.appendChild(mk("span","nm",g.name));li.appendChild(mk("span","n",num(g.n)));
+  li.tabIndex=0;li.setAttribute("role","button");li.title="Show people from "+g.name;
+  li.addEventListener("click",function(){showPeopleOf(g.name);});
+  li.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();showPeopleOf(g.name);}});
+  var tr=mk("div","track"),f=mk("div","fill");grow(f,(top?Math.max(g.n?2:0,Math.round(g.n/top*100)):0)+"%");tr.appendChild(f);li.appendChild(tr);return li;
+}
+var uniKey="",panelShown="",tickKey="";
+function renderTicker(B){
+  var key=B.unis.map(function(x){return x.key+x.n;}).join(",");if(key===tickKey)return;tickKey=key;
+  var row=$("tickerRow");clear(row);$("ticker").hidden=B.unis.length<4;
+  for(var k=0;k<2;k++)B.unis.slice(0,24).forEach(function(x){var s=mk("span",null,x.name);s.appendChild(mk("b",null,num(x.n)));row.appendChild(s);});
+}
+function renderWidget(){
+  var B=board();
+  tween($("cPeople"),B.total);tween($("cUnis"),B.unis.length);renderTicker(B);
+  var people=S.panel==="people";
+  $("segPeople").setAttribute("aria-selected",String(people));$("segUnis").setAttribute("aria-selected",String(!people));
+  $("pPeople").hidden=!people;$("pUnis").hidden=people;
+  if(panelShown!==S.panel){var p=$(people?"pPeople":"pUnis");p.classList.remove("fade");void p.offsetWidth;p.classList.add("fade");if(panelShown)uniKey="";panelShown=S.panel;}
+
+  var q=$("inSearch").value.trim().toLowerCase();
+  var rows=B.people.filter(function(p){return !q||(p.name+" "+(p.uni||"")).toLowerCase().indexOf(q)>-1;});
+  var pl=$("peopleList");clear(pl);
+  rows.slice(0,200).forEach(function(p){var li=mk("li"),nm=mk(p.lead?"a":"span",p.lead?"lead":null,p.name);
+    if(p.lead){nm.href="#organizers";nm.setAttribute("data-tip","Campus organizer at "+(p.uni||"their university")+". Click to see what that means.");}
+    li.appendChild(nm);li.appendChild(mk("span","u",p.uni||""));pl.appendChild(li);});
+  if(!rows.length)pl.appendChild(mk("li","empty",q?"No one matches that search.":"No names yet. Yours can be the first."));
+  /* private names can't be searched by name, but they still count toward a university you search for */
+  var anon=0;B.unis.forEach(function(x){if(!q||x.name.toLowerCase().indexOf(q)>-1)anon+=x.n-(x.named||0);});
+  $("pubNote").textContent=num(rows.length)+(rows.length===1?" public name":" public names");
+  $("anonNote").textContent=anon>0?"Plus "+num(anon)+(anon===1?" person who":" people who")+" kept their name private.":"";
+
+  /* rebuild the ranking only when it changes, so the bars don't replay on every keystroke */
+  var mine=S.mine?S.mine.dom:null,key=mine+"|"+B.unis.map(function(x){return x.key+x.n;}).join(",");
+  if(key===uniKey)return;uniKey=key;
+  var ul=$("uniList"),idx=-1;clear(ul);
+  B.unis.forEach(function(x,i){if(x.key===mine)idx=i;});
+  var top=B.unis.length?B.unis[0].n:0,inTop=!mine||(idx>-1&&idx<10);
+  B.unis.slice(0,inTop?10:9).forEach(function(x){ul.appendChild(uniRow(x,x.key===mine,top));});
+  if(!inTop){var row=uniRow(idx>-1?B.unis[idx]:{name:S.mine.name,n:0},true,top);if(B.unis.length)row.classList.add("gap");ul.appendChild(row);}
+  if(!B.unis.length&&inTop)ul.appendChild(mk("li","empty","No universities yet."));
+}
+$("segPeople").addEventListener("click",function(){S.panel="people";renderWidget();});
+$("segUnis").addEventListener("click",function(){S.panel="unis";renderWidget();});
+$("inSearch").addEventListener("input",renderWidget);
+
+/* ---------- poll results: built once, then updated in place so the bars animate ---------- */
+var R={};
+function buildResults(){
+  var grid=$("resGrid");
+  Q.forEach(function(q,i){
+    var card=mk("div","card rcard");card.appendChild(mk("h3",null,q.q));R[q.id]={};
+    q.o.forEach(function(o){var row=mk("div","rrow"),l=mk("div","l"),pct=mk("span","pct","0%");
+      l.appendChild(mk("span",null,o));l.appendChild(pct);row.appendChild(l);
+      var tr=mk("div","track"),f=mk("div","fill");tr.appendChild(f);row.appendChild(tr);card.appendChild(row);R[q.id][o]={row:row,pct:pct,fill:f};});
+    grid.appendChild(card);
+  });
+}
+function updateResults(){
+  var B=board();
+  $("resCount").textContent=B.total?"("+num(B.total)+(B.total===1?" person)":" people)"):"";
+  Q.forEach(function(q){
+    var c=B.answers[q.id]||{},tot=0;q.o.forEach(function(o){tot+=c[o]||0;});
+    q.o.forEach(function(o){var x=R[q.id][o],pct=tot?Math.round((c[o]||0)/tot*100):0;
+      x.pct.textContent=pct+"%";grow(x.fill,pct+"%");x.row.classList.toggle("mine",S.answers[q.id]===o);});
+  });
+}
+
+/* ---------- after Count me in: confirmation, help checkboxes, sharing ---------- */
+function renderAfter(){
+  var on=S.submitted,b=$("btnSubmit");
+  $("inEmail").readOnly=on;b.hidden=on&&!S.token;if(!S.saving)b.textContent=on?"Save changes":"Count me in";
+  if(!on){$("pop").classList.remove("open");return;}
+  var u=S.mine;
+  $("afterLab").textContent=S.verified?"Confirmed":"One step left";
+  $("afterHead").textContent=S.verified?"You're in.":"Check your email.";
+  $("afterSub").textContent=S.verified?"You're counted"+(u?" for "+u.name:"")+". We will contact you when the letter is ready to sign."
+    :S.live?"We sent a link to "+S.email+". Open it within 24 hours to be counted.":"Preview mode: no email is sent.";
+  $("afterHelp").hidden=!S.token;
+  var url=location.href.split(/[?#]/)[0],msg="Students are writing an open letter on AI and asking what should be in it. Six questions, two minutes: ",e=encodeURIComponent;
+  $("shSms").href="sms:?&body="+e(msg+url);
+  $("shMail").href="mailto:?subject="+e("Six questions: students and AI")+"&body="+e(msg+url);
+  $("shWa").href="https://wa.me/?text="+e(msg+url);
+  $("shThreads").href="https://www.threads.net/intent/post?text="+e(msg+url);
+  $("shDorm").href="mailto:?subject="+e("Students are writing an open letter on AI")+"&body="+e("Hi all,\n\nStudents across U.S. universities are putting together an open letter on AI, and before it is written they are asking what we think should be in it. It is six quick questions, and you can see how our university compares with others.\n\n"+url+"\n\nThanks!");
+  $("pop").classList.add("open");
+}
+function copy(note){var url=location.href.split(/[?#]/)[0],m=$("copyMsg");
+  try{navigator.clipboard.writeText(url).then(function(){m.textContent=note;},function(){m.textContent="Copy the address from your browser bar.";});}catch(x){m.textContent="Copy the address from your browser bar.";}}
+$("btnCopy").addEventListener("click",function(){copy("Link copied.");});
+$("shInsta").addEventListener("click",function(){copy("Link copied. Paste it into your story or a DM.");});
+
+/* ---------- backend ---------- */
+var FAIL={not_university:NOTUS,mail:"Your answers are saved, but we could not send the email. Wait a minute and try again.",save:"Could not save. Check your connection and try again."};
+function formRow(){return {name:$("inName").value.trim(),show_name:S.show,major:$("inMajor").value.trim(),role:S.role,year:S.year,phone:$("inPhone").value.trim(),
+  answers:S.answers,concern:$("inConcern").value.trim(),spread:spreadList()};}
+/* first submit: stores the entry, then emails the confirmation link. Returns the university and an edit token. */
+function save(row){
+  if(!S.live){var u=uniFromEmail(row.email);if(!u)return Promise.reject("not_university");
+    S.local={name:row.show_name?row.name:"",uni:u.name,dom:u.dom,a:row.answers,ts:Date.now()};S.rows.push(S.local);S.verified=true;
+    return Promise.resolve({dom:u.dom,name:u.name,token:"local"});}
+  return sb.rpc("submit_interest",{p:row}).then(function(r){
+    if(r.error)throw (/not_university/.test(r.error.message)?"not_university":"save");
+    return sb.auth.signInWithOtp({email:row.email,options:{emailRedirectTo:location.href.split(/[?#]/)[0]}}).then(function(o){if(o.error)throw "mail";return r.data;});
+  });
+}
+/* later changes, made with the edit token */
+function patch(p){
+  if(!S.live){if(S.local&&p.answers){S.local.a=p.answers;S.local.name=p.show_name?p.name:"";}return Promise.resolve();}
+  return sb.rpc("update_interest",{p_token:S.token,p:p}).then(function(r){if(r.error)throw "save";return loadBoard();});
+}
+function fail(msg,el){$("err").textContent=msg;if(el){el.scrollIntoView({block:"center",behavior:CALM?"auto":"smooth"});if(el.focus)el.focus({preventScroll:true});}}
+$("form").addEventListener("submit",function(e){
   e.preventDefault();
-  var c={name:$("inName").value.trim(),uni:$("inUni").value.trim(),email:$("inEmail").value.trim(),phone:$("inPhone").value.trim(),ts:Date.now()};
-  var err="";
-  if(!c.name)err="Enter your name.";else if(!c.uni)err="Enter your university.";
-  else if(!c.email&&!c.phone)err="Enter an email or a phone number so we can reach you on launch day.";
-  else if(c.email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.email))err="That email address looks incomplete.";
-  else if(!$("inOk").checked)err="Tick the box so we can contact you when the letter opens.";
-  setText("errContact",err);if(err)return;
-  var b=$("btnContact");b.disabled=true;var jb=document.querySelector(".join");jb.style.minHeight=jb.offsetHeight+"px";
-  saveContact(c).then(function(){S.contact=c;S.step="poll";b.disabled=false;render();},
-    function(x){setText("errContact",failMsg(x));b.disabled=false;if(!S.live){localRow(c);S.contact=c;S.step="poll";render();}});
+  var miss=-1,email=$("inEmail").value.trim(),b=$("btnSubmit"),row=formRow();
+  Q.forEach(function(q,i){if(miss<0&&!S.answers[q.id])miss=i;});
+  if(!row.name){fail("Enter your name.",$("inName"));return;}
+  if(!MAIL.test(email)){fail("Enter your university email.",$("inEmail"));return;}
+  if(!S.role){fail("Tell us what you are at your university.",$("roleField"));return;}
+  if(miss>-1){go(miss);fail("Answer the six questions first.",$("pollCard"));return;}
+  if(!phoneOk(row.phone)){fail("Finish your phone number, or leave it blank.",$("inPhone"));return;}
+  S.saving=true;updateBtn();$("err").textContent="";
+  function idle(){S.saving=false;updateBtn();}
+  if(S.submitted){
+    patch(row).then(function(){b.textContent="Saved";flash(b);renderAll();setTimeout(function(){idle();renderAfter();},1500);},
+      function(){idle();fail(FAIL.save);});
+    return;
+  }
+  row.email=email;
+  save(row).then(function(u){
+    S.mine={dom:u.dom,name:u.name};S.email=email;S.token=u.token||null;S.submitted=true;S.panel="unis";idle();
+    try{if(S.live&&S.token)localStorage.setItem("off_token",S.token);}catch(x){}
+    renderAll();setTimeout(function(){$("pop").scrollIntoView({block:"nearest",behavior:CALM?"auto":"smooth"});},350);
+  },function(x){idle();fail(FAIL[x]||FAIL.save,x==="not_university"?$("inEmail"):null);});
 });
-$("btnFinish").addEventListener("click",function(){
-  var b=$("btnFinish"),t=$("inWish").value.trim();b.disabled=true;
-  var done=function(){b.disabled=false;S.step="done";render();};
-  chain=chain.then(function(){return t?saveWish(t):null;}).then(done,function(x){b.disabled=false;setText("errPoll",failMsg(x));if(!S.live)done();});
-});
-$("btnIdea").addEventListener("click",function(){var t=$("inIdea").value.trim();if(!t){setText("ideaMsg","Write a sentence or two first.");return;}
-  saveIdea(t).then(function(){setText("ideaMsg",S.live?"Saved. Thank you.":"Preview mode: not saved.");},function(x){setText("ideaMsg",failMsg(x));});});
-$("btnCopy").addEventListener("click",function(){try{navigator.clipboard.writeText(location.href.split("#")[0]).then(function(){setText("copyMsg","Link copied.");},function(){setText("copyMsg","Copy the address from your browser bar.");});}catch(e){setText("copyMsg","Copy the address from your browser bar.");}});
-$("btnSign").addEventListener("click",function(){
-  if(!S.contact){location.hash="join";$("inName").focus();return;}
-  var b=$("btnSign");b.disabled=true;setText("errSign","");
-  saveSignature().then(function(){S.signed=true;if(!S.live)S.sigs.unshift({name:S.contact.name,uni:S.contact.uni,ts:Date.now()});render();},function(x){setText("errSign",failMsg(x));renderSign();});
-});
+/* fill the form from a stored entry: a returning visitor, or someone arriving from the emailed link */
+function applyEntry(c){
+  S.email=c.email;S.verified=!!c.verified;S.token=c.token;S.submitted=true;
+  $("inEmail").value=c.email;$("inName").value=c.name||"";$("inMajor").value=c.major||"";$("inPhone").value=c.phone||"";
+  $("inConcern").value=c.concern||"";S.sms=!!c.sms_ok;S.role=c.role||"";S.year=c.year||"";paintChips();
+  S.show=c.show_name!==false;$("pkShow").setAttribute("aria-pressed",String(S.show));
+  Q.forEach(function(q){var a=c.answers&&c.answers[q.id];if(a&&optBtns[q.id][a])pick(q,a);});
+  S.spread={};(c.spread||[]).forEach(function(k){S.spread[k]=true;});
+  Object.keys(spreadBtns).forEach(function(k){spreadBtns[k].setAttribute("aria-pressed",String(!!S.spread[k]));});
+  try{localStorage.setItem("off_token",c.token);}catch(x){}
+  showUni({dom:c.dom,name:c.uni},true);renderLead();renderNav();renderAll();
+}
 
-/* organizer */
-$("btnLaunch").addEventListener("click",function(){var v=$("inLaunch").value;if(!v){setText("launchMsg","Pick a date and time.");return;}
-  var ms=new Date(v).getTime();if(isNaN(ms)){setText("launchMsg","That date is not valid.");return;}
-  S.db.doc("config/main").set({launchAt:ms}).then(function(){setText("launchMsg","Opening time set.");},function(){setText("launchMsg","Could not save the opening time.");});});
-function csvCell(v){return '"'+String(v==null?"":v).replace(/"/g,'""')+'"';}
-$("btnCsv").addEventListener("click",function(){setText("csvMsg","Loading.");
-  S.db.collection("contacts").limit(1000).get().then(function(q){
-    var rows=[["name","university","email","phone","letter_wish","idea","joined"].join(",")];
-    q.docs.forEach(function(d){var c=d.data()||{};rows.push([c.name,c.uni,c.email,c.phone,c.wish,c.idea,c.ts?new Date(c.ts).toISOString():""].map(csvCell).join(","));});
-    var out=$("csvOut");out.hidden=false;out.value=rows.join("\n");out.focus();out.select();
-    setText("csvMsg",q.size+" contacts. Select all and copy."+(q.size>=1000?" Showing the first 1,000.":""));
-  },function(){setText("csvMsg","Could not load the contact list.");});});
+/* ---------- tabs ---------- */
+var ANCH={"#organizers":1,"#why-wait":1,"#why-draft":1};
+function route(){
+  var h=location.hash,v=h==="#draft"?"viewDraft":(h==="#about"||ANCH[h])?"viewAbout":"viewInterest",el=$(v),about=v!=="viewInterest";
+  ["viewInterest","viewAbout","viewDraft"].forEach(function(id){$(id).hidden=id!==v;});
+  el.classList.remove("fade");void el.offsetWidth;el.classList.add("fade");
+  about?$("tabAbout").setAttribute("aria-current","page"):$("tabAbout").removeAttribute("aria-current");
+  about?$("tabInterest").removeAttribute("aria-current"):$("tabInterest").setAttribute("aria-current","page");
+}
+window.addEventListener("hashchange",function(){route();var t=ANCH[location.hash]&&$(location.hash.slice(1));if(t)t.scrollIntoView();else window.scrollTo(0,0);});
+/* add ?fonts to the address to try other heading fonts; not shown to visitors otherwise */
+if(/[?&]fonts\b/.test(location.search))(function(){
+  var F=[["Playfair","Playfair Display","Playfair+Display:wght@700;800;900",800,900,"100%","none"],["Playfair caps","Playfair Display","",800,900,"100%","uppercase"],
+    ["DM Serif","DM Serif Display","DM+Serif+Display",400,400,"100%","none"],["Instrument Serif","Instrument Serif","Instrument+Serif",400,400,"100%","none"],
+    ["Bodoni","Bodoni Moda","Bodoni+Moda:wght@700;900",700,900,"100%","none"],["Abril Fatface","Abril Fatface","Abril+Fatface",400,400,"100%","none"],
+    ["Alfa Slab","Alfa Slab One","Alfa+Slab+One",400,400,"100%","none"],["Zilla Slab","Zilla Slab","Zilla+Slab:wght@700",700,700,"100%","none"],
+    ["Space Mono caps","Space Mono","Space+Mono:wght@700",700,700,"100%","uppercase"],["Anybody caps","Anybody","Anybody:wdth,wght@100..125,700..900",800,900,"108%","uppercase"],
+    ["Syne caps","Syne","Syne:wght@800",800,800,"100%","uppercase"],["Archivo wide caps","Archivo","Archivo:wdth,wght@125,800..900",800,900,"125%","uppercase"]];
+  var box=mk("div","fontpick"),R=document.documentElement.style;
+  F.forEach(function(f,i){var b=mk("button",i?null:"on",f[0]);b.type="button";
+    b.addEventListener("click",function(){
+      if(f[2]){var l=document.createElement("link");l.rel="stylesheet";l.href="https://fonts.googleapis.com/css2?family="+f[2]+"&display=swap";document.head.appendChild(l);f[2]="";}
+      R.setProperty("--head",'"'+f[1]+'",serif');R.setProperty("--hw",f[3]);R.setProperty("--hx",f[4]);R.setProperty("--hs",f[5]);R.setProperty("--hc",f[6]);
+      box.querySelectorAll("button").forEach(function(x){x.classList.toggle("on",x===b);});});
+    box.appendChild(b);});
+  document.body.appendChild(box);
+})();
 
 /* ---------- boot ---------- */
-render();
-function connect(){
-  if(!window.claude||typeof window.claude.use!=="function")return;
-  Promise.all([window.claude.use("db"),window.claude.use("user")]).then(function(r){
-    var db=r[0],user=r[1];if(!db)return;S.db=db;
-    var lost=function(){};
-    db.collection("polls").limit(1000).onSnapshot(function(q){S.polls=q.docs.map(function(d){var x=d.data()||{};return {id:d.id,name:x.name,uni:x.uni,ts:x.ts,a:x.a||{}};});renderCounts();},lost);
-    db.collection("signatures").orderBy("ts","desc").limit(1000).onSnapshot(function(q){S.sigs=q.docs.map(function(d){return d.data()||{};});if(S.uid)S.signed=q.docs.some(function(d){return d.id===S.uid;})||S.signed;renderCounts();renderSign();},lost);
-    db.doc("config/main").onSnapshot(function(d){var x=d.exists?d.data():null;S.launchAt=x&&typeof x.launchAt==="number"?x.launchAt:null;renderSign();},lost);
-    if(!user)return;
-    Promise.all([user.id(),user.can("data.write"),user.isOwner()]).then(function(v){
-      S.uid=v[0];S.owner=!!v[2];S.live=!!S.uid&&v[1]!==false;
-      if(S.owner)$("organizer").hidden=false;
-      if(!S.uid){render();return;}
-      return Promise.all([db.doc("contacts/"+S.uid).get(),db.doc("polls/"+S.uid).get(),db.doc("signatures/"+S.uid).get()]).then(function(d){
-        if(d[0].exists&&!S.contact){S.contact=d[0].data();var a=(d[1].exists&&d[1].data().a)||{};S.answers=Object.assign({},a);
-          var left=Q.findIndex(function(q){return !S.answers[q.id];});
-          if(left===-1)S.step="done";else{S.step="poll";S.qi=left;}
-          if(S.contact.idea)$("inIdea").value=String(S.contact.idea);}
-        S.signed=d[2].exists;render();
-      });
-    }).catch(function(){render();});
-  }).catch(function(){});
+function renderAll(){$("previewNote").hidden=S.live;renderWidget();updateResults();renderAfter();}
+function loadBoard(){return sb.rpc("board").then(function(r){if(!r.error&&r.data){S.remote=r.data;renderAll();}});}
+buildForm();buildResults();showUni(null,false);route();
+if(!S.live){S.rows=sample();renderAll();}
+else{
+  renderAll();loadBoard();setInterval(loadBoard,30000);
+  sb.rpc("majors_for",{p_dom:""}).then(function(r){if(!r.error&&r.data&&r.data.length)MAJ.all=r.data;});
+  /* arriving from the emailed link signs the visitor in and confirms them; otherwise a saved edit token brings their entry back */
+  sb.auth.getSession().then(function(r){
+    if(r.data&&r.data.session)return sb.rpc("confirm_signup").then(function(m){return m.data;});
+    var t=null;try{t=localStorage.getItem("off_token");}catch(x){}
+    return t?sb.rpc("get_interest",{p_token:t}).then(function(m){return m.data;}):null;
+  }).then(function(c){if(c){applyEntry(c);loadBoard();}});
 }
-connect();
 })();
 </script>
 </body>
