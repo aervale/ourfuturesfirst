@@ -5,7 +5,9 @@ create extension if not exists citext;
 
 create table public.uni_domains (
   domain text primary key,
-  name   text not null
+  name   text not null,
+  mx     smallint,  -- position on the page's U.S. map, filled in by a later migration
+  my     smallint
 );
 alter table public.uni_domains enable row level security;
 
@@ -14,11 +16,14 @@ create table public.signups (
   email       citext not null unique,
   name        text not null default '',
   show_name   boolean not null default true,
+  name_hidden boolean not null default false,  -- set by name screening or an admin; keeps the name off the public list
   phone       text not null default '',
   sms_ok      boolean not null default false,
   major       text not null default '',
   role        text not null default '',
   year        text not null default '',
+  title       text not null default '',           -- faculty and staff
+  show_info   boolean not null default true,      -- list year or title, and major, beside a public name
   uni         text not null,
   dom         text not null,
   answers     jsonb not null default '{}',
@@ -50,10 +55,18 @@ begin
   return jsonb_build_object('dom', s, 'name', s);
 end $$;
 
+-- Quick screen for names that should not go straight onto the public list: profanity and slurs as whole
+-- words, links, or nothing that looks like a name. A name that fails is hidden until an admin reviews it.
+create function public.name_ok(p text) returns boolean language sql immutable as $$
+  select p ~* '[[:alpha:]]{2}'
+     and p !~* '(https?:|www\.|@|\.(com|net|org|edu)\M|[0-9]{3})'
+     and p !~* '\m(fuck\w*|motherfuck\w*|shit\w*|bullshit|bitch\w*|cunt\w*|ass(hole|hat|wipe)s?|bastard|whore|slut|pussy|penis|vagina|dildo|cock(s|sucker\w*)?|porn\w*|rape[sd]?|rapist|nazi\w*|hitler|nigg(er|a)\w*|fag(got)?s?|retard\w*|kike|spic|chink|tranny|pedo\w*)\M';
+$$;
+
 -- A person's own entry, as the page sees it. Internal helper.
 create function public.entry_json(s public.signups) returns jsonb language sql stable as $$
   select jsonb_build_object('email', s.email, 'uni', s.uni, 'dom', s.dom, 'verified', s.verified_at is not null,
-    'token', s.edit_token, 'name', s.name, 'show_name', s.show_name, 'major', s.major, 'role', s.role, 'year', s.year, 'phone', s.phone, 'sms_ok', s.sms_ok,
+    'token', s.edit_token, 'name', s.name, 'show_name', s.show_name, 'major', s.major, 'role', s.role, 'year', s.year, 'title', s.title, 'show_info', s.show_info, 'phone', s.phone, 'sms_ok', s.sms_ok,
     'answers', s.answers, 'concern', s.concern, 'letter', s.letter, 'spread', to_jsonb(s.spread));
 $$;
 
@@ -71,39 +84,21 @@ begin
   if jsonb_typeof(p->'answers') is distinct from 'object' or length((p->'answers')::text) > 2000 then
     raise exception 'bad_answers';
   end if;
-  insert into signups (email, name, show_name, phone, major, role, year, uni, dom, answers, concern, letter, spread)
-  values (e, left(coalesce(p->>'name', ''), 120), coalesce((p->>'show_name')::boolean, true),
-          left(coalesce(p->>'phone', ''), 30), left(coalesce(p->>'major', ''), 80),
+  insert into signups (email, name, name_hidden, show_name, show_info, title, phone, major, role, year, uni, dom, answers, concern, letter, spread)
+  values (e, left(coalesce(p->>'name', ''), 120), not name_ok(left(coalesce(p->>'name', ''), 120)), coalesce((p->>'show_name')::boolean, true),
+          coalesce((p->>'show_info')::boolean, true), left(trim(coalesce(p->>'title', '')), 80),
+          left(coalesce(p->>'phone', ''), 30), norm_major(u->>'dom', p->>'major'),
           left(coalesce(p->>'role', ''), 30), left(coalesce(p->>'year', ''), 30), u->>'name', u->>'dom', p->'answers',
           left(coalesce(p->>'concern', ''), 1500), left(coalesce(p->>'letter', ''), 1500),
           array(select left(x, 20) from jsonb_array_elements_text(coalesce(p->'spread', '[]'::jsonb)) x limit 10))
   on conflict (email) do update set
-    name = excluded.name, show_name = excluded.show_name, phone = excluded.phone, major = excluded.major, role = excluded.role, year = excluded.year, uni = excluded.uni,
+    name = excluded.name, name_hidden = excluded.name_hidden, show_name = excluded.show_name, show_info = excluded.show_info, title = excluded.title, phone = excluded.phone, major = excluded.major, role = excluded.role, year = excluded.year, uni = excluded.uni,
     dom = excluded.dom, answers = excluded.answers, concern = excluded.concern, letter = excluded.letter,
     spread = excluded.spread, created_at = now(), edit_token = gen_random_uuid()
   where signups.verified_at is null
   returning edit_token into t;
   return u || jsonb_build_object('token', t);
 end $$;
-
--- Everything the public page shows. Verified sign-ups only; answers only as totals.
-create function public.board() returns jsonb
-language sql stable security definer set search_path = public as $$
-  with v as (select * from signups where verified_at is not null)
-  select jsonb_build_object(
-    'total', (select count(*) from v),
-    'named', (select count(*) from v where show_name and name <> ''),
-    'unis', coalesce((select jsonb_agg(jsonb_build_object('key', dom, 'name', uni, 'n', n, 'named', named) order by n desc, uni)
-                      from (select dom, min(uni) uni, count(*) n, count(*) filter (where show_name and name <> '') named
-                            from v group by dom) t), '[]'::jsonb),
-    'people', coalesce((select jsonb_agg(jsonb_build_object('name', name, 'uni', uni, 'lead', lead) order by verified_at desc)
-                        from (select name, uni, verified_at, 'lead' = any(spread) lead from v where show_name and name <> ''
-                              order by verified_at desc limit 500) t), '[]'::jsonb),
-    'answers', coalesce((select jsonb_object_agg(q, o)
-                         from (select q, jsonb_object_agg(a, n) o
-                               from (select e.key q, e.value a, count(*) n from v, jsonb_each_text(v.answers) e group by 1, 2) x
-                               group by q) y), '{}'::jsonb));
-$$;
 
 -- Read or change an entry with its edit token. Email and university cannot be changed.
 create function public.get_interest(p_token uuid) returns jsonb
@@ -113,15 +108,18 @@ $$;
 
 create function public.update_interest(p_token uuid, p jsonb) returns jsonb
 language plpgsql security definer set search_path = public as $$
-declare r signups;
+declare r signups; nm text := left(trim(coalesce(p->>'name', '')), 120);
 begin
   if p ? 'answers' and (jsonb_typeof(p->'answers') <> 'object' or length((p->'answers')::text) > 2000) then
     raise exception 'bad_answers';
   end if;
   update signups set
-    name      = case when p ? 'name' and trim(coalesce(p->>'name', '')) <> '' then left(p->>'name', 120) else name end,
+    name_hidden = case when nm <> '' and nm <> name then not name_ok(nm) else name_hidden end,
+    name      = case when nm <> '' then nm else name end,
     show_name = case when p ? 'show_name' then coalesce((p->>'show_name')::boolean, true) else show_name end,
-    major     = case when p ? 'major' then left(coalesce(p->>'major', ''), 80) else major end,
+    show_info = case when p ? 'show_info' then coalesce((p->>'show_info')::boolean, true) else show_info end,
+    title     = case when p ? 'title' then left(trim(coalesce(p->>'title', '')), 80) else title end,
+    major     = case when p ? 'major' then norm_major(dom, p->>'major') else major end,
     role      = case when p ? 'role' then left(coalesce(p->>'role', ''), 30) else role end,
     year      = case when p ? 'year' then left(coalesce(p->>'year', ''), 30) else year end,
     phone     = case when p ? 'phone' then left(coalesce(p->>'phone', ''), 30) else phone end,
@@ -132,6 +130,10 @@ begin
     spread    = case when p ? 'spread' then array(select left(x, 20) from jsonb_array_elements_text(p->'spread') x limit 10) else spread end
   where edit_token = p_token returning * into r;
   if not found then raise exception 'not_found'; end if;
+  -- campus organizers are always listed by name
+  if 'lead' = any(r.spread) and not r.show_name then
+    update signups set show_name = true where edit_token = p_token returning * into r;
+  end if;
   return entry_json(r);
 end $$;
 
@@ -148,9 +150,34 @@ begin
   return r;
 end $$;
 
-revoke execute on function public.lookup_uni(text), public.submit_interest(jsonb), public.board(),
+-- Admins: people listed here who sign in by emailed link can read every sign-up on admin.html.
+create table public.admins (email citext primary key);
+alter table public.admins enable row level security;
+
+create function public.is_admin() returns boolean
+language sql stable security definer set search_path = public as $$
+  select exists (select 1 from admins where email = auth.jwt() ->> 'email');
+$$;
+
+create function public.admin_rows() returns jsonb
+language plpgsql stable security definer set search_path = public as $$
+begin
+  if not is_admin() then raise exception 'not_admin'; end if;
+  return coalesce((select jsonb_agg(to_jsonb(s) - 'edit_token' order by s.created_at desc) from signups s), '[]'::jsonb);
+end $$;
+
+create function public.admin_set_hidden(p_id uuid, p_hidden boolean) returns void
+language plpgsql security definer set search_path = public as $$
+begin
+  if not is_admin() then raise exception 'not_admin'; end if;
+  update signups set name_hidden = p_hidden where id = p_id;
+end $$;
+
+revoke execute on function public.lookup_uni(text), public.submit_interest(jsonb),
   public.confirm_signup(), public.get_interest(uuid), public.update_interest(uuid, jsonb),
-  public.entry_json(public.signups) from public, anon, authenticated;
-grant execute on function public.lookup_uni(text), public.submit_interest(jsonb), public.board(),
+  public.entry_json(public.signups), public.name_ok(text), public.is_admin(), public.admin_rows(),
+  public.admin_set_hidden(uuid, boolean) from public, anon, authenticated;
+grant execute on function public.lookup_uni(text), public.submit_interest(jsonb),
   public.get_interest(uuid), public.update_interest(uuid, jsonb) to anon, authenticated;
-grant execute on function public.confirm_signup() to authenticated;
+grant execute on function public.confirm_signup(), public.is_admin(), public.admin_rows(),
+  public.admin_set_hidden(uuid, boolean) to authenticated;
