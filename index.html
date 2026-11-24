@@ -35,7 +35,7 @@ a{color:inherit}
 
 /* header */
 .top{position:sticky;top:0;z-index:5;background:rgba(10,16,13,.84);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.top .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:50px}
 .brand{display:flex;align-items:center;gap:10px;font-family:var(--sans);font-weight:600;font-size:.8125rem;letter-spacing:.1em;text-transform:uppercase}
 .brand{color:var(--accent);white-space:nowrap}
 .tabs a{white-space:nowrap}
@@ -48,14 +48,14 @@ a{color:inherit}
 /* banner */
 .banner{position:relative;border-bottom:1px solid var(--line);overflow:hidden}
 .banner::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:56px 56px;-webkit-mask-image:radial-gradient(120% 130% at 100% 0%,#000 0%,transparent 62%);mask-image:radial-gradient(120% 130% at 100% 0%,#000 0%,transparent 62%)}
-.banner .wrap{position:relative;display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:48px;align-items:end;padding-top:56px;padding-bottom:48px}
-.banner h1{font-size:clamp(2.5rem,5vw,4.5rem);font-weight:var(--hx);text-transform:var(--hc);letter-spacing:0;line-height:1.02}
+.banner .wrap{position:relative;display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:48px;align-items:end;padding-top:32px;padding-bottom:28px}
+.banner h1{font-size:clamp(2.3rem,4.4vw,3.8rem);font-weight:var(--hx);text-transform:var(--hc);letter-spacing:0;line-height:1.02}
 .banner h1 em{font-style:normal;color:var(--accent)}
 .banner .sub{margin-top:14px;max-width:64ch;font-size:1rem;color:var(--mute)}
 .banner .sub b{color:var(--ink);font-weight:600}
 .tally{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:end}
 .stat{border-left:2px solid var(--rust);padding:4px 0 4px 18px}
-.stat b{display:block;font-family:var(--head);font-weight:var(--hx);font-size:clamp(2.8rem,4.8vw,4.2rem);line-height:1;letter-spacing:0;font-variant-numeric:lining-nums tabular-nums}
+.stat b{display:block;font-family:var(--head);font-weight:var(--hx);font-size:clamp(2.2rem,3.6vw,3.1rem);line-height:1;letter-spacing:0;font-variant-numeric:lining-nums tabular-nums}
 .stat .lab{display:block;margin-top:10px}
 .blocks{display:flex;flex-wrap:wrap-reverse;gap:2px;margin-bottom:12px;min-height:6px}
 .blocks i{width:6px;height:6px;background:var(--ink);opacity:.82}
@@ -73,7 +73,7 @@ a{color:inherit}
 .legend li.hot,.legend li.mine{color:var(--ink)}
 .legend li.mine .nm{font-weight:600}
 .legend li.mine .nm::after{content:" (you)";font-weight:400;color:var(--mute)}
-.ticker{position:relative;border-top:1px solid var(--line);overflow:hidden;white-space:nowrap;padding:11px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.ticker{position:relative;border-top:1px solid var(--line);overflow:hidden;white-space:nowrap;padding:8px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
 .ticker div{display:inline-block;animation:tick 60s linear infinite}
 .ticker:hover div{animation-play-state:paused}
 .ticker span{font-family:var(--head);font-size:15px;font-weight:var(--hw);letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-right:36px;font-variant-numeric:lining-nums}
@@ -584,6 +584,7 @@ var EMPTY={total:0,named:0,unis:[],people:[],answers:{}};
 var S={live:!!sb,rows:[],remote:EMPTY,answers:{},spread:{},show:true,info:true,mine:null,panel:"people",slide:0,email:"",verified:false,submitted:false,editing:false,token:null,sms:false,saving:false,role:"",year:""};
 
 /* sample rows so the page can be reviewed without a backend; never used when connected */
+var SMAJ=["Computer Science","Economics","Mathematics","Political Science","Biology","Physics","Philosophy","Mechanical Engineering"];
 function sample(){
   var seed=7,r=function(){seed=(seed*1664525+1013904223)%4294967296;return seed/4294967296;};
   var fn=["Maya","Daniel","Priya","Lucas","Aisha","Ethan","Sofia","Noah","Mei","Omar","Hannah","Leo","Zara","Jonah","Ines","Kai"];
@@ -591,7 +592,7 @@ function sample(){
   var un=[["mit.edu",34],["harvard.edu",21],["stanford.edu",17],["berkeley.edu",14],["cmu.edu",11],["columbia.edu",9],["uchicago.edu",8],["yale.edu",7],["princeton.edu",6],["umich.edu",6],["gatech.edu",5],["ucla.edu",4],["cornell.edu",3],["nyu.edu",2]];
   var out=[],t=Date.now();
   un.forEach(function(u){for(var i=0;i<u[1];i++){var a={};Q.forEach(function(q){a[q.id]=q.o[Math.floor(r()*r()*q.o.length)];});
-    var rl=r();out.push({name:r()<.6?fn[Math.floor(r()*16)]+" "+ln[Math.floor(r()*16)]:"",uni:KNOWN[u[0]],dom:u[0],a:a,lead:r()<.1,role:rl<.62?"an undergraduate":rl<.86?"a graduate student":rl<.92?"a postdoc":rl<.97?"faculty":"staff",ts:t-Math.floor(r()*6e8)});}});
+    var rl=r(),ro=rl<.62?"Undergraduate":rl<.86?"Graduate student":rl<.92?"Postdoc":rl<.97?"Faculty":"Staff",yr=ro==="Undergraduate"?YEARS[Math.floor(r()*YEARS.length)]:"",mj=SMAJ[Math.floor(r()*r()*SMAJ.length)];out.push({demoRole:ro,demoYear:yr,demoMajor:mj,info:(yr||ro)+", "+mj,name:r()<.6?fn[Math.floor(r()*16)]+" "+ln[Math.floor(r()*16)].charAt(0)+".":"",uni:KNOWN[u[0]],dom:u[0],a:a,lead:r()<.1,role:rl<.62?"an undergraduate":rl<.86?"a graduate student":rl<.92?"a postdoc":rl<.97?"faculty":"staff",ts:t-Math.floor(r()*6e8)});}});
   return out;
 }
 /* same shape the backend's board() returns */
@@ -600,7 +601,9 @@ function toBoard(rows){
   rows.forEach(function(p){if(!by[p.dom])by[p.dom]={key:p.dom,name:p.uni,n:0,named:0};by[p.dom].n++;if(p.name)by[p.dom].named++;
     Object.keys(p.a).forEach(function(q){ans[q]=ans[q]||{};ans[q][p.a[q]]=(ans[q][p.a[q]]||0)+1;});});
   var unis=Object.keys(by).map(function(k){return by[k];}).sort(function(a,b){return b.n-a.n||a.name.localeCompare(b.name);});
-  return {total:rows.length,named:people.length,unis:unis,people:people,answers:ans};
+  var demo={role:{},year:{},major:[]},mj={};rows.forEach(function(p){if(p.demoRole)demo.role[p.demoRole]=(demo.role[p.demoRole]||0)+1;if(p.demoYear)demo.year[p.demoYear]=(demo.year[p.demoYear]||0)+1;if(p.demoMajor)mj[p.demoMajor]=(mj[p.demoMajor]||0)+1;});
+  demo.major=Object.keys(mj).map(function(k){return [k,mj[k]];}).sort(function(a,b){return b[1]-a[1];}).slice(0,6);
+  return {total:rows.length,named:people.length,unis:unis,people:people,answers:ans,demo:demo};
 }
 function board(){return S.live?S.remote:toBoard(S.rows);}
 function uniCount(dom){var n=0;board().unis.forEach(function(x){if(x.key===dom)n=x.n;});return n;}
