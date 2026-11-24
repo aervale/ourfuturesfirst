@@ -5,16 +5,16 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <title>Our Futures First</title>
-<link rel="icon" href="data:,">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 60 60%27%3E%3Cpath d=%27M30 0L37 23L60 30L37 37L30 60L23 37L0 30L23 23Z%27 fill=%27%23A22C29%27/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Space+Grotesk:wght@400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Inter:wght@400..700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#08080A; --card:#131317; --inset:rgba(244,242,237,.035); --ink:#F4F2ED; --mute:rgba(244,242,237,.62); --faint:rgba(244,242,237,.36);
-  --line:rgba(244,242,237,.13); --line2:rgba(244,242,237,.24); --hover:rgba(244,242,237,.05);
-  --accent:#FF5A36; --on-accent:#08080A; --tint:rgba(255,90,54,.13);
-  --head:"Barlow Condensed","Arial Narrow",sans-serif; --hw:700; --hx:800; --hs:100%; --hc:none; --sans:"Space Grotesk",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+  --bg:#0A100D; --card:#141A17; --inset:rgba(214,213,201,.07); --ink:#D6D5C9; --mute:rgba(185,186,163,.92); --faint:rgba(214,213,201,.36);
+  --line:rgba(214,213,201,.13); --line2:rgba(214,213,201,.24); --hover:rgba(214,213,201,.12);
+  --accent:#A22C29; --on-accent:#D6D5C9; --tint:rgba(162,44,41,.28); --deep:#902923; --rust:#902923;
+  --head:"EB Garamond",Garamond,Georgia,"Times New Roman",serif; --hw:500; --hx:400; --hs:100%; --hc:none; --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
   --r:6px; --rc:10px; --ease:cubic-bezier(.2,.7,.2,1);
   color-scheme:dark;
 }
@@ -34,10 +34,12 @@ a{color:inherit}
 @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
 /* header */
-.top{position:sticky;top:0;z-index:5;background:rgba(8,8,10,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.top .wrap{display:flex;align-items:center;justify-content:space-between;height:50px}
-.brand{display:flex;align-items:center;gap:10px;font-family:var(--head);font-weight:var(--hw);font-stretch:var(--hs);font-size:.875rem;letter-spacing:.06em;text-transform:uppercase}
-.brand i{width:10px;height:10px;background:var(--accent)}
+.top{position:sticky;top:0;z-index:5;background:rgba(10,16,13,.84);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--head);font-weight:var(--hw);font-stretch:var(--hs);font-size:1rem;letter-spacing:.06em;text-transform:uppercase}
+.brand{color:var(--accent);white-space:nowrap}
+.tabs a{white-space:nowrap}
+.brand .star{width:20px;height:20px;flex:none}
 .tabs{display:flex;gap:28px;align-self:stretch}
 .tabs a{display:flex;align-items:center;text-decoration:none;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .2s,border-color .2s}
 .tabs a:hover{color:var(--ink)}
@@ -46,44 +48,59 @@ a{color:inherit}
 /* banner */
 .banner{position:relative;border-bottom:1px solid var(--line);overflow:hidden}
 .banner::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:56px 56px;-webkit-mask-image:radial-gradient(120% 130% at 100% 0%,#000 0%,transparent 62%);mask-image:radial-gradient(120% 130% at 100% 0%,#000 0%,transparent 62%)}
-.banner .wrap{position:relative;display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:48px;align-items:end;padding-top:32px;padding-bottom:28px}
-.banner h1{font-size:clamp(2.3rem,4.4vw,3.8rem);font-weight:var(--hx);text-transform:var(--hc);letter-spacing:0;line-height:1.02}
+.banner .wrap{position:relative;display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:48px;align-items:end;padding-top:56px;padding-bottom:48px}
+.banner h1{font-size:clamp(2.5rem,5vw,4.5rem);font-weight:var(--hx);text-transform:var(--hc);letter-spacing:0;line-height:1.02}
 .banner h1 em{font-style:normal;color:var(--accent)}
-.banner .sub{margin-top:14px;max-width:64ch;font-size:1rem;color:var(--mute)}
+.banner .sub{margin-top:20px;max-width:60ch;font-size:1.0625rem;color:var(--mute)}
 .banner .sub b{color:var(--ink);font-weight:600}
-.tally{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--rc);padding:16px 18px 14px;box-shadow:inset 0 1px 0 rgba(244,242,237,.05)}
-.stat b{display:block;font-family:var(--head);font-weight:var(--hx);font-stretch:var(--hs);font-size:clamp(2.2rem,3.6vw,3.1rem);line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
-.stat .lab{display:block;margin-top:6px}
-.ticker{position:relative;border-top:1px solid var(--line);overflow:hidden;white-space:nowrap;padding:8px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.tally{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:end}
+.stat{border-left:2px solid var(--rust);padding:4px 0 4px 18px}
+.stat b{display:block;font-family:var(--head);font-weight:var(--hx);font-size:clamp(2.8rem,4.8vw,4.2rem);line-height:1;letter-spacing:0;font-variant-numeric:lining-nums tabular-nums}
+.stat .lab{display:block;margin-top:10px}
+.blocks{display:flex;flex-wrap:wrap-reverse;gap:2px;margin-bottom:12px;min-height:6px}
+.blocks i{width:6px;height:6px;background:var(--ink);opacity:.82}
+#bUnis i{background:var(--accent);opacity:1}
+.stat .hint{font-size:.75rem;margin-top:6px}
+#pkShow,#pkShow:hover,#pkShow[aria-pressed="true"]{border:0;background:none;padding:0}
+.pie svg{display:block;width:100%;max-width:300px;height:auto;margin:0 auto}
+/* hovering a slice enlarges it from the centre of the pie (130,96 in the chart's own units) */
+.pie .slice{transform-box:view-box;transform-origin:130px 96px;transition:transform .22s var(--ease);cursor:pointer}
+.pie .slice:hover{transform:scale(1.09)}
+.pie text{font-family:var(--sans);font-size:11px;fill:var(--ink);font-variant-numeric:tabular-nums}
+.legend{list-style:none;margin:6px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 16px}
+.legend li{display:grid;grid-template-columns:10px minmax(0,1fr);gap:8px;align-items:baseline;font-size:.9375rem;color:var(--mute);transition:color .2s}
+.legend i{width:10px;height:10px;border-radius:50%;align-self:start;margin-top:.45em}
+.legend li.hot,.legend li.mine{color:var(--ink)}
+.legend li.mine .nm{font-weight:600}
+.legend li.mine .nm::after{content:" (you)";font-weight:400;color:var(--mute)}
+.ticker{position:relative;border-top:1px solid var(--line);overflow:hidden;white-space:nowrap;padding:11px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
 .ticker div{display:inline-block;animation:tick 60s linear infinite}
 .ticker:hover div{animation-play-state:paused}
-.ticker span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-right:36px}
+.ticker span{font-family:var(--head);font-size:15px;font-weight:var(--hw);letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-right:36px;font-variant-numeric:lining-nums}
 .ticker span b{color:var(--accent);font-weight:500;margin-left:8px}
 @keyframes tick{to{transform:translateX(-50%)}}
 .note{margin:0;padding:10px 0;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--mute)}
 .note b{color:var(--accent);font-weight:500}
 
 /* cards */
-.card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--rc);padding:20px;box-shadow:inset 0 1px 0 rgba(244,242,237,.05);transition:border-color .3s}
-.card:hover{border-color:var(--line2)}
+.card{position:relative;border-left:2px solid var(--line2);padding:4px 0 4px 24px;transition:border-color .3s}
+.card:hover{border-color:var(--mute)}
 .card .lab{transition:color .3s}
-.card:hover .lab{color:rgba(244,242,237,.82)}
+.card:hover .lab{color:rgba(214,213,201,.82)}
 .card>*{position:relative}
-.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start;padding-top:20px;padding-bottom:40px}
-.stack{display:grid;gap:14px}
-.card h2{font-size:clamp(1.35rem,2.1vw,1.7rem);font-weight:var(--hw);margin-bottom:14px}
+.cols{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,1fr);gap:36px 44px;align-items:start;padding-top:36px;padding-bottom:56px}
+.stack{display:grid;gap:36px}
+.card h2{font-size:clamp(1.5rem,2.3vw,1.9rem);font-weight:var(--hw);margin-bottom:20px}
 .card h2 label{cursor:text}
 .card>.field:last-child{margin-bottom:0}
-.field>.lab{display:block;margin-bottom:6px}
-.sel{display:block;text-align:left;width:100%;font:inherit;color:var(--ink);background:var(--inset) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23F4F2ED' stroke-opacity='.55' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 14px center/11px;border:1px solid var(--line2);border-radius:var(--r);padding:9px 36px 9px 12px;cursor:pointer;transition:border-color .2s,opacity .2s}
-.sel:hover{border-color:var(--mute)}
-.sel:focus,.sel[aria-expanded="true"]{outline:0;border-color:var(--accent)}
-.sel:disabled{opacity:.4;cursor:default;border-color:var(--line)}
-.sel.empty{color:var(--faint)}
+.field>.lab{display:block;margin-bottom:8px}
+select{width:100%;font:inherit;color:var(--ink);background:var(--inset) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23D6D5C9' stroke-opacity='.55' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 14px center/11px;border:1px solid var(--line2);border-radius:var(--r);padding:12px 36px 12px 14px;appearance:none;-webkit-appearance:none;cursor:pointer;transition:border-color .2s,opacity .2s}
+select:hover{border-color:var(--mute)}
+select:focus{outline:0;border-color:var(--accent)}
+select:disabled{opacity:.4;cursor:default;border-color:var(--line)}
+select option{background:#1A211D;color:var(--ink)}
 .combo{position:relative;z-index:4}
-.combo:focus-within{z-index:6}
-.menu{position:absolute;left:0;right:0;top:calc(100% + 6px);margin:0;padding:4px;list-style:none;max-height:248px;overflow:auto;background:#1B1B20;border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);scrollbar-width:thin;scrollbar-color:var(--line2) transparent;animation:fade .18s var(--ease) both}
+.menu{position:absolute;left:0;right:0;top:calc(100% + 6px);margin:0;padding:4px;list-style:none;max-height:248px;overflow:auto;background:#1A211D;border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);scrollbar-width:thin;scrollbar-color:var(--line2) transparent;animation:fade .18s var(--ease) both}
 .menu li{padding:9px 10px;border-radius:4px;cursor:pointer;transition:background .12s}
 .menu li:hover,.menu li.on{background:var(--hover)}
 .menu li.on{color:var(--accent)}
@@ -91,24 +108,24 @@ a{color:inherit}
 /* poll */
 .stage{transition:height .32s var(--ease)}
 .stage.moving{overflow:hidden}
-.opts{display:grid;gap:6px}
-.opt{display:flex;align-items:center;gap:14px;width:100%;font:inherit;text-align:left;color:var(--ink);background:var(--inset);border:1px solid var(--line);border-radius:var(--r);padding:9px 12px;cursor:pointer;transition:background .2s,border-color .2s}
+.opts{display:grid;gap:8px}
+.opt{display:flex;align-items:center;gap:14px;width:100%;font:inherit;text-align:left;color:var(--ink);background:var(--inset);border:1px solid var(--line);border-radius:var(--r);padding:13px 14px;cursor:pointer;transition:background .2s,border-color .2s}
 .opt:hover{border-color:var(--line2);background:var(--hover)}
 .opt .key{flex:none;display:grid;place-items:center;width:24px;height:24px;border:1px solid var(--line2);border-radius:4px;font-family:var(--mono);font-size:11px;color:var(--mute);transition:background .2s,border-color .2s,color .2s}
 .opt[aria-pressed="true"]{border-color:var(--accent);background:var(--tint)}
 .opt[aria-pressed="true"] .key{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 .pick .key::after{content:"";width:9px;height:5px;border-left:2px solid transparent;border-bottom:2px solid transparent;transform:rotate(-45deg) translate(1px,-1px);transition:border-color .2s}
 .pick[aria-pressed="true"] .key::after{border-color:var(--on-accent)}
-.opt.pick[aria-pressed="true"]{border-color:var(--line2);background:var(--hover)}
+.opt.pick[aria-pressed="true"]{border-color:transparent;background:var(--hover)}
 .slide .opt{position:relative;overflow:hidden}
 .slide .opt>*{position:relative}
-.slide .opt::before{content:"";position:absolute;inset:0 auto 0 0;width:0;background:rgba(244,242,237,.07);transition:width .7s var(--ease)}
+.slide .opt::before{content:"";position:absolute;inset:0 auto 0 0;width:0;background:rgba(214,213,201,.07);transition:width .7s var(--ease)}
 .slide.answered .opt::before{width:var(--p,0%)}
-.slide .opt[aria-pressed="true"]::before{background:rgba(255,90,54,.2)}
+.slide .opt[aria-pressed="true"]::before{background:rgba(162,44,41,.3)}
 .opct{margin-left:auto;font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;color:var(--mute);opacity:0;transition:opacity .4s}
 .slide.answered .opct{opacity:1}
 .opt[aria-pressed="true"] .opct{color:var(--accent);font-weight:700}
-.pnav{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin-top:14px;min-height:18px}
+.pnav{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin-top:22px;min-height:18px}
 .pnav #btnNext{justify-self:end}
 .pnav #btnBack{justify-self:start}
 .dots{display:flex;gap:6px}
@@ -120,13 +137,13 @@ a{color:inherit}
 .link:hover{color:var(--ink)}
 
 /* fields */
-.field{margin-bottom:12px}
-.field label{display:block;margin-bottom:6px}
-input[type=text],input[type=email],input[type=tel],input[type=search],textarea{width:100%;font:inherit;color:var(--ink);background:var(--inset);border:1px solid var(--line2);border-radius:var(--r);padding:9px 12px;transition:border-color .2s,background .2s}
+.field{margin-bottom:18px}
+.field label{display:block;margin-bottom:8px}
+input[type=text],input[type=email],input[type=tel],input[type=search],textarea{width:100%;font:inherit;color:var(--ink);background:var(--inset);border:1px solid var(--line2);border-radius:var(--r);padding:12px 14px;transition:border-color .2s,background .2s}
 input:hover,textarea:hover{border-color:var(--mute)}
 input:focus,textarea:focus{outline:0;border-color:var(--accent)}
 ::placeholder{color:var(--faint)}
-textarea{display:block;min-height:150px;resize:none}
+textarea{display:block;min-height:132px;resize:none}
 .hint{margin-top:8px;font-size:.875rem;color:var(--mute);transition:color .2s}
 .hint.bad{color:var(--accent)}
 .hint b{font-weight:600;color:var(--accent)}
@@ -136,11 +153,11 @@ textarea{display:block;min-height:150px;resize:none}
 .btn.ghost{color:var(--ink);background:var(--inset);border-color:var(--line2);font-weight:500}
 .btn.ghost:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .btn:disabled{background:var(--line);border-color:var(--line);color:var(--faint);cursor:default}
-.btn.wide{display:block;width:100%;text-align:center;padding:14px 22px;font-size:13px}
+.btn.wide{display:block;width:100%;text-align:center;padding:18px 22px;font-size:13px}
 .saved{margin-left:auto;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);opacity:0}
 .flash{animation:ring .7s ease-out}
 .flash .saved{animation:saved 1.9s ease both}
-@keyframes ring{from{box-shadow:0 0 0 0 rgba(255,90,54,.55)}to{box-shadow:0 0 0 12px rgba(255,90,54,0)}}
+@keyframes ring{from{box-shadow:0 0 0 0 rgba(162,44,41,.55)}to{box-shadow:0 0 0 12px rgba(162,44,41,0)}}
 @keyframes saved{0%{opacity:0;transform:translateY(4px)}14%,72%{opacity:1;transform:none}100%{opacity:0}}
 /* what appears after Count me in */
 .pop{display:grid;grid-template-rows:0fr;transition:grid-template-rows .6s var(--ease),margin-top .6s var(--ease)}
@@ -148,16 +165,9 @@ textarea{display:block;min-height:150px;resize:none}
 .pop.open{grid-template-rows:1fr}
 .pop.settled>div{overflow:visible}
 .cols{scroll-margin-top:70px}
-.actions{display:flex;gap:8px}
-.actions .wide{flex:1;width:auto}
-.actions [hidden]{display:none}
-.opt:disabled{opacity:.65;cursor:default}
-#showWrap{display:grid;gap:8px}
-#showWrap [hidden]{display:none}
-.resend{display:flex;gap:14px;align-items:baseline;margin:10px 0 0}
-.resend .hint{margin:0}
-.signed{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;margin:24px 0 0;padding-top:18px;border-top:1px solid var(--line);font-size:.875rem;color:var(--mute)}
-#after{border-color:var(--accent)}
+#btnCancel{display:block;margin:16px auto 0}
+.signed{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;margin:24px 0 0;padding-top:18px;font-size:.875rem;color:var(--mute)}
+#after{border-color:var(--deep)}
 #after>*{opacity:0;transform:translateY(12px);transition:opacity .45s ease,transform .45s var(--ease)}
 .pop.open #after>*{opacity:1;transform:none}
 .pop.open #after>*:nth-child(1){transition-delay:.18s}.pop.open #after>*:nth-child(2){transition-delay:.24s}
@@ -165,14 +175,9 @@ textarea{display:block;min-height:150px;resize:none}
 .pop.open #after>*:nth-child(5){transition-delay:.46s}.pop.open #after>*:nth-child(n+6){transition-delay:.52s}
 #after h2{font-size:clamp(1.8rem,3.2vw,2.6rem);font-weight:var(--hx);text-transform:var(--hc);margin:10px 0 10px}
 .sub3{margin:24px 0 10px}
-#leadPop.open{margin-top:8px}
-.leadbox{display:grid;gap:8px;padding:14px;border:1px solid var(--line);border-radius:var(--r)}
+#leadPop.open,#invitePop.open{margin-top:14px}
+.leadbox{display:grid;gap:8px;padding:4px 0 4px 14px;border-left:2px solid var(--line2)}
 .leadbox .hint{margin:0}
-.notify{margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}
-.notify .muted{margin:0 0 12px}
-.notify .lab{display:block;margin-bottom:6px}
-.phonerow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
-.notify .hint{margin-top:6px;min-height:0}
 .leadbox a{color:var(--ink)}
 .err{color:var(--accent);margin:12px 0 0;min-height:1.5em;font-size:.9375rem}
 
@@ -182,21 +187,20 @@ textarea{display:block;min-height:150px;resize:none}
 .seg button{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);background:transparent;border:0;border-radius:4px;padding:9px;cursor:pointer;transition:color .2s,background .2s}
 .seg button:hover{color:var(--ink)}
 .seg button[aria-selected="true"]{color:var(--on-accent);background:var(--ink)}
-.list{list-style:none;margin:6px 0 0;padding:0;max-height:690px;overflow:auto;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
-.list li{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:7px 2px;border-bottom:1px solid var(--line)}
+.list{list-style:none;margin:6px 0 0;padding:0;max-height:452px;overflow:auto;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
+.list li{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:10px 2px;border-bottom:1px solid var(--line)}
 .list .empty{display:block;padding:14px 2px}
 .list li:last-child{border-bottom:0}
-.list .u{color:var(--mute);font-size:.875rem;text-align:right;flex:none;max-width:45%}
-.list .who1{min-width:0}
-.list .info{display:block;margin-top:2px;color:var(--mute);font-size:.8125rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list .u{color:var(--mute);font-size:.875rem;text-align:right}
+.list .u.org{color:var(--accent)}
 /* campus organizers: accent name, an explanation on hover or focus, and a link to About */
-.list .lead{position:relative;color:var(--accent);font-weight:600;cursor:pointer;text-decoration:underline dotted;text-underline-offset:4px;text-decoration-color:rgba(255,90,54,.5)}
-.list .lead::after{content:attr(data-tip);position:absolute;left:0;top:calc(100% + 8px);z-index:3;width:max-content;max-width:260px;padding:8px 10px;background:#1B1B20;border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);color:var(--ink);font-size:.8125rem;font-weight:400;line-height:1.4;opacity:0;pointer-events:none;transition:opacity .15s}
+.list .lead{position:relative;color:var(--accent);font-weight:600;cursor:pointer;text-decoration:underline dotted;text-underline-offset:4px;text-decoration-color:rgba(162,44,41,.5)}
+.list .lead::after{content:attr(data-tip);position:absolute;left:0;top:calc(100% + 8px);z-index:3;width:max-content;max-width:260px;padding:8px 10px;background:#1A211D;border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);color:var(--ink);font-size:.8125rem;font-weight:400;line-height:1.4;opacity:0;pointer-events:none;transition:opacity .15s}
 .list .lead:hover::after,.list .lead:focus::after{opacity:1}
 .list li:nth-last-child(-n+2) .lead::after{top:auto;bottom:calc(100% + 8px)}
 .list .empty,.bars .empty{color:var(--mute)}
 .bars{list-style:none;margin:0;padding:0;display:grid;gap:2px}
-.bars li{display:grid;grid-template-columns:1fr auto;gap:7px 8px;align-items:baseline;padding:8px 10px;border-radius:var(--r);cursor:pointer;transition:background .2s}
+.bars li{display:grid;grid-template-columns:1fr auto;gap:7px 8px;align-items:baseline;padding:10px;border-radius:var(--r);cursor:pointer;transition:background .2s}
 .bars li:hover{background:var(--hover)}
 .bars li.empty{cursor:default;background:none}
 .bars .nm{font-weight:500}
@@ -209,29 +213,20 @@ textarea{display:block;min-height:150px;resize:none}
 .bars li.gap{margin-top:8px}
 
 /* results */
-.results{border-top:1px solid var(--line);padding:32px 0 56px}
+.results{border-top:1px solid var(--line);padding:48px 0 72px}
 .results h2{font-size:clamp(1.5rem,2.6vw,2.1rem)}
-.results h2 .count{color:var(--mute);font-family:var(--sans);font-weight:500;letter-spacing:0}
-.rgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:20px;margin-top:28px}
-.rcard{grid-column:span 2}
-.rcard h3{font-family:var(--sans);font-weight:600;font-size:1.0625rem;line-height:1.35;letter-spacing:0;margin:0 0 18px}
+.results h2 .count{color:var(--mute);font-family:inherit;font-weight:inherit;letter-spacing:0}
+.rgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:36px 28px;margin-top:28px}
+.rcard{grid-column:span 2;border-left:0;padding-left:0}
+.rcard h3{font-family:var(--head);font-weight:var(--hw);font-size:1.3rem;line-height:1.25;letter-spacing:0;margin:0 0 6px}
 .rrow{margin-bottom:13px}
 .rrow:last-child{margin-bottom:0}
 .rrow .l{display:flex;justify-content:space-between;gap:12px;font-size:.9375rem;margin-bottom:6px;color:var(--mute);transition:color .3s}
 .rrow .pct{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
 .rrow .track{height:6px;border-radius:3px}
-.rrow .fill{border-radius:3px;background:rgba(244,242,237,.5)}
+.rrow .fill{border-radius:3px;background:rgba(214,213,201,.5)}
 .rrow.mine .l{color:var(--accent);font-weight:600}
 .rrow.mine .fill{background:var(--accent)}
-.h2b{margin-top:56px}
-.where{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px;margin-top:28px;align-items:start}
-#usMap{display:block;width:100%;height:auto}
-#mapLand .land{fill:rgba(244,242,237,.05)}
-#mapLand .edge{fill:none;stroke:var(--line2);stroke-width:.8;stroke-linejoin:round}
-#mapDots circle{fill:rgba(255,90,54,.4);stroke:var(--accent);stroke-width:1.2;transition:fill .2s}
-#mapDots circle:hover{fill:rgba(255,90,54,.8)}
-.demo h3{font-family:var(--sans);font-weight:600;font-size:1.0625rem;letter-spacing:0;margin:26px 0 14px}
-.demo h3:first-child{margin-top:0}
 
 /* next steps */
 .share{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
@@ -244,25 +239,57 @@ textarea{display:block;min-height:150px;resize:none}
 .about h2{font-size:1.4rem;font-weight:var(--hw);margin:36px 0 10px;scroll-margin-top:80px}
 .about p+p{margin-top:12px}
 .about a{color:var(--ink)}
-.draft{margin:0 0 28px;padding:28px;border:1px solid var(--line2);border-left:3px solid var(--accent);border-radius:var(--r);font-family:var(--head);font-weight:700;font-size:clamp(1.4rem,2.6vw,2rem);line-height:1.3;color:var(--ink)}
+.draft{margin:0 0 28px;padding:6px 0 6px 24px;border-left:3px solid var(--accent);font-family:var(--head);font-weight:var(--hw);font-size:clamp(1.4rem,2.6vw,2rem);line-height:1.3;color:var(--ink)}
+.fontpick{position:fixed;left:12px;bottom:12px;z-index:9;display:flex;flex-wrap:wrap;gap:4px;max-width:520px;padding:8px;background:#1A211D;border:1px solid var(--line2);border-radius:var(--r)}
+.fontpick button{font:11px var(--mono);color:var(--ink);background:none;border:1px solid var(--line);border-radius:4px;padding:5px 7px;cursor:pointer}
+.fontpick button.on{border-color:var(--accent);color:var(--accent)}
 .about p{color:var(--mute);font-size:1.0625rem}
 footer{border-top:1px solid var(--line);padding:22px 0 36px}
+.foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:10px 22px}
+.foot .by{margin-left:auto}
+.foot a{color:inherit;text-decoration:none;transition:color .2s}
+.foot a:hover{color:var(--ink)}
+/* the icon files are black artwork, inverted to sit on the dark page */
+.foot img{display:block;width:14px;height:14px;filter:invert(1);opacity:.8}
+.foot a:hover img{opacity:1}
 
+
+.contact{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.contact li{display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px;align-items:baseline;font-size:1.0625rem}
+input[type=text],input[type=email],input[type=tel],input[type=search],textarea,input:hover,textarea:hover,select,select:hover,select:disabled,.opt,.opt:hover,.seg,.btn.ghost,.menu,.opt .key,.ask,.signed{border-color:transparent}
+input:focus,textarea:focus,select:focus,.opt[aria-pressed="true"]{border-color:var(--accent)}
+.opt.pick[aria-pressed="true"]{border-color:transparent}
+select,.opt{color:var(--mute)}
+select:hover,select:focus,.opt:hover,.opt[aria-pressed="true"]{color:var(--ink)}
+.opt:hover,.opt[aria-pressed="true"]{background-color:var(--inset)}
+.opt[aria-pressed="true"]{background:var(--tint)}
+.btn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.ghost{color:var(--mute)}
+.btn.ghost:hover{background:var(--inset);border-color:transparent;color:var(--ink)}
+.opt .key{background:rgba(214,213,201,.1)}
+.opt[aria-pressed="true"] .key{background:var(--accent)}
+.top,.banner,.ticker,.note,.results,footer,.list li{border-color:transparent}
+.banner::before{display:none}
+.seg button[aria-selected="true"]{color:var(--bg)}
 @media (max-width:920px){
   .banner .wrap{grid-template-columns:1fr;gap:32px;padding-top:44px;padding-bottom:36px}
   .cols{grid-template-columns:1fr}
   .who{position:static}
   .list{max-height:320px}
   .rgrid{grid-template-columns:1fr}
-  .where{grid-template-columns:1fr}
-  .phonerow{grid-template-columns:1fr}
   .rcard{grid-column:auto}
 }
 @media (max-width:520px){
   .wrap{padding:0 16px}
-  .card{padding:18px}
+  .card{padding-left:16px}
+  .rcard{padding-left:0}
   .two{grid-template-columns:1fr;gap:0}
-  .tabs{gap:18px}
+  .tabs{gap:12px}
+  .foot .by{margin-left:0;flex-basis:100%}
+  .tabs a{font-size:10px;letter-spacing:.08em}
+  .tabs .wide{display:none}
+  .brand{font-size:.8125rem;gap:7px;letter-spacing:.04em}
+  .brand .star{width:16px;height:16px}
 }
 @media (prefers-reduced-motion:reduce){
   *{transition:none!important;animation:none!important}
@@ -273,9 +300,10 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
 <body>
 
 <header class="top"><div class="wrap">
-  <span class="brand"><i></i>Our Futures First</span>
+  <span class="brand"><svg class="star" viewBox="0 0 60 60" aria-hidden="true"><path d="M30 0L37 23L60 30L37 37L30 60L23 37L0 30L23 23Z" fill="currentColor"/><circle cx="52" cy="8" r="3.5" fill="var(--ink)"/></svg>Our Futures First</span>
   <nav class="tabs" aria-label="Sections">
     <a href="#interest" id="tabInterest">Interest</a>
+    <a href="#draft" id="tabDraft">Letter</a>
     <a href="#about" id="tabAbout">About</a>
   </nav>
 </div></header>
@@ -285,12 +313,12 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
   <section class="banner">
     <div class="wrap">
       <div>
-        <h1>Students are writing an open letter on AI. <em>Tell us what belongs in it.</em></h1>
-        <p class="sub">This is the interest form, open to <b>anyone at a U.S. university</b>: students, postdocs, faculty and staff. Answer a few questions, leave your university email, and we'll tell you when the letter is ready to sign.</p>
+        <h1>Students are writing an open letter on regulating AI development. <em>Help us decide what's in it.</em></h1>
+        <p class="sub">This is the interest form, open to <b>anyone at a U.S. university</b>: students, postdocs, faculty and staff. Leave your university email and we will contact you when the letter is ready to sign. There are six short questions too; answer as many as you like.</p>
       </div>
       <div class="tally">
-        <div class="stat"><b id="cPeople">0</b><span class="lab">People</span></div>
-        <div class="stat"><b id="cUnis">0</b><span class="lab">U.S. universities</span></div>
+        <div class="stat"><div class="blocks" id="bPeople" aria-hidden="true"></div><b id="cPeople">0</b><span class="lab">People</span><p class="hint" id="nPeople" hidden></p></div>
+        <div class="stat"><div class="blocks" id="bUnis" aria-hidden="true"></div><b id="cUnis">0</b><span class="lab">U.S. universities</span><p class="hint" id="nUnis" hidden></p></div>
       </div>
     </div>
     <div class="ticker" id="ticker" aria-hidden="true" hidden><div id="tickerRow"></div></div>
@@ -309,13 +337,12 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
           <div>
             <div class="field combo"><label class="lab" for="inMajor">Major or field</label><input type="text" id="inMajor" maxlength="80" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="majorMenu" aria-autocomplete="list"><ul class="menu" id="majorMenu" role="listbox" hidden></ul></div>
           </div>
+          <div class="field"><label class="lab" for="inSocial">Social media</label><input type="text" id="inSocial" maxlength="120" autocomplete="off" placeholder="Instagram, X or LinkedIn handle"></div>
           <div class="two">
-            <div class="field combo"><span class="lab" id="roleLab">I am <span class="req">*</span></span><button type="button" class="sel" id="selRole" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="roleLab selRole"></button><ul class="menu" role="listbox" aria-labelledby="roleLab" hidden></ul></div>
-            <div class="field" id="titleField" hidden><label class="lab" for="inTitle">Title</label><input type="text" id="inTitle" maxlength="80" autocomplete="organization-title" placeholder="Professor of Physics"></div>
-            <div class="field combo" id="yearField"><span class="lab" id="yearLab">Year</span><button type="button" class="sel" id="selYear" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="yearLab selYear" disabled></button><ul class="menu" role="listbox" aria-labelledby="yearLab" hidden></ul></div>
+            <div class="field"><label class="lab" for="selRole">I am <span class="req">*</span></label><select id="selRole" required></select></div>
+            <div class="field"><label class="lab" for="selYear">Year</label><select id="selYear" disabled></select></div>
           </div>
-          <div id="showWrap"><button type="button" class="opt pick" id="pkShow" aria-pressed="true"><span class="key"></span><span id="showText">Show my first name and last initial on the public list</span></button>
-            <button type="button" class="opt pick" id="pkInfo" aria-pressed="true"><span class="key"></span><span id="infoText"></span></button></div>
+          <div id="showWrap"><button type="button" class="opt pick" id="pkShow" aria-pressed="true"><span class="key"></span><span>Show my name on the public list</span></button></div>
         </div>
 
         <div class="card" id="pollCard">
@@ -324,8 +351,9 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
         </div>
 
         <div>
-          <div class="actions"><button class="btn wide" type="submit" id="btnSubmit">Count me in</button><button type="button" class="btn ghost" id="btnCancel" hidden>Cancel</button></div>
+          <button class="btn wide" type="submit" id="btnSubmit">Count me in</button>
           <p class="err" id="err" role="alert"></p>
+          <button type="button" class="link" id="btnCancel" hidden>Cancel</button>
         </div>
       </form></div></div>
 
@@ -333,27 +361,28 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
         <p class="lab" id="afterLab"></p>
         <h2 id="afterHead"></h2>
         <p class="muted" id="afterSub"></p>
-        <p class="resend" id="resendRow" hidden><button type="button" class="link" id="btnResend">Send it again</button><span class="hint" id="resendMsg" role="status"></span></p>
         <div id="afterHelp">
-          <div class="notify">
-            <p class="muted" id="notifyText"></p>
-            <label class="lab" for="inPhone2">Phone number <span class="req" id="phoneReq" hidden>*</span></label>
-            <div class="phonerow">
-              <input type="tel" id="inPhone2" autocomplete="tel" maxlength="30" placeholder="(555) 555-5555">
-              <button type="button" class="opt pick" id="pkSms" aria-pressed="false"><span class="key"></span><span>I agree to be texted</span><span class="saved">Saved</span></button>
-            </div>
-            <p class="hint bad" id="phoneHint" role="status"></p>
-          </div>
           <p class="lab sub3">Can you help it reach your campus?</p>
           <div class="opts" id="spread"></div>
+          <p class="hint" id="spreadMsg" role="status"></p>
+          <div class="pop" id="invitePop"><div><div class="leadbox">
+            <label class="lab" for="inInvite">Emails of the people you want to send it to</label>
+            <textarea id="inInvite" style="min-height:76px" placeholder="friend@university.edu, another@university.edu"></textarea>
+            <div><a class="btn ghost" id="btnInvite" href="#">Write the email</a></div>
+            <p class="hint" id="inviteMsg" role="status">This opens a draft in your own email app, addressed to them. We never receive these addresses.</p>
+          </div></div></div>
           <div class="pop" id="leadPop"><div><div class="leadbox">
-            <p class="hint">We'll connect you with other groups of campus organizers at your university and contact you about next steps. Your name will be shown on the public list, marked as a campus organizer. <a href="#organizers">Click for information on what that means.</a></p>
+            <p class="hint">We'll connect you with other groups of campus organizers at your university and contact you about next steps. If your name is public, it'll be marked as a campus organizer on the list. <a href="#organizers">Click for information on what that means.</a></p>
+            <label class="lab" for="inPhone2">Phone number <span class="req">*</span></label>
+            <input type="tel" id="inPhone2" autocomplete="tel" maxlength="30" placeholder="(555) 555-5555">
+            <p class="hint">Message frequency varies. Message and data rates may apply. Reply STOP to stop, HELP for help. <a href="#privacy">Privacy</a></p>
             <p class="hint bad" id="leadHint" role="status"></p>
+            <p class="hint">By giving your number, you agree to receive text messages from Our Futures First.</p>
           </div></div></div>
         </div>
         <div>
           <h3 class="ask">Know someone who should see this?</h3>
-          <p class="muted">Please send it to them. This only reaches other campuses when people pass it on, and it's the most helpful thing you can do for us.</p>
+          <p class="muted">Please send it to them. Sharing is the only way this reaches other students, and it's the most helpful thing you can do for us.</p>
           <div class="share">
             <button class="btn" type="button" id="btnCopy"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><span>Copy link</span></button>
             <a class="btn ghost" id="shSms"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><span>Text</span></a>
@@ -386,11 +415,6 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
   <section class="results"><div class="wrap">
     <h2>Results so far <span class="count" id="resCount"></span></h2>
     <div class="rgrid" id="resGrid"></div>
-    <h2 class="h2b">Who has signed up</h2>
-    <div class="where">
-      <div class="card"><svg id="usMap" viewBox="0 0 975 610" role="img" aria-label="Map of the United States with a circle on each university that has sign-ups"><g id="mapLand"></g><g id="mapDots"></g></svg></div>
-      <div class="card demo"><h3>Role</h3><div id="dRole"></div><h3>Undergraduate year</h3><div id="dYear"></div><h3>Most common majors and fields</h3><div id="dMajor"></div></div>
-    </div>
   </div></section>
 </div>
 
@@ -402,37 +426,77 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
     <h2 id="why-wait">Why isn't the letter out now?</h2>
     <p>We want it to reach as many people as possible on the day it comes out, so we're gathering interest first. Please pass this along.</p>
     <h2 id="why-draft">Then why publish a draft?</h2>
-    <p>So you can see where it's heading. <a href="#draft">The current wording is here</a>, with the date it last changed. It'll keep changing until launch day.</p>
+    <p>So you can see where it's heading. The current wording is <a href="#draft">here</a>, with the date it last changed. It will keep changing until launch day.</p>
     <h2>What happens on launch day?</h2>
     <p>Everyone on the list gets an email at the same time and can sign. The letter and its signatures are then published.</p>
     <h2>Who can take part?</h2>
     <p>Anyone with a U.S. university email: undergraduates, graduate students, postdocs, faculty and staff.</p>
     <h2>Who is behind this?</h2>
     <p>It was started by students at MIT. It's run entirely by students.</p>
+    <h2 id="contact">Contact</h2>
+    <ul class="contact" id="contactList"></ul>
     <h2 id="organizers">What is a campus organizer?</h2>
     <p>Someone who has offered to help with the letter at their university. A university can have several.</p>
-    <p>If you volunteer, we connect you with other groups of campus organizers at your university, which means sharing your name with them, and contact you by phone or text about next steps. Organizers are listed by name on the public list and marked as organizers.</p>
+    <p>If you volunteer, we connect you with other groups of campus organizers at your university, which means sharing your name with them, and contact you by phone or text about next steps. Organizers who show their name are marked on the public list.</p>
     <h2>What happens to my information?</h2>
-    <p>We use your email just to confirm your affiliation with your university and to tell you when the letter is ready. Your first name and last initial are on the public list only if you choose to show them. Poll answers are shown as totals. Your answer to “What concerns you most about AI?” isn't displayed publicly.</p>
+    <p>We use your email just to confirm your affiliation with your university and to tell you when the letter is ready. Your name is on the public list only if you choose to show it. Poll answers are shown as totals. Your answer to “What concerns you most about AI?” is not displayed publicly.</p>
+  </div>
+</div>
+
+<div id="viewPrivacy" hidden>
+  <div class="wrap about">
+    <h1>Privacy</h1>
+    <p class="lab" style="margin-bottom:14px">Last updated November 24, 2026.</p>
+    <h2>Who we are</h2>
+    <p>Our Futures First is a project run by students at U.S. universities. It is collecting interest in an open letter on AI. You can reach us at <a href="mailto:ourfuturesfirst@gmail.com">ourfuturesfirst@gmail.com</a>.</p>
+    <h2>What we collect</h2>
+    <p>What you enter in the form: your name, your university email, your role and year, your major or field, a social media handle if you choose to give one, a phone number if you volunteer as a campus organizer, your answers to the six questions, your written answer, and whether you offered to help.</p>
+    <p>We also record whether and when you confirmed your email. The services that host this website and its database receive your IP address and basic browser details when your browser loads the page. A code saved in your browser lets you reopen your own entry from the same device. We do not use advertising or analytics trackers.</p>
+    <h2>What is public</h2>
+    <p>If you choose to show your name, it appears on the public list with your role and university. If you volunteered as a campus organizer, the list says so. Answers to the six questions are shown only as totals, and each university is shown with its number of sign-ups.</p>
+    <p>Your email, phone number, social media handle and written answer are never shown.</p>
+    <h2>How we use it</h2>
+    <p>To confirm that you belong to a U.S. university, to contact you about the letter, to count sign-ups and show totals, and to decide what goes in the letter. If you volunteer as a campus organizer, your name is shared with the other campus organizers at your university.</p>
+    <h2 id="texts">Text messages</h2>
+    <p>We ask for a phone number only when you volunteer as a campus organizer, and by giving it you agree to receive text messages from Our Futures First. Texts are about the letter and organizing on your campus. Message frequency varies. Message and data rates may apply. Reply STOP to stop at any time, or HELP for help.</p>
+    <p>We do not sell phone numbers or text-message consent, and we do not share them with anyone for their own marketing.</p>
+    <h2>Who we share it with</h2>
+    <p>Only the services that run the site for us: the company that hosts this website, Supabase for the database and sign-in emails, and an email delivery service. Google Fonts and jsDelivr deliver fonts and code to your browser and so see your IP address. We do not sell personal information. We may disclose information if the law requires it.</p>
+    <h2>How long we keep it</h2>
+    <p>Until the letter project ends, or until you ask us to delete it. An entry whose email is never confirmed is not counted or shown.</p>
+    <h2>Your choices</h2>
+    <p>If you use the form to invite friends, the addresses you type only open a draft in your own email app. We do not receive or store them.</p>
+    <p>You can change your entry from the browser you signed up in, or from the link we emailed you. To see, correct or delete what we hold about you, email <a href="mailto:ourfuturesfirst@gmail.com">ourfuturesfirst@gmail.com</a>.</p>
+    <h2>Do Not Track</h2>
+    <p>We do not track you across other websites, so this site behaves the same way whatever your browser's Do Not Track setting is.</p>
+    <h2>Children</h2>
+    <p>This site is for people at universities. It is not directed to children under 13.</p>
+    <h2>Changes</h2>
+    <p>If this page changes, we will update the date at the top.</p>
   </div>
 </div>
 
 <div id="viewDraft" hidden>
   <div class="wrap about">
-    <h1>The letter, so far</h1>
+    <h1>The letter so far</h1>
     <p class="lab" style="margin-bottom:14px">Working draft. Last updated November 24, 2026.</p>
     <blockquote class="draft">We study, teach and do research at American universities, and we ask our government to slow the race toward AI smarter than humans until it can be shown to be safe and under human control.</blockquote>
-    <p>This is where the letter stands today. It'll change as answers come in from the form.</p>
-    <p>Signing up doesn't put your name on it. On launch day you'll see the final text and decide then whether to sign.</p>
+    <p>This is where the letter stands today. It will change as answers come in from the form.</p>
+    <p>Signing up does not put your name on this. On launch day you will see the final text and decide then whether to sign.</p>
     <p><a href="#why-draft">Why publish a draft now?</a> &nbsp; <a href="#interest">Back to the form</a></p>
   </div>
 </div>
 </main>
 
-<footer><div class="wrap"><p class="lab">Our Futures First is a working title. Run by students at U.S. universities.</p></div></footer>
+<footer><div class="wrap foot lab">
+  <a href="https://www.instagram.com/ourfuturesfirst/" target="_blank" rel="noopener" aria-label="Our Futures First on Instagram"><img src="assets/instagram.svg" alt="Instagram" width="14" height="14" onerror="this.replaceWith(document.createTextNode(this.alt))"></a>
+  <a href="https://x.com/ourfuturesfirst" target="_blank" rel="noopener" aria-label="Our Futures First on X"><img src="assets/x.svg" alt="X" width="14" height="14" onerror="this.replaceWith(document.createTextNode(this.alt))"></a>
+  <a href="mailto:ourfuturesfirst@gmail.com">ourfuturesfirst@gmail.com</a>
+  <a href="#privacy">Privacy</a>
+  <span class="by">Run by students at U.S. universities.</span>
+</div></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 <script src="config.js"></script>
 <script>
 (function(){
@@ -446,19 +510,23 @@ var CALM=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)"
 /* ---------- content ---------- */
 var Q=[
  {id:"feel",s:"Feeling",q:"When you think about where AI is headed, how do you feel?",o:["Mostly excited","A mix of both","Mostly worried","Haven't thought about it"]},
- {id:"plans",s:"Plans",q:"Has AI changed what you plan to study or do after you graduate?",o:["Yes, I changed my plans","I am reconsidering","No","Not sure yet"],stu:1},
- {id:"job",s:"Jobs",q:"When will AI be able to do most of an entry-level job in your field?",o:["It already can","Before I graduate","Within ten years","Later, or never"],stu:1},
+ {id:"plans",s:"Plans",q:"Has AI changed what you plan to study or do after you graduate?",o:["Yes, I changed my plans","I am reconsidering","No","Not sure yet"]},
+ {id:"job",s:"Jobs",q:"When will AI be able to do most of an entry-level job in your field?",o:["It already can","Before I graduate","Within ten years","Later, or never"]},
  {id:"control",s:"Control",q:"How likely is it that humans lose meaningful control of advanced AI in your lifetime?",o:["Very likely","Somewhat likely","Not very likely","Not at all likely"]},
- {id:"risk",s:"Worry",q:"Which worries you more about AI?",o:["Misuse of AI","Loss of control over AI","Both equally","Neither"]},
- {id:"say",s:"Say",q:"How much say do people your age have in how AI is developed?",o:["A lot","Some","Very little","None"],stu:1}
+ {id:"risk",s:"Worry",q:"Which worries you more?",o:["AI misuse","AI loss of control","Both equally","Neither"]},
+ {id:"say",s:"Say",q:"How much say do people your age have in how AI is developed?",o:["A lot","Some","Very little","None"]}
 ];
-/* stu: asked of undergraduates and graduate students only. Postdocs, faculty and staff skip these. */
 var SPREAD=[
- {id:"lists",t:"I'll email my dorm, class or club lists"},
- {id:"chats",t:"I'll share it with friends and group chats"},
- {id:"lead",t:"I'd help organize this at my university"}
+ {id:"lists",t:"I can email my dorm, class or club lists"},
+ {id:"chats",t:"I can share it with friends and group chats"},
+ {id:"lead",t:"I would help organize this at my university"}
 ];
 var TEXTQ=[{id:"inConcern",q:"What concerns you most about AI?"}];
+/* Contact links on the About page: [label, address, text shown]. An entry with an empty address is left off the page.
+   When the X account exists, put its address in the last entry, e.g. "https://x.com/ourfuturesfirst". */
+var CONTACT=[["Instagram","https://www.instagram.com/ourfuturesfirst/","@ourfuturesfirst"],["Email","mailto:ourfuturesfirst@gmail.com","ourfuturesfirst@gmail.com"],["X","https://x.com/ourfuturesfirst","@ourfuturesfirst"]];
+CONTACT.forEach(function(c){if(!c[1])return;var li=mk("li"),a=mk("a",null,c[2]);li.appendChild(mk("span","lab",c[0]));
+  a.href=c[1];if(c[1].indexOf("mailto:")!==0){a.target="_blank";a.rel="noopener";}li.appendChild(a);$("contactList").appendChild(li);});
 
 /* ---------- university from email domain (U.S. only) ---------- */
 /* Used for preview mode and as a fallback. When connected, the backend decides (lookup_uni). */
@@ -475,7 +543,7 @@ function uniFromEmail(email){
 var CFG=window.OFF_CONFIG||{};
 var sb=CFG.url&&window.supabase?window.supabase.createClient(CFG.url,CFG.key):null;
 var EMPTY={total:0,named:0,unis:[],people:[],answers:{}};
-var S={live:!!sb,rows:[],remote:EMPTY,answers:{},spread:{},show:true,info:true,mine:null,panel:"people",slide:0,email:"",verified:false,submitted:false,editing:false,token:null,sms:false,saving:false,role:"",year:""};
+var S={live:!!sb,rows:[],remote:EMPTY,answers:{},spread:{},show:true,mine:null,panel:"people",slide:0,email:"",verified:false,submitted:false,editing:false,token:null,sms:false,saving:false,role:"",year:""};
 
 /* sample rows so the page can be reviewed without a backend; never used when connected */
 function sample(){
@@ -485,7 +553,7 @@ function sample(){
   var un=[["mit.edu",34],["harvard.edu",21],["stanford.edu",17],["berkeley.edu",14],["cmu.edu",11],["columbia.edu",9],["uchicago.edu",8],["yale.edu",7],["princeton.edu",6],["umich.edu",6],["gatech.edu",5],["ucla.edu",4],["cornell.edu",3],["nyu.edu",2]];
   var out=[],t=Date.now();
   un.forEach(function(u){for(var i=0;i<u[1];i++){var a={};Q.forEach(function(q){a[q.id]=q.o[Math.floor(r()*r()*q.o.length)];});
-    out.push({name:r()<.6?fn[Math.floor(r()*16)]+" "+ln[Math.floor(r()*16)]:"",uni:KNOWN[u[0]],dom:u[0],a:a,lead:r()<.1,ts:t-Math.floor(r()*6e8)});}});
+    var rl=r();out.push({name:r()<.6?fn[Math.floor(r()*16)]+" "+ln[Math.floor(r()*16)]:"",uni:KNOWN[u[0]],dom:u[0],a:a,lead:r()<.1,role:rl<.62?"an undergraduate":rl<.86?"a graduate student":rl<.92?"a postdoc":rl<.97?"faculty":"staff",ts:t-Math.floor(r()*6e8)});}});
   return out;
 }
 /* same shape the backend's board() returns */
@@ -499,7 +567,7 @@ function toBoard(rows){
 function board(){return S.live?S.remote:toBoard(S.rows);}
 function uniCount(dom){var n=0;board().unis.forEach(function(x){if(x.key===dom)n=x.n;});return n;}
 
-/* ---------- carousel: five questions, then two written ones ---------- */
+/* ---------- carousel: six optional questions, then one written one ---------- */
 var slides=[],busy=false,optBtns={},spreadBtns={};
 function spreadList(){return SPREAD.filter(function(s){return S.spread[s.id];}).map(function(s){return s.id;});}
 function flash(el){el.classList.remove("flash");void el.offsetWidth;el.classList.add("flash");}
@@ -510,17 +578,17 @@ function buildForm(){
   function add(sl){var k=slides.length;sl.hidden=k>0;stage.appendChild(sl);slides.push(sl);
     var d=mk("i");d.addEventListener("click",function(){go(k);});dots.appendChild(d);}
   Q.forEach(function(q,qi){
-    var sl=mk("section","slide"),h=mk("h2",null,q.q+" ");h.appendChild(mk("span","req","*"));q.h=h;sl.appendChild(h);
+    var sl=mk("section","slide"),h=mk("h2",null,q.q);sl.appendChild(h);
     var os=mk("div","opts");optBtns[q.id]={};
     q.o.forEach(function(o,oi){var b=mk("button","opt");b.type="button";b.setAttribute("aria-pressed","false");
       b.appendChild(mk("span","key","ABCD".charAt(oi)));b.appendChild(mk("span",null,o));b.appendChild(mk("span","opct"));optBtns[q.id][o]=b;
-      b.addEventListener("click",function(){if(busy)return;pick(q,o);setTimeout(function(){go(step(qi,1));},CALM?0:1100);});
+      b.addEventListener("click",function(){if(busy)return;pick(q,o);setTimeout(function(){go(qi+1);},CALM?0:1100);});
       os.appendChild(b);});
     sl.appendChild(os);add(sl);
   });
   TEXTQ.forEach(function(t){
     var sl=mk("section","slide"),h=mk("h2"),lab=mk("label",null,t.q);lab.htmlFor=t.id;h.appendChild(lab);sl.appendChild(h);
-    var ta=mk("textarea");ta.id=t.id;ta.maxLength=1500;ta.placeholder="Optional. This won't be displayed publicly.";ta.addEventListener("input",renderNav);sl.appendChild(ta);add(sl);
+    var ta=mk("textarea");ta.id=t.id;ta.maxLength=1500;ta.placeholder="Optional. This will not be displayed publicly.";ta.addEventListener("input",renderNav);sl.appendChild(ta);add(sl);
   });
   /* help checkboxes live in the panel that appears after submitting; each tick saves on its own */
   var sp=$("spread");
@@ -528,6 +596,7 @@ function buildForm(){
     b.appendChild(mk("span","key"));b.appendChild(mk("span",null,s.t));b.appendChild(mk("span","saved","Saved"));
     function set(v){S.spread[s.id]=v;b.setAttribute("aria-pressed",String(v));}
     b.addEventListener("click",function(){var was=!!S.spread[s.id];set(!was);renderLead();
+      if(s.id==="lists"){if(was)$("spreadMsg").textContent="";else copy("Link copied to your clipboard. Paste it into the email to your lists.","spreadMsg");}
       patch({spread:spreadList()}).then(function(){flash(b);},function(){set(was);renderLead();$("copyMsg").textContent=FAIL.save;});});
     sp.appendChild(b);spreadBtns[s.id]=b;});
   renderNav();
@@ -535,35 +604,23 @@ function buildForm(){
 function renderNav(){
   var i=S.slide;
   $("dots").querySelectorAll("i").forEach(function(x,k){
-    var filled=k<Q.length?S.answers[Q[k].id]:$(TEXTQ[k-Q.length].id).value.trim();x.className=k===i?"cur":filled?"done":"";x.style.display=asked(k)?"":"none";});
-  $("btnBack").style.visibility=step(i,-1)>=0?"visible":"hidden";
-  $("btnNext").style.visibility=i<slides.length-1&&(i>=Q.length||S.answers[Q[i].id])?"visible":"hidden";
+    var filled=k<Q.length?S.answers[Q[k].id]:$(TEXTQ[k-Q.length].id).value.trim();x.className=k===i?"cur":filled?"done":"";});
+  $("btnBack").style.visibility=i>0?"visible":"hidden";
+  $("btnNext").style.visibility=i<slides.length-1?"visible":"hidden";
   updateBtn();
 }
-/* the main button stays grey until every question is answered */
-function ready(){return Q.every(function(q,k){return !asked(k)||S.answers[q.id];});}
-/* which slides this person is asked, and the next one in a direction */
-function asked(k){return k>=Q.length||!Q[k].stu||ROLES.indexOf(S.role)<2;}
-function step(i,dir){do{i+=dir;}while(i>=0&&i<slides.length&&!asked(i));return i;}
-function updateBtn(){var b=$("btnSubmit"),was=b.disabled;b.disabled=S.saving||!ready();if(was&&!b.disabled&&!S.saving&&!S.submitted)flash(b);}
+/* the survey questions are optional: the main button is only held back while a save is in progress */
+function updateBtn(){$("btnSubmit").disabled=S.saving;}
 /* volunteering as a campus organizer asks for a phone number and consent to texts */
 function renderLead(){
-  paintShow();
   var on=!!S.spread.lead,phone=$("inPhone2").value.trim();
-  $("leadPop").classList.toggle("open",on);$("phoneReq").hidden=!on;
-  $("pkSms").setAttribute("aria-pressed",String(S.sms&&!!phone));
-  $("leadHint").textContent=on&&!phone?"Add your phone number above so we can reach you.":"";
+  $("leadPop").classList.toggle("open",on);$("invitePop").classList.toggle("open",!!S.spread.chats);
+  $("leadHint").textContent=on&&!phone?"Add your phone number so we can reach you.":"";
 }
-/* one phone number: optional for a text when the letter is out, needed for campus organizers */
-function savePhone(el){var phone=$("inPhone2").value.trim(),h=$("phoneHint");
-  if(!phoneOk(phone)){h.textContent="That phone number looks incomplete.";return;}
-  if(!phone)S.sms=false;h.textContent="";
-  patch({phone:phone,sms_ok:S.sms}).then(function(){flash(el);renderLead();},function(){h.textContent=FAIL.save;});}
-$("inPhone2").addEventListener("input",function(){this.value=fmtPhone(this.value);$("phoneHint").textContent="";});
-$("inPhone2").addEventListener("change",function(){savePhone(this);});
-$("pkSms").addEventListener("click",function(){var phone=$("inPhone2").value.trim();
-  if(!phone||!phoneOk(phone)){$("phoneHint").textContent=phone?"That phone number looks incomplete.":"Add your phone number first.";$("inPhone2").focus();return;}
-  S.sms=!S.sms;renderLead();savePhone(this);});
+$("inPhone2").addEventListener("input",function(){this.value=fmtPhone(this.value);$("leadHint").textContent="";});
+$("inPhone2").addEventListener("change",function(){var el=this,phone=el.value.trim();
+  if(!phoneOk(phone)){$("leadHint").textContent="That phone number looks incomplete.";return;}
+  S.sms=!!phone;patch({phone:phone,sms_ok:S.sms}).then(function(){flash(el);renderLead();},function(){$("leadHint").textContent=FAIL.save;});});
 function go(i){
   if(busy||i===S.slide||i<0||i>=slides.length)return;
   var st=$("stage"),cur=slides[S.slide],nx=slides[i],dir=i>S.slide?1:-1;
@@ -581,47 +638,18 @@ function go(i){
   },180);
 }
 /* who is answering: role, and year for undergraduates */
-var ROLES=["an undergraduate","a graduate student","a postdoc","faculty","staff"],YEARS=["First-year","Sophomore","Junior","Senior"];
-/* in-page dropdown: a button and a list, with arrow keys, Enter and Escape */
-function dropdown(btn,items,get,set){
-  var menu=btn.nextElementSibling,on=-1;
-  function paint(){btn.textContent=get()||"Select";btn.classList.toggle("empty",!get());}
-  function mark(){[].forEach.call(menu.children,function(li,i){li.classList.toggle("on",i===on);li.setAttribute("aria-selected",String(i===on));});
-    if(menu.children[on])menu.children[on].scrollIntoView({block:"nearest"});}
-  function open(v){menu.hidden=!v;btn.setAttribute("aria-expanded",String(v));if(v){on=items.indexOf(get());mark();}}
-  function choose(i){set(items[i]);open(false);paint();}
-  items.forEach(function(t,i){var li=mk("li",null,t);li.setAttribute("role","option");
-    li.addEventListener("mousedown",function(e){e.preventDefault();choose(i);});menu.appendChild(li);});
-  btn.addEventListener("click",function(){btn.focus();open(menu.hidden);});
-  btn.addEventListener("blur",function(){open(false);});
-  btn.addEventListener("keydown",function(e){
-    if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();if(menu.hidden)open(true);
-      on=Math.max(0,Math.min(items.length-1,on+(e.key==="ArrowDown"?1:-1)));mark();}
-    else if((e.key==="Enter"||e.key===" ")&&!menu.hidden&&on>-1){e.preventDefault();choose(on);}
-    else if(e.key==="Escape")open(false);
-  });
-  return paint;
-}
-var paintRole=dropdown($("selRole"),ROLES,function(){return S.role;},function(v){S.role=v;if(v!==ROLES[0])S.year="";$("err").textContent="";paintChips();}),
-    paintYear=dropdown($("selYear"),YEARS,function(){return S.year;},function(v){S.year=v;});
-function paintChips(){var fac=S.role==="faculty"||S.role==="staff";$("inTitle").placeholder=S.role==="staff"?"Research Administrator":"Professor of Physics";$("selYear").disabled=S.role!==ROLES[0];$("yearField").hidden=fac;$("titleField").hidden=!fac;
-  paintRole();paintYear();paintQ();paintShow();}
-function paintQ(){if(!slides.length)return;if(!asked(S.slide))go(step(S.slide,1));renderNav();}
-paintChips();
-$("btnBack").addEventListener("click",function(){go(step(S.slide,-1));});
-$("btnNext").addEventListener("click",function(){go(step(S.slide,1));});
-/* campus organizers are always listed by name */
-function paintShow(){var lead=!!S.spread.lead,b=$("pkShow");if(lead)S.show=true;b.disabled=lead;b.setAttribute("aria-pressed",String(S.show));
-  var fac=S.role==="faculty"||S.role==="staff",ug=S.role===ROLES[0],maj=$("inMajor").value.trim();
-  $("infoText").textContent="Show my "+(fac?"title":ug?"year":"role")+(maj?(ug?" and major":" and field"):"")+" beside my name";
-  $("pkInfo").hidden=!S.show||!S.role;$("pkInfo").setAttribute("aria-pressed",String(S.info));
-  $("showText").textContent=lead?"Campus organizers are listed by first name and last initial":"Show my first name and last initial on the public list";}
-$("pkShow").addEventListener("click",function(){S.show=!S.show;paintShow();});
-$("pkInfo").addEventListener("click",function(){S.info=!S.info;paintShow();});
-$("inMajor").addEventListener("input",paintShow);$("inMajor").addEventListener("change",paintShow);
+var ROLES=["an undergraduate","a graduate student","a postdoc","faculty","staff"],ROLE_LABEL={"an undergraduate":"Student","a graduate student":"Graduate student","a postdoc":"Postdoc","faculty":"Faculty","staff":"Staff"},YEARS=["First-year","Sophomore","Junior","Senior"];
+function paintChips(){var y=S.role===ROLES[0];$("selRole").value=S.role;$("selYear").disabled=!y;$("selYear").value=y?S.year:"";}
+function fillSel(el,items){el.appendChild(new Option("Select",""));items.forEach(function(t){el.appendChild(new Option(t,t));});}
+fillSel($("selRole"),ROLES);fillSel($("selYear"),YEARS);
+$("selRole").addEventListener("change",function(){S.role=this.value;if(S.role!==ROLES[0])S.year="";$("err").textContent="";paintChips();});
+$("selYear").addEventListener("change",function(){S.year=this.value;});
+$("btnBack").addEventListener("click",function(){go(S.slide-1);});
+$("btnNext").addEventListener("click",function(){go(S.slide+1);});
+$("pkShow").addEventListener("click",function(){S.show=!S.show;this.setAttribute("aria-pressed",String(S.show));});
 
 var lookupSeq=0,lookupTimer=null;
-var NOTUS="That isn't a U.S. university email. This form is only open to people at U.S. universities.";
+var NOTUS="That isn't a U.S. university address. This is open to U.S. universities only.";
 function showUni(u,complete){
   var h=$("uniHint"),prev=S.mine&&S.mine.dom;S.mine=u;clear(h);h.hidden=!u&&!complete;loadMajors(u?u.dom:null);
   if(u){h.hidden=true;if(u.dom!==prev)S.panel="unis";}
@@ -661,10 +689,7 @@ function fmtPhone(v){
 function phoneOk(v){var d=v.replace(/\D/g,"").length;return !v||(/^\+/.test(v)?d>=8:d===10);}
 /* major: suggestions you can click, but anything typed is accepted */
 var BASIC=["Biology","Business","Chemistry","Computer Science","Economics","Electrical Engineering","English","History","Mathematics","Mechanical Engineering","Neuroscience","Philosophy","Physics","Political Science","Psychology","Sociology","Undeclared"];
-/* each entry is [name, aliases]: typing "cs" or a course number finds the full name, and the full name is what is kept */
-var MAJ={all:BASIC.map(function(n){return [n,""];}),own:[],dom:null};
-function majHit(m,q,exact){var n=m[0].toLowerCase(),al=m[1]?m[1].toLowerCase().split(", "):[];
-  return exact?n===q||al.indexOf(q)>-1:n.indexOf(q)>-1||al.some(function(a){return a.indexOf(q)===0;});}
+var MAJ={all:BASIC,own:[],dom:null};
 function loadMajors(dom){
   if(!S.live||MAJ.dom===dom)return;MAJ.dom=dom;MAJ.own=[];
   if(dom)sb.rpc("majors_for",{p_dom:dom}).then(function(r){if(!r.error&&r.data&&MAJ.dom===dom)MAJ.own=r.data;});
@@ -672,16 +697,15 @@ function loadMajors(dom){
 (function(){
   var inp=$("inMajor"),menu=$("majorMenu"),on=-1,shown=[];
   function close(){menu.hidden=true;inp.setAttribute("aria-expanded","false");on=-1;}
-  function choose(m){inp.value=m;close();paintShow();}
+  function choose(m){inp.value=m;close();}
   function mark(){menu.querySelectorAll("li").forEach(function(li,i){li.classList.toggle("on",i===on);if(i===on)li.scrollIntoView({block:"nearest"});});}
   function open(){
     var q=inp.value.trim().toLowerCase(),seen={};
-    function match(list){return list.filter(function(m){var k=m[0].toLowerCase();if(seen[k]||!majHit(m,q))return false;seen[k]=1;return true;});}
-    function rank(m){return majHit(m,q,true)?0:m[0].toLowerCase().indexOf(q)===0?1:2;}
-    function starts(a,b){return rank(a)-rank(b);}
+    function match(list){return list.filter(function(m){var k=m.toLowerCase();if(seen[k]||k.indexOf(q)<0)return false;seen[k]=1;return true;});}
+    function starts(a,b){return (a.toLowerCase().indexOf(q)===0?0:1)-(b.toLowerCase().indexOf(q)===0?0:1);}
     /* the university's own majors come first; with nothing typed, only those (or nothing) are shown */
-    var own=match(MAJ.own),rest=q?match(MAJ.all):[];
-    shown=(q?own.concat(rest).sort(starts):own).slice(0,80).map(function(m){return m[0];});
+    var own=match(MAJ.own),rest=q?match(MAJ.all).sort(starts):[];
+    shown=own.concat(rest).slice(0,80);
     if(shown.length===1&&shown[0].toLowerCase()===q)shown=[];
     clear(menu);on=-1;
     shown.forEach(function(m){var li=mk("li",null,m);li.setAttribute("role","option");
@@ -698,15 +722,26 @@ function loadMajors(dom){
   });
   /* on leaving the field, snap to the listed spelling if it matches one; otherwise keep what was typed */
   inp.addEventListener("blur",function(){close();var v=inp.value.trim().replace(/\s+/g," "),hit=null;
-    MAJ.own.concat(MAJ.all).forEach(function(m){if(!hit&&v&&majHit(m,v.toLowerCase(),true))hit=m[0];});inp.value=hit||v;});
+    MAJ.own.concat(MAJ.all).forEach(function(m){if(!hit&&m.toLowerCase()===v.toLowerCase())hit=m;});inp.value=hit||v;});
 })();
 
 /* ---------- board ---------- */
 function tween(el,to){
   var from=+el.dataset.v||0;el.dataset.v=to;
-  if(CALM||from===to){el.textContent=num(to);return;}
-  var t0=null;requestAnimationFrame(function f(t){if(t0===null)t0=t;var k=Math.min(1,(t-t0)/700);k=1-Math.pow(1-k,3);
-    el.textContent=num(Math.round(from+(to-from)*k));if(k<1&&+el.dataset.v===to)requestAnimationFrame(f);});
+  if(CALM||from===to){el.textContent=num(to);blocks(el,to,to);return;}
+  /* the first real number counts up slowly from zero as the page loads; later changes move quickly */
+  var dur=el.dataset.seen?700:1800;el.dataset.seen="1";
+  var t0=null;requestAnimationFrame(function f(t){if(t0===null)t0=t;var k=Math.min(1,(t-t0)/dur);k=1-Math.pow(1-k,3);
+    var cur=Math.round(from+(to-from)*k);el.textContent=num(cur);blocks(el,cur,to);if(k<1&&+el.dataset.v===to)requestAnimationFrame(f);});
+}
+/* one small block per person or university, added as the number counts up; past 240 blocks each block stands for 10, 100, ... */
+function blocks(el,cur,to){
+  var people=el.id==="cPeople",box=$(people?"bPeople":"bUnis"),note=$(people?"nPeople":"nUnis"),unit=1;
+  while(to/unit>240)unit*=10;
+  var want=Math.ceil(cur/unit);
+  while(box.children.length<want)box.appendChild(document.createElement("i"));
+  while(box.children.length>want)box.removeChild(box.lastChild);
+  note.hidden=unit===1;note.textContent=unit===1?"":"Each block is "+num(unit)+(people?" people":" universities")+".";
 }
 function grow(f,w){if(CALM){f.style.width=w;return;}setTimeout(function(){f.style.width=w;},30);}
 /* clicking a university opens the people list filtered to it */
@@ -733,12 +768,11 @@ function renderWidget(){
   if(panelShown!==S.panel){var p=$(people?"pPeople":"pUnis");p.classList.remove("fade");void p.offsetWidth;p.classList.add("fade");if(panelShown)uniKey="";panelShown=S.panel;}
 
   var q=$("inSearch").value.trim().toLowerCase();
-  var rows=B.people.filter(function(p){return !q||(p.name+" "+(p.uni||"")+" "+(p.info||"")).toLowerCase().indexOf(q)>-1;});
+  var rows=B.people.filter(function(p){return !q||(p.name+" "+(p.uni||"")).toLowerCase().indexOf(q)>-1;});
   var pl=$("peopleList");clear(pl);
   rows.slice(0,200).forEach(function(p){var li=mk("li"),nm=mk(p.lead?"a":"span",p.lead?"lead":null,p.name);
     if(p.lead){nm.href="#organizers";nm.setAttribute("data-tip","Campus organizer at "+(p.uni||"their university")+". Click for information on what that means.");}
-    var who=mk("div","who1");who.appendChild(nm);if(p.info)who.appendChild(mk("span","info",p.info));
-    li.appendChild(who);li.appendChild(mk("span","u",p.uni||""));pl.appendChild(li);});
+    li.appendChild(nm);li.appendChild(mk("span",p.lead?"u org":"u",[p.lead?"Campus organizer":ROLE_LABEL[p.role]||"",p.uni||""].filter(Boolean).join(", ")));pl.appendChild(li);});
   if(!rows.length)pl.appendChild(mk("li","empty",q?"No one matches that search.":"No names yet. Yours can be the first."));
   /* private names can't be searched by name, but they still count toward a university you search for */
   var anon=0;B.unis.forEach(function(x){if(!q||x.name.toLowerCase().indexOf(q)>-1)anon+=x.n-(x.named||0);});
@@ -750,8 +784,8 @@ function renderWidget(){
   if(key===uniKey)return;uniKey=key;
   var ul=$("uniList"),idx=-1;clear(ul);
   B.unis.forEach(function(x,i){if(x.key===mine)idx=i;});
-  var top=B.unis.length?B.unis[0].n:0,inTop=!mine||(idx>-1&&idx<12);
-  B.unis.slice(0,inTop?12:11).forEach(function(x){ul.appendChild(uniRow(x,x.key===mine,top));});
+  var top=B.unis.length?B.unis[0].n:0,inTop=!mine||(idx>-1&&idx<10);
+  B.unis.slice(0,inTop?10:9).forEach(function(x){ul.appendChild(uniRow(x,x.key===mine,top));});
   if(!inTop){var row=uniRow(idx>-1?B.unis[idx]:{name:S.mine.name,n:0},true,top);if(B.unis.length)row.classList.add("gap");ul.appendChild(row);}
   if(!B.unis.length&&inTop)ul.appendChild(mk("li","empty","No universities yet."));
 }
@@ -760,55 +794,54 @@ $("segUnis").addEventListener("click",function(){S.panel="unis";renderWidget();}
 $("inSearch").addEventListener("input",renderWidget);
 
 /* ---------- poll results: built once, then updated in place so the bars animate ---------- */
-var R={};
+var R={},SVGNS="http://www.w3.org/2000/svg",PIE=["#D6D5C9","#A22C29","#B9BAA3","#902923"];
+function sv(tag,at){var e=document.createElementNS(SVGNS,tag);for(var k in at)e.setAttribute(k,at[k]);return e;}
 function buildResults(){
   var grid=$("resGrid");
-  Q.forEach(function(q,i){
-    var card=mk("div","card rcard");card.appendChild(mk("h3",null,q.q));R[q.id]={};
-    q.o.forEach(function(o){var row=mk("div","rrow"),l=mk("div","l"),pct=mk("span","pct","0%");
-      l.appendChild(mk("span",null,o));l.appendChild(pct);row.appendChild(l);
-      var tr=mk("div","track"),f=mk("div","fill");tr.appendChild(f);row.appendChild(tr);card.appendChild(row);R[q.id][o]={row:row,pct:pct,fill:f};});
-    grid.appendChild(card);
+  Q.forEach(function(q){
+    var card=mk("div","card rcard");card.appendChild(mk("h3",null,q.q));
+    var body=mk("div","pie"),g=sv("svg",{viewBox:"0 0 260 190",role:"img"}),lg=mk("ul","legend");R[q.id]={svg:g,rows:{}};
+    q.o.forEach(function(o,i){var li=mk("li"),sw=mk("i");sw.style.background=PIE[i];li.appendChild(sw);li.appendChild(mk("span","nm",o));lg.appendChild(li);R[q.id].rows[o]={li:li};});
+    body.appendChild(g);body.appendChild(lg);card.appendChild(body);grid.appendChild(card);
   });
 }
-/* who has signed up: totals by role, year and major, and a circle on the map for each university */
-function demoBars(el,pairs,total){clear(el);
-  if(!pairs.length){el.appendChild(mk("p","muted","Nothing yet."));return;}
-  pairs.forEach(function(p){var row=mk("div","rrow"),l=mk("div","l");l.appendChild(mk("span",null,p[0]));
-    l.appendChild(mk("span","pct",Math.round(p[1]/total*100)+"%"));row.appendChild(l);
-    var tr=mk("div","track"),f=mk("div","fill");f.style.width=p[1]/total*100+"%";tr.appendChild(f);row.appendChild(tr);el.appendChild(row);});}
-var NS="http://www.w3.org/2000/svg",demoKey="";
-function renderDemo(B){
-  var D=B.demo||{role:{},year:{},major:[]},key=JSON.stringify(D)+B.unis.map(function(u){return u.key+u.n;}).join();
-  if(key===demoKey)return;demoKey=key;
-  function ordered(o,keys){return keys.filter(function(k){return o[k];}).map(function(k){return [k,o[k]];});}
-  function sum(ps){return ps.reduce(function(a,p){return a+p[1];},0);}
-  var r=ordered(D.role,["Undergraduate","Graduate student","Postdoc","Faculty","Staff"]),y=ordered(D.year,YEARS);
-  demoBars($("dRole"),r,sum(r));demoBars($("dYear"),y,sum(y));demoBars($("dMajor"),D.major,B.total);
-  var g=$("mapDots"),top=B.unis.length?B.unis[0].n:1;clear(g);
-  B.unis.filter(function(u){return u.x!=null;}).forEach(function(u){var c=document.createElementNS(NS,"circle"),t=document.createElementNS(NS,"title");
-    c.setAttribute("cx",u.x);c.setAttribute("cy",u.y);c.setAttribute("r",(5+21*Math.sqrt(u.n/top)).toFixed(1));
-    t.textContent=u.name+": "+num(u.n);c.appendChild(t);g.appendChild(c);});
-}
-/* the outline comes from the us-atlas map file, which is already drawn on the same 975 by 610 grid as the stored positions */
-function loadMap(){
-  if(!window.topojson||!window.fetch)return;
-  fetch("https://cdn.jsdelivr.net/npm/us-atlas@3.0.1/states-albers-10m.json").then(function(r){return r.json();}).then(function(us){
-    function path(geo){var polys=geo.type==="Polygon"?[geo.coordinates]:geo.type==="MultiPolygon"?geo.coordinates:[geo.coordinates],close=geo.type!=="MultiLineString";
-      return polys.map(function(rings){return rings.map(function(ring){return "M"+ring.map(function(p){return p[0].toFixed(1)+","+p[1].toFixed(1);}).join("L")+(close?"Z":"");}).join("");}).join("");}
-    function add(cls,d){var p=document.createElementNS(NS,"path");p.setAttribute("class",cls);p.setAttribute("d",d);$("mapLand").appendChild(p);}
-    add("land",path(topojson.feature(us,us.objects.nation).features[0].geometry));
-    add("edge",path(topojson.mesh(us,us.objects.states)));
-  }).catch(function(){});
-}
+/* Each slice's angle is its share of answers, and its radius also grows with the share, so the largest answer stands out.
+   Angles are fractions of a full turn from twelve o'clock. */
+var PC={x:130,y:96,min:30,max:66};
+function polar(a,r){var t=(a-.25)*2*Math.PI;return [PC.x+r*Math.cos(t),PC.y+r*Math.sin(t)];}
+function wedge(a0,a1,r){var p=polar(a0,r),q=polar(a1,r);
+  return "M"+PC.x+" "+PC.y+"L"+p[0].toFixed(2)+" "+p[1].toFixed(2)+"A"+r+" "+r+" 0 "+(a1-a0>.5?1:0)+" 1 "+q[0].toFixed(2)+" "+q[1].toFixed(2)+"Z";}
 function updateResults(){
-  var B=board();renderDemo(B);
+  var B=board();
   $("resCount").textContent=B.total?"("+num(B.total)+(B.total===1?" person)":" people)"):"";
   Q.forEach(function(q){
-    var c=B.answers[q.id]||{},tot=0;q.o.forEach(function(o){tot+=c[o]||0;});
-    q.o.forEach(function(o){var x=R[q.id][o],pct=tot?Math.round((c[o]||0)/tot*100):0;
-      x.pct.textContent=pct+"%";grow(x.fill,pct+"%");x.row.classList.toggle("mine",S.answers[q.id]===o);
-      var b=optBtns[q.id][o];b.lastChild.textContent=pct+"%";b.style.setProperty("--p",pct+"%");b.parentNode.parentNode.classList.toggle("answered",!!S.answers[q.id]);});
+    var c=B.answers[q.id]||{},tot=0,top=0,x=R[q.id],g=x.svg,a=0,desc=[],labs=[];
+    q.o.forEach(function(o){tot+=c[o]||0;top=Math.max(top,c[o]||0);});
+    clear(g);
+    if(!tot)g.appendChild(sv("circle",{cx:PC.x,cy:PC.y,r:PC.min,fill:"none",stroke:"var(--line2)","stroke-width":1.5}));
+    q.o.forEach(function(o,i){
+      var n=c[o]||0,f=tot?n/tot:0,pct=Math.round(f*100),row=x.rows[o];
+      row.li.classList.toggle("mine",S.answers[q.id]===o);desc.push(o+" "+pct+"%");
+      var ob=optBtns[q.id][o];ob.lastChild.textContent=pct+"%";ob.style.setProperty("--p",pct+"%");ob.parentNode.parentNode.classList.toggle("answered",!!S.answers[q.id]);
+      if(!n)return;
+      var r=Math.round(PC.min+(PC.max-PC.min)*Math.sqrt(n/top)),el=f>.9999?sv("circle",{cx:PC.x,cy:PC.y,r:r}):sv("path",{d:wedge(a,a+f,r)});
+      el.setAttribute("class","slice");el.setAttribute("fill",PIE[i]);el.setAttribute("stroke","var(--bg)");el.setAttribute("stroke-width",1.5);el.setAttribute("stroke-linejoin","round");
+      var t=sv("title",{});t.textContent=o+": "+pct+"% ("+num(n)+(n===1?" person)":" people)");el.appendChild(t);
+      el.addEventListener("mouseenter",function(){row.li.classList.add("hot");});el.addEventListener("mouseleave",function(){row.li.classList.remove("hot");});
+      g.appendChild(el);labs.push({mid:a+f/2,r:r,pct:pct});a+=f;
+    });
+    /* percentage outside each slice on a short leader line; a label that would sit on its neighbour is pushed further out */
+    var prev=null;
+    labs.forEach(function(l){
+      var out=l.r+16,p=polar(l.mid,out);
+      if(prev&&Math.abs(p[1]-prev[1])<12&&Math.abs(p[0]-prev[0])<30){out=Math.max(out,prev.out)+14;p=polar(l.mid,out);}
+      var s0=polar(l.mid,l.r+3),s1=polar(l.mid,out-5),right=p[0]>=PC.x;
+      g.appendChild(sv("line",{x1:s0[0].toFixed(1),y1:s0[1].toFixed(1),x2:s1[0].toFixed(1),y2:s1[1].toFixed(1),stroke:"var(--mute)","stroke-width":.75}));
+      var tx=sv("text",{x:(p[0]+(right?2:-2)).toFixed(1),y:(p[1]+4).toFixed(1),"text-anchor":right?"start":"end"});tx.textContent=l.pct+"%";g.appendChild(tx);
+      prev=[p[0],p[1]];prev.out=out;
+    });
+    if(tot)g.appendChild(sv("circle",{cx:PC.x,cy:PC.y,r:9,fill:"var(--bg)"}));
+    g.setAttribute("aria-label",q.q+" "+(tot?desc.join(", "):"No answers yet."));
   });
 }
 
@@ -822,13 +855,12 @@ function renderAfter(){
   var u=S.mine;
   $("afterLab").textContent=S.verified?"Confirmed":"One step left";
   $("afterHead").textContent=S.verified?"You're in.":"Check your email.";
-  $("afterSub").textContent=S.verified?"You're counted"+(u?" for "+u.name:"")+"."
-    :S.live?"We sent a link to "+S.email+". Open it within 24 hours and you're counted.":"Preview mode: no email is sent.";
-  $("notifyText").textContent="We'll email you at "+S.email+" when the letter is ready. Want a text as well? Add your number.";
-  $("afterHelp").hidden=!S.token;$("resendRow").hidden=S.verified||!S.live;
-  var url=location.href.split(/[?#]/)[0],msg="Students are writing an open letter on AI and asking what should be in it. It takes two minutes: ",e=encodeURIComponent;
+  $("afterSub").textContent=S.verified?"You're counted"+(u?" for "+u.name:"")+". We will contact you when the letter is ready to sign."
+    :S.live?"We sent a link to "+S.email+". Open it within 24 hours to be counted.":"Preview mode: no email is sent.";
+  $("afterHelp").hidden=!S.token;
+  var url=location.href.split(/[?#]/)[0],msg="Students are writing an open letter on AI and asking what should be in it. Six questions, two minutes: ",e=encodeURIComponent;
   $("shSms").href="sms:?&body="+e(msg+url);
-  $("shMail").href="mailto:?subject="+e("Students are writing an open letter on AI")+"&body="+e(msg+url);
+  $("shMail").href="mailto:?subject="+e("Six questions: students and AI")+"&body="+e(msg+url);
   $("shWa").href="https://wa.me/?text="+e(msg+url);
   $("shThreads").href="https://www.threads.net/intent/post?text="+e(msg+url);
   $("pop").classList.add("open");
@@ -842,44 +874,45 @@ function fold(el,open){
 function toTop(){setTimeout(function(){$("formPop").parentNode.parentNode.scrollIntoView({block:"start",behavior:CALM?"auto":"smooth"});},60);}
 $("btnEdit").addEventListener("click",function(){S.editing=true;$("err").textContent="";renderAfter();toTop();});
 $("btnCancel").addEventListener("click",function(){S.editing=false;renderAfter();toTop();});
-$("btnResend").addEventListener("click",function(){var m=$("resendMsg");m.textContent="Sending";
-  sb.auth.signInWithOtp({email:S.email,options:{emailRedirectTo:location.href.split(/[?#]/)[0]}}).then(function(o){
-    m.textContent=o.error?"Wait a minute, then try again.":"Sent. Check your spam folder too.";});});
-function copy(note){var url=location.href.split(/[?#]/)[0],m=$("copyMsg");
+function copy(note,id){var url=location.href.split(/[?#]/)[0],m=$(id||"copyMsg");
   try{navigator.clipboard.writeText(url).then(function(){m.textContent=note;},function(){m.textContent="Copy the address from your browser bar.";});}catch(x){m.textContent="Copy the address from your browser bar.";}}
 $("btnCopy").addEventListener("click",function(){copy("Link copied.");});
+/* inviting friends: the visitor's own email app sends it, so their friends' addresses never reach us */
+$("btnInvite").addEventListener("click",function(e){
+  var list=$("inInvite").value.split(/[\s,;]+/).filter(Boolean),bad=list.filter(function(x){return !MAIL.test(x);}),m=$("inviteMsg");
+  if(!list.length||bad.length){e.preventDefault();m.className="hint bad";m.textContent=list.length?"Check this address: "+bad[0]:"Enter at least one email address.";return;}
+  var url=location.href.split(/[?#]/)[0],en=encodeURIComponent;
+  this.href="mailto:?bcc="+en(list.join(","))+"&subject="+en("Students are writing an open letter on AI")+"&body="+en("Students across U.S. universities are putting together an open letter on regulating AI development, and they are asking what should be in it. It takes two minutes:\n\n"+url);
+  m.className="hint";m.textContent="Opening a draft to "+list.length+(list.length===1?" person":" people")+" in your email app.";
+});
 $("shInsta").addEventListener("click",function(){copy("Link copied. Paste it into your story or a DM.");});
 
 /* ---------- backend ---------- */
-var FAIL={not_university:NOTUS,mail:"Your answers are saved, but we couldn't send the email. Wait a minute and try again.",save:"That didn't save. Check your connection and try again."};
-function formRow(){return {name:$("inName").value.trim(),show_name:S.show,show_info:S.info,major:$("inMajor").value.trim(),role:S.role,year:S.year,title:S.role==="faculty"||S.role==="staff"?$("inTitle").value.trim():"",
-  answers:Q.reduce(function(a,q,k){if(asked(k)&&S.answers[q.id])a[q.id]=S.answers[q.id];return a;},{}),concern:$("inConcern").value.trim(),spread:spreadList()};}
+var FAIL={not_university:NOTUS,mail:"Your answers are saved, but we could not send the email. Wait a minute and try again.",save:"Could not save. Check your connection and try again."};
+function formRow(){return {name:$("inName").value.trim(),show_name:S.show,major:$("inMajor").value.trim(),role:S.role,year:S.year,social:$("inSocial").value.trim(),
+  answers:S.answers,concern:$("inConcern").value.trim(),spread:spreadList()};}
 /* first submit: stores the entry, then emails the confirmation link. Returns the university and an edit token. */
 function save(row){
   if(!S.live){var u=uniFromEmail(row.email);if(!u)return Promise.reject("not_university");
-    S.local={name:row.show_name?shortName(row.name):"",uni:u.name,dom:u.dom,a:row.answers,ts:Date.now()};S.rows.push(S.local);S.verified=true;
+    S.local={name:row.show_name?row.name:"",uni:u.name,dom:u.dom,a:row.answers,role:row.role,ts:Date.now()};S.rows.push(S.local);S.verified=true;
     return Promise.resolve({dom:u.dom,name:u.name,token:"local"});}
   return sb.rpc("submit_interest",{p:row}).then(function(r){
     if(r.error)throw (/not_university/.test(r.error.message)?"not_university":"save");
     return sb.auth.signInWithOtp({email:row.email,options:{emailRedirectTo:location.href.split(/[?#]/)[0]}}).then(function(o){if(o.error)throw "mail";return r.data;});
   });
 }
-/* the public list shows first name and last initial */
-function shortName(n){return n.trim().replace(/^(\S+)\s+(?:.*\s)?(\S)\S*$/,"$1 $2.");}
 /* later changes, made with the edit token */
 function patch(p){
-  if(!S.live){if(S.local&&p.answers){S.local.a=p.answers;S.local.name=p.show_name?shortName(p.name):"";}return Promise.resolve();}
+  if(!S.live){if(S.local&&p.answers){S.local.a=p.answers;S.local.name=p.show_name?p.name:"";}return Promise.resolve();}
   return sb.rpc("update_interest",{p_token:S.token,p:p}).then(function(r){if(r.error)throw "save";return loadBoard();});
 }
 function fail(msg,el){$("err").textContent=msg;if(el){el.scrollIntoView({block:"center",behavior:CALM?"auto":"smooth"});if(el.focus)el.focus({preventScroll:true});}}
 $("form").addEventListener("submit",function(e){
   e.preventDefault();
-  var miss=-1,email=$("inEmail").value.trim(),b=$("btnSubmit"),row=formRow();
-  Q.forEach(function(q,i){if(miss<0&&asked(i)&&!S.answers[q.id])miss=i;});
+  var email=$("inEmail").value.trim(),b=$("btnSubmit"),row=formRow();
   if(!row.name){fail("Enter your name.",$("inName"));return;}
   if(!MAIL.test(email)){fail("Enter your university email.",$("inEmail"));return;}
-  if(!S.role){fail("Tell us your role at your university.",$("selRole"));return;}
-  if(miss>-1){go(miss);fail("Answer every question first.",$("pollCard"));return;}
+  if(!S.role){fail("Tell us what you are at your university.",$("selRole"));return;}
   S.saving=true;updateBtn();$("err").textContent="";
   function idle(){S.saving=false;updateBtn();}
   if(S.submitted){
@@ -897,9 +930,9 @@ $("form").addEventListener("submit",function(e){
 /* fill the form from a stored entry: a returning visitor, or someone arriving from the emailed link */
 function applyEntry(c){
   S.email=c.email;S.verified=!!c.verified;S.token=c.token;S.submitted=true;
-  $("inEmail").value=c.email;$("inName").value=c.name||"";$("inMajor").value=c.major||"";$("inPhone2").value=c.phone||"";
+  $("inEmail").value=c.email;$("inName").value=c.name||"";$("inMajor").value=c.major||"";$("inSocial").value=c.social||"";$("inPhone2").value=c.phone||"";
   $("inConcern").value=c.concern||"";S.sms=!!c.sms_ok;S.role=c.role||"";S.year=c.year||"";paintChips();
-  S.show=c.show_name!==false;S.info=c.show_info!==false;$("inTitle").value=c.title||"";
+  S.show=c.show_name!==false;$("pkShow").setAttribute("aria-pressed",String(S.show));
   Q.forEach(function(q){var a=c.answers&&c.answers[q.id];if(a&&optBtns[q.id][a])pick(q,a);});
   S.spread={};(c.spread||[]).forEach(function(k){S.spread[k]=true;});
   Object.keys(spreadBtns).forEach(function(k){spreadBtns[k].setAttribute("aria-pressed",String(!!S.spread[k]));});
@@ -908,19 +941,37 @@ function applyEntry(c){
 }
 
 /* ---------- tabs ---------- */
-var ANCH={"#organizers":1,"#why-wait":1,"#why-draft":1};
+var ANCH={"#organizers":1,"#why-wait":1,"#why-draft":1,"#contact":1};
 function route(){
-  var h=location.hash,v=h==="#draft"?"viewDraft":(h==="#about"||ANCH[h])?"viewAbout":"viewInterest",el=$(v),about=v!=="viewInterest";
-  ["viewInterest","viewAbout","viewDraft"].forEach(function(id){$(id).hidden=id!==v;});
+  var h=location.hash,v=h==="#draft"?"viewDraft":(h==="#privacy"||h==="#texts")?"viewPrivacy":(h==="#about"||ANCH[h])?"viewAbout":"viewInterest",el=$(v);
+  ["viewInterest","viewAbout","viewDraft","viewPrivacy"].forEach(function(id){$(id).hidden=id!==v;});
   el.classList.remove("fade");void el.offsetWidth;el.classList.add("fade");
-  about?$("tabAbout").setAttribute("aria-current","page"):$("tabAbout").removeAttribute("aria-current");
-  about?$("tabInterest").removeAttribute("aria-current"):$("tabInterest").setAttribute("aria-current","page");
+  [["tabInterest","viewInterest"],["tabDraft","viewDraft"],["tabAbout","viewAbout"]].forEach(function(t){
+    if(t[1]===v)$(t[0]).setAttribute("aria-current","page");else $(t[0]).removeAttribute("aria-current");});
 }
-window.addEventListener("hashchange",function(){route();var t=ANCH[location.hash]&&$(location.hash.slice(1));if(t)t.scrollIntoView();else window.scrollTo(0,0);});
+window.addEventListener("hashchange",function(){route();var t=(ANCH[location.hash]||location.hash==="#texts")&&$(location.hash.slice(1));if(t)t.scrollIntoView();else window.scrollTo(0,0);});
+/* add ?fonts to the address to try other heading fonts; not shown to visitors otherwise */
+if(/[?&]fonts\b/.test(location.search))(function(){
+  var F=[["Playfair","Playfair Display","Playfair+Display:wght@700;800;900",800,900,"100%","none"],["Playfair caps","Playfair Display","",800,900,"100%","uppercase"],
+    ["DM Serif","DM Serif Display","DM+Serif+Display",400,400,"100%","none"],["Instrument Serif","Instrument Serif","Instrument+Serif",400,400,"100%","none"],
+    ["Bodoni","Bodoni Moda","Bodoni+Moda:wght@700;900",700,900,"100%","none"],["Abril Fatface","Abril Fatface","Abril+Fatface",400,400,"100%","none"],
+    ["Alfa Slab","Alfa Slab One","Alfa+Slab+One",400,400,"100%","none"],["Zilla Slab","Zilla Slab","Zilla+Slab:wght@700",700,700,"100%","none"],
+    ["Space Mono caps","Space Mono","Space+Mono:wght@700",700,700,"100%","uppercase"],["Anybody caps","Anybody","Anybody:wdth,wght@100..125,700..900",800,900,"108%","uppercase"],
+    ["Syne caps","Syne","Syne:wght@800",800,800,"100%","uppercase"],["Archivo wide caps","Archivo","Archivo:wdth,wght@125,800..900",800,900,"125%","uppercase"]];
+  var box=mk("div","fontpick"),R=document.documentElement.style;
+  F.forEach(function(f,i){var b=mk("button",i?null:"on",f[0]);b.type="button";
+    b.addEventListener("click",function(){
+      if(f[2]){var l=document.createElement("link");l.rel="stylesheet";l.href="https://fonts.googleapis.com/css2?family="+f[2]+"&display=swap";document.head.appendChild(l);f[2]="";}
+      R.setProperty("--head",'"'+f[1]+'",serif');R.setProperty("--hw",f[3]);R.setProperty("--hx",f[4]);R.setProperty("--hs",f[5]);R.setProperty("--hc",f[6]);
+      box.querySelectorAll("button").forEach(function(x){x.classList.toggle("on",x===b);});});
+    box.appendChild(b);});
+  document.body.appendChild(box);
+})();
+
 /* ---------- boot ---------- */
 function renderAll(){$("previewNote").hidden=S.live;renderWidget();updateResults();renderAfter();}
 function loadBoard(){return sb.rpc("board").then(function(r){if(!r.error&&r.data){S.remote=r.data;renderAll();}});}
-buildForm();buildResults();showUni(null,false);route();paintShow();loadMap();
+buildForm();buildResults();showUni(null,false);route();
 if(!S.live){S.rows=sample();renderAll();}
 else{
   renderAll();loadBoard();setInterval(loadBoard,30000);
