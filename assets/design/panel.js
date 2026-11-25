@@ -286,6 +286,8 @@ document.addEventListener("keydown",function(e){
   e.preventDefault();acts.gen();
 });
 
+/* the page's light/dark switch wins: pressing it drops any palette picked here */
+document.addEventListener("click",function(e){if(e.target.closest&&e.target.closest("#themeBtn")&&state.colors){state.colors=null;state.chart=null;state.source="";apply();render()}},true);
 function mount(){document.body.appendChild(host);apply();renderList();render()}
 if(document.body)mount();else document.addEventListener("DOMContentLoaded",mount);
 })();
