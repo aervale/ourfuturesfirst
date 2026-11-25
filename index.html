@@ -43,7 +43,7 @@ a{color:inherit}
 .top{position:sticky;top:0;z-index:5;background:rgba(8,8,10,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .top .wrap{display:flex;align-items:center;justify-content:space-between;height:50px}
 .brand{display:flex;align-items:center;gap:10px;font-family:var(--head);font-weight:var(--hw);font-stretch:var(--hs);font-size:.875rem;letter-spacing:.06em;text-transform:uppercase}
-.brand .star{width:18px;height:18px;flex:none;color:var(--accent)}
+.brand i{width:10px;height:10px;background:var(--accent)}
 .tabs{display:flex;gap:28px;align-self:stretch}
 .tabs a{display:flex;align-items:center;text-decoration:none;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .2s,border-color .2s}
 .tabs a:hover{color:var(--ink)}
@@ -51,8 +51,7 @@ a{color:inherit}
 
 /* banner */
 .banner{position:relative;border-bottom:1px solid var(--line);overflow:hidden}
-.banner::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:56px 56px;-webkit-mask-image:radial-gradient(120% 130% at 100% 0%,#000 0%,transparent 62%);mask-image:radial-gradient(120% 130% at 100% 0%,#000 0%,transparent 62%)}
-.banner .wrap{position:relative;display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:48px;align-items:end;padding-top:32px;padding-bottom:28px}
+.banner .wrap{position:relative;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:48px;align-items:center;padding-top:32px;padding-bottom:28px}
 .banner h1{font-size:clamp(2.3rem,4.4vw,3.8rem);font-weight:var(--hx);text-transform:var(--hc);letter-spacing:0;line-height:1.02}
 .banner h1 em{font-style:normal;color:var(--accent)}
 .banner .sub{margin-top:14px;max-width:64ch;font-size:1rem;color:var(--mute)}
@@ -230,20 +229,18 @@ textarea{display:block;min-height:150px;resize:none}
 .rrow.mine .l{color:var(--accent);font-weight:600}
 .rrow.mine .fill{background:var(--accent)}
 .h2b{margin-top:56px}
-.where{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px;margin-top:28px;align-items:start}
-.mapcard{position:relative;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:44px 44px;background-position:-1px -1px}
-.mapcard .read{display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-bottom:6px}
-.mapcard .read b{color:var(--accent);font-weight:500}
-#usMap{display:block;width:100%;height:auto;overflow:visible}
-#mapLand .land{fill:url(#mapGrid);stroke:rgba(244,242,237,.3);stroke-width:.8;stroke-linejoin:round}
-#mapLand .edge{fill:none;stroke:rgba(244,242,237,.12);stroke-width:.6;stroke-linejoin:round}
+.where{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;margin-top:28px;align-items:start}
+.hero{position:relative}
+#usMap{display:block;width:100%;height:auto;overflow:visible;margin-bottom:14px}
+#mapLand .land{fill:rgba(244,242,237,.07);stroke:rgba(244,242,237,.3);stroke-width:1;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+#mapLand .edge{fill:none;stroke:rgba(244,242,237,.11);stroke-width:1;stroke-linejoin:round;vector-effect:non-scaling-stroke}
 #mapDots g{cursor:pointer}
-#mapDots .area{fill:rgba(255,90,54,.16);stroke:var(--accent);stroke-width:1;transition:fill .2s}
-#mapDots .core{fill:var(--accent)}
-#mapDots .ping{fill:none;stroke:var(--accent);stroke-width:1;transform-box:fill-box;transform-origin:center;animation:ping 2.6s var(--ease) infinite}
-#mapDots g:hover .area,#mapDots g.on .area{fill:rgba(255,90,54,.4)}
-@keyframes ping{from{transform:scale(1);opacity:.7}to{transform:scale(2.2);opacity:0}}
-@media (prefers-reduced-motion:reduce){#mapDots .ping{display:none}}
+#mapDots .area{fill:var(--accent);fill-opacity:.72;transition:fill-opacity .2s}
+#mapDots g:hover .area,#mapDots g.on .area{fill-opacity:1}
+#mapDots g.pop{animation:arrive .7s ease-out both}
+#mapDots .ping{fill:none;stroke:var(--accent);stroke-width:1.2;vector-effect:non-scaling-stroke;pointer-events:none;transform-box:fill-box;transform-origin:center;animation:ping 1.8s ease-out both}
+@keyframes arrive{from{opacity:0}to{opacity:1}}
+@keyframes ping{from{transform:scale(1);opacity:.7}to{transform:scale(3);opacity:0}}
 #mapTip{position:absolute;transform:translate(-50%,-100%);margin-top:-10px;padding:5px 9px;border:1px solid var(--line2);border-radius:var(--r);background:var(--bg);font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;pointer-events:none}
 #mapTip b{color:var(--accent);font-weight:500;margin-left:8px}
 .rcard.stu h3{margin-bottom:6px}
@@ -281,6 +278,7 @@ textarea{display:block;min-height:150px;resize:none}
 footer{border-top:1px solid var(--line);padding:22px 0 36px}
 
 @media (max-width:920px){
+  #usMap{max-width:560px;margin-left:auto;margin-right:auto}
   .banner .wrap{grid-template-columns:1fr;gap:32px;padding-top:44px;padding-bottom:36px}
   .cols{grid-template-columns:1fr}
   .who{position:static}
@@ -307,7 +305,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
 <body>
 
 <header class="top"><div class="wrap">
-  <span class="brand"><svg class="star" viewBox="0 0 60 60" aria-hidden="true"><path d="M30 0L37 23L60 30L37 37L30 60L23 37L0 30L23 23Z" fill="currentColor"/><circle cx="52" cy="8" r="3.5" fill="var(--ink)"/></svg>Our Futures First</span>
+  <span class="brand"><i></i>Our Futures First</span>
   <nav class="tabs" aria-label="Sections">
     <a href="#interest" id="tabInterest">Interest</a>
     <a href="#draft" id="tabDraft">Letter</a>
@@ -323,9 +321,13 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
         <h1>Students are writing an open letter on AI. <em>Tell us what belongs in it.</em></h1>
         <p class="sub">This is the interest form, open to <b>anyone at a U.S. university</b>: students, postdocs, faculty and staff. Answer a few questions, leave your university email, and we'll tell you when the letter is ready to sign.</p>
       </div>
-      <div class="tally">
-        <div class="stat"><b id="cPeople">0</b><span class="lab">People</span></div>
-        <div class="stat"><b id="cUnis">0</b><span class="lab">U.S. universities</span></div>
+      <div class="hero">
+        <svg id="usMap" viewBox="0 0 975 610" role="img" aria-label="Map of the United States with a circle on each university that has sign-ups"><g id="mapLand"></g><g id="mapDots"></g></svg>
+        <div id="mapTip" hidden></div>
+        <div class="tally">
+          <div class="stat"><b id="cPeople">0</b><span class="lab">People</span></div>
+          <div class="stat"><b id="cUnis">0</b><span class="lab">U.S. universities</span></div>
+        </div>
       </div>
     </div>
     <div class="ticker" id="ticker" aria-hidden="true" hidden><div id="tickerRow"></div></div>
@@ -428,10 +430,8 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
     <div class="rgrid" id="resGrid"></div>
     <h2 class="h2b">Who has signed up</h2>
     <div class="where">
-      <div class="card mapcard"><p class="read"><span id="mapRead"></span><span>Past 24 hours <b id="mapDay"></b></span></p>
-        <svg id="usMap" viewBox="0 0 975 610" role="img" aria-label="Map of the United States with a circle on each university that has sign-ups"><defs><pattern id="mapGrid" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="3.5" cy="3.5" r="1.15" fill="rgba(244,242,237,.3)"/></pattern></defs><g id="mapLand"></g><g id="mapDots"></g></svg>
-        <div id="mapTip" hidden></div></div>
-      <div class="card demo"><h3>Role and year</h3><div id="dRole"></div><h3>Most common majors and fields</h3><div id="dMajor"></div></div>
+      <div class="card demo"><h3>Role and year</h3><div id="dRole"></div></div>
+      <div class="card demo"><h3>Most common majors and fields</h3><div id="dMajor"></div></div>
     </div>
   </div></section>
 </div>
@@ -828,7 +828,8 @@ function renderWidget(){
   if(!rows.length)pl.appendChild(mk("li","empty",q?"No one matches that search.":"No names yet. Yours can be the first."));
   /* private names can't be searched by name, but they still count toward a university you search for */
   var anon=0;B.unis.forEach(function(x){if(!q||x.name.toLowerCase().indexOf(q)>-1)anon+=x.n-(x.named||0);});
-  $("pubNote").textContent=num(rows.length)+(rows.length===1?" public name":" public names");
+  var shown=q?rows.length:Math.max(B.named||0,rows.length);
+  $("pubNote").textContent=num(shown)+(shown===1?" public name":" public names");
   $("anonNote").textContent=anon>0?"Plus "+num(anon)+(anon===1?" person who":" people who")+" kept their name private.":"";
 
   /* rebuild the ranking only when it changes, so the bars don't replay on every keystroke */
@@ -864,7 +865,7 @@ function demoBars(el,pairs,total){clear(el);
   pairs.forEach(function(p){var row=mk("div","rrow"),l=mk("div","l");l.appendChild(mk("span",null,p[0]));
     l.appendChild(mk("span","pct",Math.round(p[1]/total*100)+"%"));row.appendChild(l);
     var tr=mk("div","track"),f=mk("div","fill");f.style.width=p[1]/total*100+"%";tr.appendChild(f);row.appendChild(tr);el.appendChild(row);});}
-var NS="http://www.w3.org/2000/svg",demoKey="";
+var NS="http://www.w3.org/2000/svg",demoKey="",popped=false,rippler=0;
 function renderDemo(B){
   var D=B.demo||{role:{},year:{},major:[]},key=JSON.stringify(D)+B.unis.map(function(u){return u.key+u.n;}).join();
   if(key===demoKey)return;demoKey=key;
@@ -875,19 +876,24 @@ function renderDemo(B){
       r=y.concat(rest>0?[["Undergraduate, year not given",rest]]:[],o);
   demoBars($("dRole"),r,sum(r));demoBars($("dMajor"),D.major,B.total);
   var g=$("mapDots"),tip=$("mapTip"),top=B.unis.length?B.unis[0].n:1,on=null;clear(g);tip.hidden=true;
-  $("mapRead").textContent=num(B.unis.length)+(B.unis.length===1?" university":" universities");
-  $("mapDay").textContent="+"+num(B.unis.reduce(function(a,u){return a+(u.day||0);},0));
+  /* the first time there is data, the universities fade in one after another, a moment after the page has settled */
+  var play=!popped&&B.unis.length>0&&!CALM,gap=play?Math.min(60,2400/B.unis.length):0;if(B.unis.length)popped=true;
   function svg(tag,cls,u,rad){var c=document.createElementNS(NS,tag);if(cls)c.setAttribute("class",cls);if(u){c.setAttribute("cx",u.x);c.setAttribute("cy",u.y);c.setAttribute("r",rad);}return c;}
   function show(u,el){if(on)on.classList.remove("on");on=el;if(!u){tip.hidden=true;return;}el.classList.add("on");
     clear(tip);tip.appendChild(document.createTextNode(u.name));tip.appendChild(mk("b",null,num(u.n)));
     var m=$("usMap").getBoundingClientRect(),c=tip.parentNode.getBoundingClientRect();tip.style.top=m.top-c.top+u.y/610*m.height+"px";tip.hidden=false;
     var half=tip.offsetWidth/2+8;tip.style.left=Math.max(half,Math.min(c.width-half,m.left-c.left+u.x/975*m.width))+"px";}
-  /* largest first, so smaller circles stay on top and can be pointed at */
-  B.unis.filter(function(u){return u.x!=null;}).forEach(function(u,i){var el=svg("g"),rad=(4+15*Math.sqrt(u.n/top)).toFixed(1);
-    if(i<3)el.appendChild(svg("circle","ping",u,rad));
-    el.appendChild(svg("circle","area",u,rad));el.appendChild(svg("circle","core",u,2.2));
+  /* one plain dot per university, largest first so smaller ones stay on top and can be pointed at */
+  var live=[];
+  B.unis.filter(function(u){return u.x!=null;}).forEach(function(u,i){var el=svg("g"),rad=(5+17*Math.sqrt(u.n/top)).toFixed(1);
+    if(play){el.setAttribute("class","pop");el.style.animationDelay=Math.round(700+i*gap)+"ms";}
+    el.appendChild(svg("circle","area",u,rad));if(u.day>0)live.push([u,rad]);
     el.addEventListener("mouseenter",function(){show(u,el);});el.addEventListener("mouseleave",function(){show(null);});
     el.addEventListener("click",function(){on===el&&!tip.hidden?show(null):show(u,el);});g.appendChild(el);});
+  /* now and then a single ripple leaves a university that gained sign-ups in the past day */
+  clearInterval(rippler);
+  if(live.length&&!CALM)rippler=setInterval(function(){if(document.hidden)return;var p=live[Math.floor(Math.random()*live.length)],r=svg("circle","ping",p[0],p[1]);
+    g.appendChild(r);setTimeout(function(){if(r.parentNode)r.parentNode.removeChild(r);},1900);},1400);
 }
 /* the outline comes from the us-atlas map file (us-states.json, kept beside this page), which is already drawn on the same 975 by 610 grid as the stored positions */
 function loadMap(){
