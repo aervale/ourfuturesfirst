@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="color-scheme" content="dark">
+<meta name="color-scheme" content="dark light">
+<script>try{if(localStorage.getItem("off-theme")==="light")document.documentElement.setAttribute("data-theme","light")}catch(e){}</script>
 <title>Our Futures First</title>
 <meta name="description" content="Students are writing an open letter on regulating AI development and asking what belongs in it. Open to anyone at a U.S. university.">
 <meta property="og:type" content="website">
@@ -19,14 +20,21 @@
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Nunito+Sans:wght@400..700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0E1A36; --card:#152447; --inset:rgba(233,236,242,.035); --ink:#E9ECF2; --mute:rgba(233,236,242,.62); --faint:rgba(233,236,242,.36);
+  --bg:#0A1224; --card:#152447; --inset:rgba(233,236,242,.035); --ink:#E9ECF2; --mute:rgba(233,236,242,.62); --faint:rgba(233,236,242,.36);
   --line:rgba(233,236,242,.08); --line2:rgba(233,236,242,.16); --hover:rgba(233,236,242,.07);
-  --accent:#D3993C; --on-accent:#FFFFFF; --tint:rgba(211,153,60,.24);
+  --pop:#1D2943; --field:color-mix(in srgb,var(--ink) 6%,var(--bg)); --field-on:color-mix(in srgb,var(--ink) 10%,var(--bg)); --accent:#D3993C; --on-accent:#141416; --tint:rgba(211,153,60,.24);
   --c1:#E0E4EA; --c2:#D3993C; --c3:#808798; --c4:#7A6039; --c5:#B4BAC5; --c6:#DAB273; --c7:#616A7D; --c8:#E1CCAD; --c9:#3A445C; --c-other:#2D3750;
   --con1:#141416; --con2:#141416; --con3:#141416; --con4:#FFFFFF;
   --head:"EB Garamond",Garamond,Georgia,"Times New Roman",serif; --hw:500; --hx:400; --hs:100%; --hc:none; --sans:"Nunito Sans",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"Nunito Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --r:6px; --rc:10px; --ease:cubic-bezier(.2,.7,.2,1);
   color-scheme:dark;
+}
+:root[data-theme="light"]{
+  --bg:#FBFAF6; --card:#F2F0E8; --pop:#FFFFFF; --inset:rgba(23,23,26,.05); --ink:#17171A; --mute:rgba(23,23,26,.64); --faint:rgba(23,23,26,.4);
+  --line:rgba(23,23,26,.09); --line2:rgba(23,23,26,.18); --hover:rgba(23,23,26,.06); --tint:rgba(211,153,60,.16); --icon-filter:none;
+  --c1:#202023; --c2:#D3993C; --c3:#848484; --c4:#E5C590; --c5:#4E4D4F; --c6:#9B7232; --c7:#A4A4A2; --c8:#5E4827; --c9:#CDCDCA; --c-other:#DBDAD7;
+  --con1:#FFFFFF; --con2:#141416; --con3:#141416; --con4:#141416;
+  color-scheme:light;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -47,8 +55,8 @@ a{color:inherit}
 @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
 /* header */
-.top{position:sticky;top:0;z-index:5;background:rgba(14,26,54,.86);backdrop-filter:blur(10px)}
-.top .wrap{display:flex;align-items:center;justify-content:space-between;height:40px}
+.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:46px}
 .brand{display:flex;align-items:center;gap:5px;font-family:var(--sans);font-weight:600;font-size:.8125rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);white-space:nowrap}
 .brand .star{width:30px;height:30px;flex:none}
 .tabs{display:flex;gap:28px;align-self:stretch}
@@ -82,7 +90,7 @@ a{color:inherit}
 .card{position:relative;border-left:2px solid var(--line2);padding:4px 0 4px 24px;transition:border-color .3s}
 .card:hover{border-color:var(--mute)}
 .card .lab{transition:color .3s}
-.card:hover .lab{color:rgba(233,236,242,.82)}
+.card:hover .lab{color:color-mix(in srgb,var(--ink) 82%,transparent)}
 .card>*{position:relative}
 .cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px 44px;align-items:start;padding-top:32px;padding-bottom:48px}
 .stack{display:grid;gap:14px}
@@ -90,13 +98,13 @@ a{color:inherit}
 .card h2 label{cursor:text}
 .card>.field:last-child{margin-bottom:0}
 .field>.lab{display:block;margin-bottom:6px}
-.sel{display:block;text-align:left;width:100%;font:inherit;color:var(--ink);background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23F4F2ED' stroke-opacity='.55' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 14px center/11px #1B2741;border:0;transition:box-shadow .2s;border-radius:var(--r);padding:9px 36px 9px 12px;cursor:pointer;transition:border-color .2s,opacity .2s}
-.sel:focus,.sel[aria-expanded="true"]{outline:0;background-color:#242F49}
+.sel{display:block;text-align:left;width:100%;font:inherit;color:var(--ink);background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23888' stroke-opacity='.9' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 14px center/11px var(--field);border:0;transition:box-shadow .2s;border-radius:var(--r);padding:9px 36px 9px 12px;cursor:pointer;transition:border-color .2s,opacity .2s}
+.sel:focus,.sel[aria-expanded="true"]{outline:0;background-color:var(--field-on)}
 .sel:disabled{opacity:.4;cursor:default}
 .sel.empty{color:var(--faint)}
 .combo{position:relative;z-index:4}
 .combo:focus-within{z-index:6}
-.menu{position:absolute;left:0;right:0;top:calc(100% + 6px);margin:0;padding:4px;list-style:none;max-height:248px;overflow:auto;background:#1D2943;border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);animation:fade .18s var(--ease) both}
+.menu{position:absolute;left:0;right:0;top:calc(100% + 6px);margin:0;padding:4px;list-style:none;max-height:248px;overflow:auto;background:var(--pop);border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);animation:fade .18s var(--ease) both}
 .menu li{padding:9px 10px;border-radius:4px;cursor:pointer;transition:background .12s}
 .menu li:hover,.menu li.on{background:var(--hover)}
 .menu li.on{color:var(--accent)}
@@ -119,9 +127,9 @@ a{color:inherit}
 .opt.pick[aria-pressed="true"]{background:var(--hover)}
 .slide .opt{position:relative;overflow:hidden}
 .slide .opt>*{position:relative}
-.slide .opt::before{content:"";position:absolute;inset:0 auto 0 0;width:0;background:rgba(233,236,242,.07);transition:width .7s var(--ease)}
+.slide .opt::before{content:"";position:absolute;inset:0 auto 0 0;width:0;background:var(--hover);transition:width .7s var(--ease)}
 .slide.answered .opt::before{width:var(--p,0%)}
-.slide .opt[aria-pressed="true"]::before{background:rgba(211,153,60,.3)}
+.slide .opt[aria-pressed="true"]::before{background:color-mix(in srgb,var(--accent) 30%,transparent)}
 .opct{margin-left:auto;font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;color:var(--mute);opacity:0;transition:opacity .4s}
 .slide.answered .opct{opacity:1}
 .opt[aria-pressed="true"] .opct{color:var(--accent);font-weight:700}
@@ -139,8 +147,8 @@ a{color:inherit}
 /* fields */
 .field{margin-bottom:12px}
 .field label{display:block;margin-bottom:6px}
-input[type=text],input[type=email],input[type=tel],input[type=search],textarea{width:100%;font:inherit;color:var(--ink);background:#1B2741;border:0;border-radius:var(--r);padding:10px 13px;transition:background .2s,box-shadow .2s}
-input:focus,textarea:focus{outline:0;background:#242F49}
+input[type=text],input[type=email],input[type=tel],input[type=search],textarea{width:100%;font:inherit;color:var(--ink);background:var(--field);border:0;border-radius:var(--r);padding:10px 13px;transition:background .2s,box-shadow .2s}
+input:focus,textarea:focus{outline:0;background:var(--field-on)}
 textarea{display:block;min-height:150px;resize:none}
 .hint{margin-top:8px;font-size:.875rem;color:var(--mute);transition:color .2s}
 .hint.bad{color:var(--accent)}
@@ -200,7 +208,7 @@ textarea{display:block;min-height:150px;resize:none}
 .list .info{display:block;margin-top:2px;color:var(--mute);font-size:.8125rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* campus organizers: accent name, an explanation on hover or focus, and a link to About */
 .list .lead{position:relative;color:var(--accent);font-weight:600;cursor:pointer;text-decoration:underline dotted;text-underline-offset:4px;text-decoration-color:rgba(211,153,60,.5)}
-.list .lead::after{content:attr(data-tip);position:absolute;left:0;top:calc(100% + 8px);z-index:3;width:max-content;max-width:260px;padding:8px 10px;background:#1D2943;border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);color:var(--ink);font-size:.8125rem;font-weight:400;line-height:1.4;opacity:0;pointer-events:none;transition:opacity .15s}
+.list .lead::after{content:attr(data-tip);position:absolute;left:0;top:calc(100% + 8px);z-index:3;width:max-content;max-width:260px;padding:8px 10px;background:var(--pop);border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);color:var(--ink);font-size:.8125rem;font-weight:400;line-height:1.4;opacity:0;pointer-events:none;transition:opacity .15s}
 .list .lead:hover::after,.list .lead:focus::after{opacity:1}
 .list li:nth-last-child(-n+2) .lead::after{top:auto;bottom:calc(100% + 8px)}
 .list .empty,.bars .empty{color:var(--mute)}
@@ -217,13 +225,13 @@ textarea{display:block;min-height:150px;resize:none}
 .bars li.me .fill{background:var(--accent)}
 .bars li.gap{margin-top:8px}
 .bars .plus{position:relative;margin-left:8px;padding:1px 6px;border-radius:4px;background:var(--tint);color:var(--ink);font-family:var(--mono);font-size:12px;font-weight:600;cursor:help}
-.bars .plus::after{content:attr(data-tip);position:absolute;left:0;top:calc(100% + 8px);z-index:3;width:max-content;max-width:250px;padding:8px 10px;background:#1D2943;border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);color:var(--ink);font-family:var(--sans);font-size:.8125rem;font-weight:400;line-height:1.4;white-space:normal;opacity:0;pointer-events:none;transition:opacity .15s}
+.bars .plus::after{content:attr(data-tip);position:absolute;left:0;top:calc(100% + 8px);z-index:3;width:max-content;max-width:250px;padding:8px 10px;background:var(--pop);border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);color:var(--ink);font-family:var(--sans);font-size:.8125rem;font-weight:400;line-height:1.4;white-space:normal;opacity:0;pointer-events:none;transition:opacity .15s}
 .bars .plus:hover::after{opacity:1}
 
 /* results */
 .results{padding:32px 0 56px}
 .results h2{font-size:clamp(1.5rem,2.6vw,2.1rem)}
-.results h2 .count{color:var(--mute);font-family:var(--sans);font-weight:500;letter-spacing:0}
+.results h2 .count{color:var(--mute);font-family:var(--head);font-weight:var(--hw);letter-spacing:0;margin-left:2px}
 .rgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0 36px;margin-top:28px}
 .rcard{grid-column:span 2;grid-row:span 3;display:grid;grid-template-rows:subgrid;margin-bottom:34px}
 .rcard .legend{align-self:start}
@@ -255,8 +263,8 @@ textarea{display:block;min-height:150px;resize:none}
 
 .hero{position:relative}
 #usMap{display:block;width:100%;height:auto;overflow:visible;margin-bottom:34px}
-#mapLand .land{fill:rgba(233,236,242,.04);stroke:rgba(233,236,242,.22);stroke-width:1;stroke-linejoin:round;vector-effect:non-scaling-stroke}
-#mapLand .edge{fill:none;stroke:rgba(233,236,242,.08);stroke-width:1;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+#mapLand .land{fill:color-mix(in srgb,var(--ink) 4%,transparent);stroke:color-mix(in srgb,var(--ink) 22%,transparent);stroke-width:1;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+#mapLand .edge{fill:none;stroke:var(--line);stroke-width:1;stroke-linejoin:round;vector-effect:non-scaling-stroke}
 #mapDots g{cursor:pointer}
 #mapDots .area{fill:var(--accent);fill-opacity:.78;transform-box:fill-box;transform-origin:center;transition:fill-opacity .2s,transform .25s var(--ease)}
 #mapDots g:hover .area,#mapDots g.on .area{fill-opacity:1;transform:scale(1.45)}
@@ -303,7 +311,7 @@ textarea{display:block;min-height:150px;resize:none}
 .about h2{font-size:1.4rem;font-weight:var(--hw);margin:36px 0 10px;scroll-margin-top:80px}
 .about p+p{margin-top:12px}
 .about a{color:var(--ink)}
-.draft{margin:0 0 28px;padding:6px 0 6px 24px;border-left:3px solid var(--accent);font-family:var(--head);font-weight:var(--hw);font-size:clamp(1.125rem,.75rem + 1.9vw,2rem);line-height:1.3;color:var(--ink)}
+.draft{margin:0 0 28px;padding:6px 0 6px 24px;border-left:3px solid var(--accent);font-family:var(--head);font-weight:var(--hw);font-size:clamp(1.0625rem,.7rem + 1.5vw,1.7rem);line-height:1.3;color:var(--ink)}
 .about p{color:var(--mute);font-size:1.0625rem}
 #viewDraft .about p:not(.lab){font-size:16.5px}
 footer{padding:22px 0 36px}
@@ -365,10 +373,13 @@ footer{padding:22px 0 36px}
   html{scroll-behavior:auto}
 }
 /* answer buttons, from april-design: soft filled letter keys, muted text until hovered or chosen */
-.opt .key{border-color:transparent;background:rgba(233,236,242,.1)}
+.opt .key{border-color:transparent;background:color-mix(in srgb,var(--ink) 10%,transparent)}
 .opt{color:var(--mute)}
 .opt:hover,.opt[aria-pressed="true"]{color:var(--ink)}
 .opt[aria-pressed="true"] .key{background:var(--accent)}
+.themebtn{position:fixed;left:16px;bottom:16px;z-index:20;width:38px;height:38px;border-radius:50%;border:1px solid var(--line2);background:var(--card);color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0;box-shadow:0 4px 14px rgba(0,0,0,.18);transition:border-color .2s}
+.themebtn:hover{border-color:var(--accent)}.themebtn svg{width:17px;height:17px}
+@media (max-width:520px){.themebtn{width:34px;height:34px;left:12px;bottom:12px}}
 </style>
 </head>
 <body>
@@ -511,7 +522,7 @@ footer{padding:22px 0 36px}
     <p>We want to move together as one and sign at the same time, to reach as many people as possible on the day it comes out, and to gather feedback beforehand. We will change the contents of the letter until launch day, and we publish the draft so you can see it change. <a href="#draft">The current wording is here.</a></p>
     <p>Please pass this along if you believe in our mission and want more representation in our future.</p>
     <h2>What happens on launch day?</h2>
-    <p>Everyone on the list gets an email at the same time and can sign. The letter and its signatures are then published.</p>
+    <p>Everyone on the list gets contacted at the same time to spread and sign the letter. The letter and its signatures are then published.</p>
     <h2>Who can take part?</h2>
     <p>Anyone with a U.S. university email: undergraduates, graduate students, postdocs, faculty and staff.</p>
     <h2>Who are we?</h2>
@@ -568,7 +579,7 @@ footer{padding:22px 0 36px}
     <h1>Help us edit our message</h1>
     <p style="margin-bottom:28px">This is what we have written for the letter so far. We will update it as your answers come in. On launch day, you'll see the final text and then decide whether to sign.</p>
     <blockquote class="draft">At academic institutions, we have long been taught to prize the enterprise of thought. But today, that enterprise is being taken over, automated at ever-increasing rates by systems no one can yet reliably control. We believe superintelligence must be independently tested and shown to be safe before AI companies race further, or the human future itself is at risk. We ask the US government and AI companies to put our futures first: to lead negotiations on international rules that pace the development of superintelligence.</blockquote>
-    <p class="lab" style="margin:-12px 0 20px">Last updated November 25, 2026.</p>
+    <p class="lab" style="margin:-12px 0 20px;font-size:10px">Last updated November 25, 2026.</p>
     <p><a href="#why-wait">Why isn't the letter out yet?</a> &nbsp; <a href="#interest">Back to the form</a></p>
   </div>
 </div>
@@ -1181,5 +1192,7 @@ else{
 }
 })();
 </script>
+<button type="button" class="themebtn" id="themeBtn"></button>
+<script>(function(){var b=document.getElementById("themeBtn"),r=document.documentElement;var SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>',MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg>';function paint(){var l=r.getAttribute("data-theme")==="light";b.innerHTML=l?MOON:SUN;b.title=l?"Switch to dark mode":"Switch to light mode";b.setAttribute("aria-label",b.title)}b.addEventListener("click",function(){var l=r.getAttribute("data-theme")!=="light";if(l)r.setAttribute("data-theme","light");else r.removeAttribute("data-theme");try{localStorage.setItem("off-theme",l?"light":"dark")}catch(e){}paint()});paint()})();</script>
 </body>
 </html>
