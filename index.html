@@ -17,9 +17,9 @@
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Space+Grotesk:wght@400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0B0B0C; --card:#161617; --inset:rgba(214,213,201,.07); --ink:#D6D5C9; --mute:rgba(185,186,163,.92); --faint:rgba(214,213,201,.36);
-  --line:rgba(214,213,201,.13); --line2:rgba(214,213,201,.24); --hover:rgba(214,213,201,.12);
-  --accent:#A22C29; --on-accent:#D6D5C9; --tint:rgba(162,44,41,.28);
+  --bg:#040405; --card:#08080A; --inset:rgba(236,234,224,.035); --ink:#ECEAE0; --mute:rgba(236,234,224,.62); --faint:rgba(236,234,224,.36);
+  --line:rgba(236,234,224,.08); --line2:rgba(236,234,224,.16); --hover:rgba(236,234,224,.07);
+  --accent:#A22C29; --on-accent:#ECEAE0; --tint:rgba(162,44,41,.24);
   --head:"EB Garamond",Garamond,Georgia,"Times New Roman",serif; --hw:500; --hx:400; --hs:100%; --hc:none; --sans:"Space Grotesk",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
   --r:6px; --rc:10px; --ease:cubic-bezier(.2,.7,.2,1);
   color-scheme:dark;
@@ -70,8 +70,11 @@ a{color:inherit}
 .note b{color:var(--accent);font-weight:500}
 
 /* cards */
-.card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--rc);padding:20px;box-shadow:inset 0 1px 0 rgba(214,213,201,.05);transition:border-color .3s}
-.card:hover{border-color:var(--line2)}
+.card{position:relative;background:var(--card);border:1px solid rgba(236,234,224,.035);border-radius:var(--rc);padding:20px}
+/* torch: a ring the width of the border, lit by a soft circle that follows the pointer (--mx, --my are set in the script) */
+.card::after,.leadbox::after{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;pointer-events:none;
+  background:radial-gradient(260px circle at var(--mx,-999px) var(--my,-999px),rgba(236,234,224,.7),rgba(236,234,224,.16) 40%,transparent 72%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
 .card .lab{transition:color .3s}
 .card:hover .lab{color:rgba(214,213,201,.82)}
 .card>*{position:relative}
@@ -162,7 +165,7 @@ textarea{display:block;min-height:150px;resize:none}
 .resend{display:flex;gap:14px;align-items:baseline;margin:10px 0 0}
 .resend .hint{margin:0}
 .signed{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;margin:24px 0 0;padding-top:18px;border-top:1px solid var(--line);font-size:.875rem;color:var(--mute)}
-#after{border-color:var(--accent)}
+#after{border-color:rgba(162,44,41,.3)}
 #after>*{opacity:0;transform:translateY(12px);transition:opacity .45s ease,transform .45s var(--ease)}
 .pop.open #after>*{opacity:1;transform:none}
 .pop.open #after>*:nth-child(1){transition-delay:.18s}.pop.open #after>*:nth-child(2){transition-delay:.24s}
@@ -171,7 +174,7 @@ textarea{display:block;min-height:150px;resize:none}
 #after h2{font-size:clamp(1.8rem,3.2vw,2.6rem);font-weight:var(--hx);text-transform:var(--hc);margin:10px 0 10px}
 .sub3{margin:24px 0 10px}
 #leadPop.open{margin-top:8px}
-.leadbox{display:grid;gap:8px;padding:14px;border:1px solid var(--line);border-radius:var(--r)}
+.leadbox{position:relative;display:grid;gap:8px;padding:14px;border:1px solid rgba(236,234,224,.035);border-radius:var(--r)}
 .leadbox .hint{margin:0}
 .leadbox a{color:var(--ink)}
 .err{color:var(--accent);margin:12px 0 0;min-height:1.5em;font-size:.9375rem}
@@ -244,12 +247,8 @@ textarea{display:block;min-height:150px;resize:none}
 #usMap{display:block;width:100%;height:auto;overflow:visible;margin-bottom:34px;touch-action:pan-y}
 #usMap.zoomed{overflow:hidden;cursor:grab}
 #usMap.drag{cursor:grabbing}
-.zoom{position:absolute;top:0;right:0;z-index:2;display:grid;gap:4px}
-.zoom button{width:28px;height:28px;display:grid;place-items:center;font:500 16px/1 var(--sans);color:var(--ink);background:var(--card);border:1px solid var(--line2);border-radius:var(--r);cursor:pointer;transition:border-color .2s,opacity .2s}
-.zoom button:hover{border-color:var(--mute)}
-.zoom button:disabled{opacity:.35;cursor:default}
-#mapLand .land{fill:rgba(214,213,201,.07);stroke:rgba(214,213,201,.3);stroke-width:1;stroke-linejoin:round;vector-effect:non-scaling-stroke}
-#mapLand .edge{fill:none;stroke:rgba(214,213,201,.11);stroke-width:1;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+#mapLand .land{fill:rgba(236,234,224,.04);stroke:rgba(236,234,224,.22);stroke-width:1;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+#mapLand .edge{fill:none;stroke:rgba(236,234,224,.08);stroke-width:1;stroke-linejoin:round;vector-effect:non-scaling-stroke}
 #mapDots g{cursor:pointer}
 #mapDots .area{fill:var(--accent);fill-opacity:.78;transform-box:fill-box;transform-origin:center;transition:fill-opacity .2s,transform .25s var(--ease)}
 #mapDots g:hover .area,#mapDots g.on .area{fill-opacity:1;transform:scale(1.45)}
@@ -370,7 +369,6 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
       </div>
       <div class="hero">
         <svg id="usMap" viewBox="0 0 975 610" role="img" aria-label="Map of the United States with a circle on each university that has sign-ups"><g id="mapLand"></g><g id="mapDots"></g></svg>
-        <div class="zoom"><button type="button" id="zIn" aria-label="Zoom in on the map">+</button><button type="button" id="zOut" aria-label="Zoom out of the map" disabled>&minus;</button></div>
         <div id="mapTip" hidden></div>
         <div class="tally">
           <div class="stat"><b id="cPeople">0</b><span class="lab">People</span></div>
@@ -924,7 +922,17 @@ function pie(el,pairs){clear(el);pairs=pairs.filter(function(p){return p[1]>0;})
     sl.addEventListener("mouseenter",function(){li.classList.add("hot");});sl.addEventListener("mouseleave",function(){li.classList.remove("hot");});a0=a1;});
   el.appendChild(svg);el.appendChild(lg);}
 var NS="http://www.w3.org/2000/svg",demoKey="",popped=false,rippler=0,DOTS={};
-/* zooming the map: the buttons, a double click, a pinch, or ctrl and the scroll wheel; drag to move once zoomed in.
+/* torch: card outlines are all but invisible until the pointer comes near, then only the nearby stretch of border lights */
+if(window.matchMedia&&window.matchMedia("(hover:hover)").matches){(function(){var raf=0,x=0,y=0;
+  function paint(){raf=0;[].forEach.call(document.querySelectorAll(".card,.leadbox"),function(c){var b=c.getBoundingClientRect();
+    if(!b.width||x<b.left-280||x>b.right+280||y<b.top-280||y>b.bottom+280){if(c._lit){c._lit=0;c.style.removeProperty("--mx");}return;}
+    c._lit=1;c.style.setProperty("--mx",(x-b.left)+"px");c.style.setProperty("--my",(y-b.top)+"px");});}
+  document.addEventListener("pointermove",function(e){x=e.clientX;y=e.clientY;if(!raf)raf=requestAnimationFrame(paint);},{passive:true});
+  window.addEventListener("scroll",function(){if(!raf)raf=requestAnimationFrame(paint);},{passive:true});
+  document.documentElement.addEventListener("pointerleave",function(){x=y=-9999;if(!raf)raf=requestAnimationFrame(paint);});
+})();}
+/* zooming the map, with no controls on show: a double click, a pinch, or ctrl and the scroll wheel; drag to move once
+   zoomed in, and shift with a double click zooms back out.
    The view is the part of the 975 by 610 grid on show. Dots shrink a little as you zoom so close campuses separate. */
 var VB={x:0,y:0,w:975,h:610},ZMAX=8;
 function dotScale(){return Math.pow(975/VB.w,.7);}
@@ -932,14 +940,12 @@ function setView(){var m=$("usMap"),z=975/VB.w;
   VB.x=Math.max(0,Math.min(975-VB.w,VB.x));VB.y=Math.max(0,Math.min(610-VB.h,VB.y));
   m.setAttribute("viewBox",[VB.x,VB.y,VB.w,VB.h].map(function(n){return n.toFixed(1);}).join(" "));m.classList.toggle("zoomed",z>1.01);
   [].forEach.call($("mapDots").querySelectorAll(".area"),function(c){c.setAttribute("r",(c.getAttribute("data-r")/dotScale()).toFixed(1));});
-  $("zOut").disabled=z<=1.01;$("zIn").disabled=z>=ZMAX-.01;$("mapTip").hidden=true;}
+  $("mapTip").hidden=true;}
 function zoomAt(f,cx,cy){var w=Math.max(975/ZMAX,Math.min(975,VB.w/f)),h=w*610/975;
   VB.x=cx-(cx-VB.x)*w/VB.w;VB.y=cy-(cy-VB.y)*h/VB.h;VB.w=w;VB.h=h;setView();}
 function mapPoint(e){var b=$("usMap").getBoundingClientRect();return [VB.x+(e.clientX-b.left)/b.width*VB.w,VB.y+(e.clientY-b.top)/b.height*VB.h];}
 (function(){var m=$("usMap"),pts={},drag=null,pinch=0,moved=false;
-  $("zIn").addEventListener("click",function(){zoomAt(1.6,VB.x+VB.w/2,VB.y+VB.h/2);});
-  $("zOut").addEventListener("click",function(){zoomAt(1/1.6,VB.x+VB.w/2,VB.y+VB.h/2);});
-  m.addEventListener("dblclick",function(e){e.preventDefault();var p=mapPoint(e);zoomAt(1.8,p[0],p[1]);});
+  m.addEventListener("dblclick",function(e){e.preventDefault();var p=mapPoint(e);zoomAt(e.shiftKey?1/1.8:1.8,p[0],p[1]);});
   m.addEventListener("wheel",function(e){if(!e.ctrlKey&&!e.metaKey)return;e.preventDefault();var p=mapPoint(e);zoomAt(Math.exp(-e.deltaY*.01),p[0],p[1]);},{passive:false});
   m.addEventListener("pointerdown",function(e){pts[e.pointerId]=e;var ids=Object.keys(pts);moved=false;
     if(ids.length===2){drag=null;pinch=Math.hypot(pts[ids[0]].clientX-pts[ids[1]].clientX,pts[ids[0]].clientY-pts[ids[1]].clientY);}
