@@ -9,18 +9,18 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="Our Futures First">
 <meta property="og:description" content="Students are writing an open letter on regulating AI development and asking what belongs in it. Open to anyone at a U.S. university.">
-<meta property="og:image" content="https://ourfuturesfirst.org/og.png">
+<meta property="og:image" content="https://aervale.github.io/uni_open_letter/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 60 60%27%3E%3Cpath d=%27M30 0L37 23L60 30L37 37L30 60L23 37L0 30L23 23Z%27 fill=%27%23A22C29%27/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Inter:wght@400..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Space+Grotesk:wght@400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#0B0B0C; --card:#161617; --inset:rgba(214,213,201,.07); --ink:#D6D5C9; --mute:rgba(185,186,163,.92); --faint:rgba(214,213,201,.36);
   --line:rgba(214,213,201,.13); --line2:rgba(214,213,201,.24); --hover:rgba(214,213,201,.12);
   --accent:#A22C29; --on-accent:#D6D5C9; --tint:rgba(162,44,41,.28);
-  --head:"EB Garamond",Garamond,Georgia,"Times New Roman",serif; --hw:500; --hx:400; --hs:100%; --hc:none; --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --head:"EB Garamond",Garamond,Georgia,"Times New Roman",serif; --hw:500; --hx:400; --hs:100%; --hc:none; --sans:"Space Grotesk",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
   --r:6px; --rc:10px; --ease:cubic-bezier(.2,.7,.2,1);
   color-scheme:dark;
 }
@@ -57,9 +57,9 @@ a{color:inherit}
 .banner .sub{margin-top:14px;max-width:64ch;font-size:1rem;color:var(--mute)}
 .banner .sub b{color:var(--ink);font-weight:600}
 .tally{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--rc);padding:16px 18px 14px;box-shadow:inset 0 1px 0 rgba(214,213,201,.05)}
+.stat{border-left:2px solid var(--accent);padding:4px 0 4px 18px}
 .stat b{display:block;font-family:var(--head);font-weight:var(--hx);font-stretch:var(--hs);font-size:clamp(2.2rem,3.6vw,3.1rem);line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
-.stat .lab{display:block;margin-top:6px}
+.stat .lab{display:block;margin-top:10px}
 .ticker{position:relative;border-top:1px solid var(--line);overflow:hidden;white-space:nowrap;padding:8px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
 .ticker div{display:inline-block;animation:tick 60s linear infinite}
 .ticker:hover div{animation-play-state:paused}
@@ -241,7 +241,13 @@ textarea{display:block;min-height:150px;resize:none}
 .h2b{margin-top:56px}
 
 .hero{position:relative}
-#usMap{display:block;width:100%;height:auto;overflow:visible;margin-bottom:14px}
+#usMap{display:block;width:100%;height:auto;overflow:visible;margin-bottom:34px;touch-action:pan-y}
+#usMap.zoomed{overflow:hidden;cursor:grab}
+#usMap.drag{cursor:grabbing}
+.zoom{position:absolute;top:0;right:0;z-index:2;display:grid;gap:4px}
+.zoom button{width:28px;height:28px;display:grid;place-items:center;font:500 16px/1 var(--sans);color:var(--ink);background:var(--card);border:1px solid var(--line2);border-radius:var(--r);cursor:pointer;transition:border-color .2s,opacity .2s}
+.zoom button:hover{border-color:var(--mute)}
+.zoom button:disabled{opacity:.35;cursor:default}
 #mapLand .land{fill:rgba(214,213,201,.07);stroke:rgba(214,213,201,.3);stroke-width:1;stroke-linejoin:round;vector-effect:non-scaling-stroke}
 #mapLand .edge{fill:none;stroke:rgba(214,213,201,.11);stroke-width:1;stroke-linejoin:round;vector-effect:non-scaling-stroke}
 #mapDots g{cursor:pointer}
@@ -260,7 +266,7 @@ textarea{display:block;min-height:150px;resize:none}
 .leadbox .lab:first-child{margin-top:0}
 .linkrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
 .linkrow .btn{padding:0 18px}
-#myLink{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.875rem;color:var(--ink)}
+#myLink{font-family:var(--mono);font-size:.875rem;color:var(--ink)}
 .myline{margin:18px 0 0;color:var(--mute)}
 .myline b{font-family:var(--head);font-weight:600;font-size:1.25rem;color:var(--ink)}
 #spreadNote{margin-top:10px}
@@ -295,7 +301,7 @@ textarea{display:block;min-height:150px;resize:none}
 footer{border-top:1px solid var(--line);padding:22px 0 36px}
 
 @media (max-width:920px){
-  #usMap{max-width:560px;margin-left:auto;margin-right:auto;margin-bottom:28px}
+  #usMap{max-width:560px;margin-left:auto;margin-right:auto;margin-bottom:40px}
   /* one column that can shrink to the screen: a bare 1fr lets long content push it wider than the phone */
   .banner .wrap{grid-template-columns:minmax(0,1fr);gap:28px;padding-top:36px;padding-bottom:28px}
   .cols{grid-template-columns:minmax(0,1fr)}
@@ -317,7 +323,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
   .brand .star{width:16px;height:16px}
   .banner .wrap{gap:22px;padding-top:28px;padding-bottom:22px}
   .banner .sub{font-size:.9375rem}
-  .stat{padding:12px 14px 11px}
+  .stat{padding:2px 0 2px 14px}
   .stat b{font-size:2rem}
   .rgrid,.where{gap:14px}
   .results{padding:24px 0 40px}
@@ -364,6 +370,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
       </div>
       <div class="hero">
         <svg id="usMap" viewBox="0 0 975 610" role="img" aria-label="Map of the United States with a circle on each university that has sign-ups"><g id="mapLand"></g><g id="mapDots"></g></svg>
+        <div class="zoom"><button type="button" id="zIn" aria-label="Zoom in on the map">+</button><button type="button" id="zOut" aria-label="Zoom out of the map" disabled>&minus;</button></div>
         <div id="mapTip" hidden></div>
         <div class="tally">
           <div class="stat"><b id="cPeople">0</b><span class="lab">People</span></div>
@@ -917,6 +924,36 @@ function pie(el,pairs){clear(el);pairs=pairs.filter(function(p){return p[1]>0;})
     sl.addEventListener("mouseenter",function(){li.classList.add("hot");});sl.addEventListener("mouseleave",function(){li.classList.remove("hot");});a0=a1;});
   el.appendChild(svg);el.appendChild(lg);}
 var NS="http://www.w3.org/2000/svg",demoKey="",popped=false,rippler=0,DOTS={};
+/* zooming the map: the buttons, a double click, a pinch, or ctrl and the scroll wheel; drag to move once zoomed in.
+   The view is the part of the 975 by 610 grid on show. Dots shrink a little as you zoom so close campuses separate. */
+var VB={x:0,y:0,w:975,h:610},ZMAX=8;
+function dotScale(){return Math.pow(975/VB.w,.7);}
+function setView(){var m=$("usMap"),z=975/VB.w;
+  VB.x=Math.max(0,Math.min(975-VB.w,VB.x));VB.y=Math.max(0,Math.min(610-VB.h,VB.y));
+  m.setAttribute("viewBox",[VB.x,VB.y,VB.w,VB.h].map(function(n){return n.toFixed(1);}).join(" "));m.classList.toggle("zoomed",z>1.01);
+  [].forEach.call($("mapDots").querySelectorAll(".area"),function(c){c.setAttribute("r",(c.getAttribute("data-r")/dotScale()).toFixed(1));});
+  $("zOut").disabled=z<=1.01;$("zIn").disabled=z>=ZMAX-.01;$("mapTip").hidden=true;}
+function zoomAt(f,cx,cy){var w=Math.max(975/ZMAX,Math.min(975,VB.w/f)),h=w*610/975;
+  VB.x=cx-(cx-VB.x)*w/VB.w;VB.y=cy-(cy-VB.y)*h/VB.h;VB.w=w;VB.h=h;setView();}
+function mapPoint(e){var b=$("usMap").getBoundingClientRect();return [VB.x+(e.clientX-b.left)/b.width*VB.w,VB.y+(e.clientY-b.top)/b.height*VB.h];}
+(function(){var m=$("usMap"),pts={},drag=null,pinch=0,moved=false;
+  $("zIn").addEventListener("click",function(){zoomAt(1.6,VB.x+VB.w/2,VB.y+VB.h/2);});
+  $("zOut").addEventListener("click",function(){zoomAt(1/1.6,VB.x+VB.w/2,VB.y+VB.h/2);});
+  m.addEventListener("dblclick",function(e){e.preventDefault();var p=mapPoint(e);zoomAt(1.8,p[0],p[1]);});
+  m.addEventListener("wheel",function(e){if(!e.ctrlKey&&!e.metaKey)return;e.preventDefault();var p=mapPoint(e);zoomAt(Math.exp(-e.deltaY*.01),p[0],p[1]);},{passive:false});
+  m.addEventListener("pointerdown",function(e){pts[e.pointerId]=e;var ids=Object.keys(pts);moved=false;
+    if(ids.length===2){drag=null;pinch=Math.hypot(pts[ids[0]].clientX-pts[ids[1]].clientX,pts[ids[0]].clientY-pts[ids[1]].clientY);}
+    else if(VB.w<974)drag={x:e.clientX,y:e.clientY,vx:VB.x,vy:VB.y};});
+  m.addEventListener("pointermove",function(e){if(!pts[e.pointerId])return;pts[e.pointerId]=e;var ids=Object.keys(pts),b=m.getBoundingClientRect();
+    if(ids.length===2&&pinch){var a=pts[ids[0]],c=pts[ids[1]],d=Math.hypot(a.clientX-c.clientX,a.clientY-c.clientY),p=mapPoint({clientX:(a.clientX+c.clientX)/2,clientY:(a.clientY+c.clientY)/2});
+      if(Math.abs(d-pinch)>2){zoomAt(d/pinch,p[0],p[1]);pinch=d;}}
+    else if(drag){var dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>3){moved=true;m.classList.add("drag");}
+      VB.x=drag.vx-dx/b.width*VB.w;VB.y=drag.vy-dy/b.height*VB.h;setView();}});
+  function up(e){delete pts[e.pointerId];drag=null;pinch=0;m.classList.remove("drag");}
+  m.addEventListener("pointerup",up);m.addEventListener("pointercancel",up);m.addEventListener("pointerleave",up);
+  /* a drag should not also count as a click on the dot it ended over */
+  m.addEventListener("click",function(e){if(moved){e.stopPropagation();moved=false;}},true);
+})();
 /* hovering a university in the moving strip or the lists lights its dot on the map */
 function lights(el,name){el.addEventListener("mouseenter",function(){if(DOTS[name])DOTS[name](true);});el.addEventListener("mouseleave",function(){if(DOTS[name])DOTS[name](false);});}
 function renderDemo(B){
@@ -936,18 +973,18 @@ function renderDemo(B){
   function svg(tag,cls,u,rad){var c=document.createElementNS(NS,tag);if(cls)c.setAttribute("class",cls);if(u){c.setAttribute("cx",u.x);c.setAttribute("cy",u.y);c.setAttribute("r",rad);}return c;}
   function show(u,el){if(on)on.classList.remove("on");on=el;if(!u){tip.hidden=true;return;}el.classList.add("on");
     clear(tip);tip.appendChild(document.createTextNode(u.name));tip.appendChild(mk("b",null,num(u.n)));
-    var m=$("usMap").getBoundingClientRect(),c=tip.parentNode.getBoundingClientRect();tip.style.top=m.top-c.top+u.y/610*m.height+"px";tip.hidden=false;
-    var half=tip.offsetWidth/2+8;tip.style.left=Math.max(half,Math.min(c.width-half,m.left-c.left+u.x/975*m.width))+"px";}
+    var m=$("usMap").getBoundingClientRect(),c=tip.parentNode.getBoundingClientRect();tip.style.top=m.top-c.top+(u.y-VB.y)/VB.h*m.height+"px";tip.hidden=false;
+    var half=tip.offsetWidth/2+8;tip.style.left=Math.max(half,Math.min(c.width-half,m.left-c.left+(u.x-VB.x)/VB.w*m.width))+"px";}
   /* one plain dot per university, largest first so smaller ones stay on top and can be pointed at */
   var live=[];
   B.unis.filter(function(u){return u.x!=null;}).forEach(function(u,i){var el=svg("g"),rad=(5+17*Math.sqrt(u.n/top)).toFixed(1);
     if(play){el.setAttribute("class","pop");el.style.animationDelay=Math.round(500+B.unis.indexOf(u)*gap)+"ms";}
     DOTS[u.name]=function(lit){show(lit?u:null,el);if(lit){g.appendChild(el);ripple(u,rad);}};
-    el.appendChild(svg("circle","area",u,rad));if(u.day>0)live.push([u,rad]);
+    var ar=svg("circle","area",u,(rad/dotScale()).toFixed(1));ar.setAttribute("data-r",rad);el.appendChild(ar);if(u.day>0)live.push([u,rad]);
     el.addEventListener("mouseenter",function(){show(u,el);});el.addEventListener("mouseleave",function(){show(null);});
     el.addEventListener("click",function(){on===el&&!tip.hidden?show(null):show(u,el);});g.appendChild(el);});
   /* now and then a single ripple leaves a university that gained sign-ups in the past day */
-  function ripple(u,rad){if(CALM)return;var r=svg("circle","ping",u,rad);g.appendChild(r);setTimeout(function(){if(r.parentNode)r.parentNode.removeChild(r);},1900);}
+  function ripple(u,rad){if(CALM)return;var r=svg("circle","ping",u,(rad/dotScale()).toFixed(1));g.appendChild(r);setTimeout(function(){if(r.parentNode)r.parentNode.removeChild(r);},1900);}
   clearInterval(rippler);
   if(live.length&&!CALM)rippler=setInterval(function(){if(document.hidden)return;var p=live[Math.floor(Math.random()*live.length)];ripple(p[0],p[1]);},1400);
 }
