@@ -67,11 +67,21 @@ function generate(mode){
 }
 
 /* ---------- state ---------- */
-var KEY="ofp-design-v1";
-var state={colors:null,fonts:{head:SITE.head,body:SITE.body,label:SITE.label,hw:SITE.hw},mode:"auto",open:false,tab:"colors",source:""};
+var KEY="ofp-design-v2";
+/* The default look while working locally: navy with a gold accent in dark mode, paper with the same gold in light mode.
+   The switch in the bottom left flips between them; Reset in the panel goes back to whichever one is on. */
+var THEMES={
+  dark:{bg:"#0E1A36",card:"#152447",ink:"#E9ECF2",accent:"#D3993C",onAccent:"#FFFFFF"},
+  light:{bg:"#FBFAF6",card:"#F2F0E8",ink:"#17171A",accent:"#D3993C",onAccent:"#FFFFFF"}
+};
+var THEME_NAMES={dark:"Navy and gold (dark)",light:"Paper and gold (light)"};
+var DEF_BODY="Nunito Sans";
+var state={colors:null,theme:"dark",fonts:{head:SITE.head,body:DEF_BODY,label:SITE.label,hw:SITE.hw},mode:"auto",open:false,tab:"colors",source:""};
 try{var saved=JSON.parse(localStorage.getItem(KEY)||"null");if(saved)state=Object.assign(state,saved,{fonts:Object.assign({},state.fonts,saved.fonts||{})})}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
-function current(){return state.colors||{bg:"#0C0C0E",card:"#111113",ink:"#ECEAE0",accent:"#A22C29",onAccent:"#ECEAE0"}}
+if(!state.colors||state.source===THEME_NAMES[state.theme]){state.colors=Object.assign({},THEMES[state.theme]||THEMES.dark);state.source=THEME_NAMES[state.theme]||"";state.chart=null}
+function useTheme(t){state.theme=t;state.colors=Object.assign({},THEMES[t]);state.chart=null;state.source=THEME_NAMES[t];apply();render()}
+function current(){return state.colors||THEMES.dark}
 
 /* ---------- applying to the page ---------- */
 function tokens(p){
@@ -79,7 +89,7 @@ function tokens(p){
   return {"--bg":p.bg,"--card":p.card,"--ink":p.ink,"--accent":p.accent,"--on-accent":p.onAccent,
     "--inset":rgba(p.ink,light?.05:.035),"--mute":rgba(p.ink,.62),"--faint":rgba(p.ink,.36),
     "--line":rgba(p.ink,.08),"--line2":rgba(p.ink,.16),"--hover":rgba(p.ink,light?.06:.07),
-    "--tint":rgba(p.accent,light?.14:.24),"color-scheme":light?"light":"dark"};
+    "--tint":rgba(p.accent,light?.14:.24),"color-scheme":light?"light":"dark","--icon-filter":light?"none":"invert(1)"};
 }
 /* Nine colors for the poll results and pies. A Coolors palette lends its own colors; otherwise they are
    shades of the accent and the text color, the way the site's original chart colors were built. */
@@ -136,7 +146,7 @@ function apply(){
 
 /* ---------- the widget ---------- */
 var host=document.createElement("div");host.id="ofp-design";
-host.style.cssText="position:fixed;right:16px;bottom:16px;z-index:2147483000";
+host.style.cssText="position:fixed;right:16px;bottom:56px;z-index:2147483000";
 var sh=host.attachShadow({mode:"open"});
 sh.innerHTML='<style>'+
 ':host{all:initial}*{box-sizing:border-box}'+
@@ -264,9 +274,9 @@ var acts={
   gen:function(){setColors(generate(state.mode),"Generated",null)},
   rand:function(){var src=window.OFF_COOLORS||[];if(!src.length)return;var p=src[Math.floor(Math.random()*src.length)];pick({name:p[0],colors:hexes(p[1])})},
   flip:function(){var c=Object.assign({},current()),h=toHsl(c.accent);c.accent=hsl((h[0]+180)%360,h[1],h[2]);c.onAccent=contrast("#FFFFFF",c.accent)>=contrast("#141416",c.accent)?"#FFFFFF":"#141416";setColors(c,"Flipped accent")},
-  reset:function(){state.colors=null;state.chart=null;state.source="";apply();render()},
+  reset:function(){useTheme(state.theme)},
   fontrand:function(){state.fonts.head=HEAD_FONTS[Math.floor(Math.random()*HEAD_FONTS.length)];state.fonts.body=BODY_FONTS[Math.floor(Math.random()*BODY_FONTS.length)];apply();render()},
-  fontreset:function(){state.fonts={head:SITE.head,body:SITE.body,label:SITE.label,hw:SITE.hw};apply();render()},
+  fontreset:function(){state.fonts={head:SITE.head,body:DEF_BODY,label:SITE.label,hw:SITE.hw};apply();render()},
   copy:function(){var t=$("#css");t.select();(navigator.clipboard?navigator.clipboard.writeText(t.value):Promise.reject()).catch(function(){document.execCommand("copy")});var b=sh.querySelector('[data-act=copy]');b.textContent="Copied";setTimeout(function(){b.textContent="Copy CSS"},1200)}
 };
 sh.addEventListener("click",function(e){var a=e.target.closest("[data-act]");if(a&&acts[a.dataset.act]){e.preventDefault();acts[a.dataset.act]()}});
@@ -278,6 +288,15 @@ document.addEventListener("keydown",function(e){
   e.preventDefault();acts.gen();
 });
 
-function mount(){document.body.appendChild(host);apply();renderList();render()}
+/* light/dark switch, bottom left */
+var sw=document.createElement("div");sw.id="ofp-theme";sw.style.cssText="position:fixed;left:16px;bottom:56px;z-index:2147483000";
+var ssh=sw.attachShadow({mode:"open"});
+ssh.innerHTML='<style>button{width:40px;height:40px;border-radius:50%;border:1px solid var(--line2,#2e2e33);background:var(--card,#141416);color:var(--ink,#e8e6dd);display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.25);padding:0}button:hover{border-color:var(--accent,#F2AA36)}svg{width:18px;height:18px}</style><button type="button"></button>';
+var sbtn=ssh.querySelector("button");
+var SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>';
+var MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg>';
+function paintSwitch(){var dark=state.theme!=="light";sbtn.innerHTML=dark?SUN:MOON;sbtn.title=dark?"Switch to light mode":"Switch to dark mode";sbtn.setAttribute("aria-label",sbtn.title)}
+sbtn.onclick=function(){useTheme(state.theme==="light"?"dark":"light");paintSwitch()};
+function mount(){document.body.appendChild(host);document.body.appendChild(sw);paintSwitch();apply();renderList();render()}
 if(document.body)mount();else document.addEventListener("DOMContentLoaded",mount);
 })();
