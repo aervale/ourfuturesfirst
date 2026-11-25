@@ -81,7 +81,11 @@ create function public.entry_json(s public.signups) returns jsonb language sql s
   select jsonb_build_object('email', s.email, 'uni', s.uni, 'dom', s.dom, 'verified', s.verified_at is not null,
     'token', s.edit_token, 'name', s.name, 'show_name', s.show_name, 'major', s.major, 'social', s.social, 'role', s.role, 'year', s.year, 'title', s.title, 'show_info', s.show_info, 'phone', s.phone, 'sms_ok', s.sms_ok,
     'answers', s.answers, 'concern', s.concern, 'letter', s.letter, 'spread', to_jsonb(s.spread), 'ref', s.ref,
-    'invited', (select count(*) from signups x where x.ref_by = s.ref and x.verified_at is not null));
+    -- confirmed people who joined straight from this person's share link, and everyone further down the chain
+    'invited', (select count(*) from signups x where x.ref_by = s.ref and x.verified_at is not null),
+    'downstream', (with recursive d as (select x.ref, x.verified_at from signups x where x.ref_by = s.ref
+                     union select x.ref, x.verified_at from signups x join d on x.ref_by = d.ref)
+                   select count(*) from d where verified_at is not null));
 $$;
 
 -- Store a submission as unverified. Resubmitting before verifying replaces it and restarts the 48 hours.

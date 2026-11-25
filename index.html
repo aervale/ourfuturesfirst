@@ -247,7 +247,7 @@ textarea{display:block;min-height:150px;resize:none}
 .rcard .only{margin:0 0 16px;font-size:.8125rem;color:var(--faint)}
 .signed .acts{display:flex;gap:16px}
 #growth{margin-top:8px;color:var(--ink)}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:10px;margin-top:16px}
 .stats div{border:1px solid var(--line);border-radius:var(--r);padding:10px 12px}
 .stats b{display:block;font-family:var(--head);font-weight:var(--hw);font-size:1.7rem;line-height:1.1}
 .stats span{display:block;margin-top:4px;font-size:.8125rem;color:var(--mute)}
@@ -597,7 +597,7 @@ function buildForm(){
     var os=mk("div","opts");optBtns[q.id]={};
     q.o.forEach(function(o,oi){var b=mk("button","opt");b.type="button";b.setAttribute("aria-pressed","false");
       b.appendChild(mk("span","key","ABCD".charAt(oi)));b.appendChild(mk("span",null,o));b.appendChild(mk("span","opct"));optBtns[q.id][o]=b;
-      b.addEventListener("click",function(){if(busy)return;pick(q,o);setTimeout(function(){go(step(qi,1));},CALM?0:1100);});
+      b.addEventListener("click",function(){if(busy)return;pick(q,o);setTimeout(function(){go(step(qi,1));},CALM?0:260);});
       os.appendChild(b);});
     sl.appendChild(os);add(sl);
   });
@@ -655,16 +655,16 @@ function go(i){
   var st=$("stage"),cur=slides[S.slide],nx=slides[i],dir=i>S.slide?1:-1;
   if(CALM){cur.hidden=true;nx.hidden=false;S.slide=i;renderNav();return;}
   busy=true;st.classList.add("moving");st.style.height=st.offsetHeight+"px";
-  cur.style.transition="opacity .18s ease,transform .18s ease";cur.style.opacity="0";cur.style.transform="translateX("+(-28*dir)+"px)";
+  cur.style.transition="opacity .11s ease,transform .11s ease";cur.style.opacity="0";cur.style.transform="translateX("+(-28*dir)+"px)";
   setTimeout(function(){
     cur.hidden=true;cur.style.cssText="";
     nx.style.opacity="0";nx.style.transform="translateX("+(28*dir)+"px)";nx.hidden=false;
     S.slide=i;renderNav();st.style.height=nx.offsetHeight+"px";
     setTimeout(function(){
-      nx.style.transition="opacity .32s ease,transform .32s cubic-bezier(.2,.7,.2,1)";nx.style.opacity="1";nx.style.transform="none";
-      setTimeout(function(){nx.style.cssText="";st.style.height="";st.classList.remove("moving");busy=false;},340);
+      nx.style.transition="opacity .18s ease,transform .18s cubic-bezier(.2,.7,.2,1)";nx.style.opacity="1";nx.style.transform="none";
+      setTimeout(function(){nx.style.cssText="";st.style.height="";st.classList.remove("moving");busy=false;},200);
     },20);
-  },180);
+  },110);
 }
 /* who is answering: role, and year for undergraduates */
 var ROLES=["an undergraduate","a graduate student","a postdoc","faculty","staff"],YEARS=["Freshman","Sophomore","Junior","Senior"];
@@ -936,7 +936,7 @@ function renderAfter(){
   var g=null;board().unis.forEach(function(x){if(u&&x.key===u.dom)g=x;});
   $("growth").hidden=!g;if(g)$("growth").textContent=g.day>0?u.name+" has gained "+num(g.day)+(g.day===1?" sign-up":" sign-ups")+" in the past 24 hours.":num(g.n)+(g.n===1?" person":" people")+" from "+u.name+(g.n===1?" has":" have")+" signed up so far.";
   var st=$("stats"),rank=0;board().unis.forEach(function(x,k){if(g&&x.key===g.key)rank=k+1;});clear(st);st.hidden=!g||!S.verified;
-  if(g)[[num(g.n),"signed up at "+u.name],["#"+rank,"of "+num(board().unis.length)+" universities"],[num(S.invited||0),"signed up from your link"]].forEach(function(p){
+  if(g)[[num(g.n),"signed up at "+u.name],["#"+rank,"of "+num(board().unis.length)+" universities"],[num(S.invited||0),"joined from your link"],[num(S.downstream||0),"joined downstream of it"]].forEach(function(p){
     var d=mk("div");d.appendChild(mk("b",null,p[0]));d.appendChild(mk("span",null,p[1]));st.appendChild(d);});
   $("removeRow").hidden=true;
   $("shSms").href="sms:?&body="+e(msg+url);
@@ -996,7 +996,6 @@ function save(row){
     return Promise.resolve({dom:u.dom,name:u.name,token:"local"});}
   return sb.rpc("submit_interest",{p:row}).then(function(r){
     if(r.error)throw (/not_university/.test(r.error.message)?"not_university":"save");
-    if(CFG.dev)return sb.rpc("dev_confirm",{p_token:r.data.token}).then(function(m){if(m.error)throw "save";r.data.entry=m.data;return r.data;});
     return sendLink(row.email).then(function(o){if(o.error)throw "mail";return r.data;});
   });
 }
@@ -1025,14 +1024,14 @@ $("form").addEventListener("submit",function(e){
   }
   row.email=email;
   save(row).then(function(u){
-    S.mine={dom:u.dom,name:u.name};S.email=email;S.token=u.token||null;S.ref=u.ref||"";S.submitted=true;if(u.entry){S.verified=true;S.invited=u.entry.invited||0;}S.panel="unis";idle();
+    S.mine={dom:u.dom,name:u.name};S.email=email;S.token=u.token||null;S.ref=u.ref||"";S.submitted=true;S.panel="unis";idle();
     try{if(S.live&&S.token)localStorage.setItem("off_token",S.token);}catch(x){}
     renderAll();toTop();if(S.live)loadBoard();
   },function(x){idle();fail(FAIL[x]||FAIL.save,x==="not_university"?$("inEmail"):null);});
 });
 /* fill the form from a stored entry: a returning visitor, or someone arriving from the emailed link */
 function applyEntry(c){
-  S.email=c.email;S.verified=!!c.verified;S.token=c.token;S.ref=c.ref||"";S.invited=c.invited||0;S.submitted=true;
+  S.email=c.email;S.verified=!!c.verified;S.token=c.token;S.ref=c.ref||"";S.invited=c.invited||0;S.downstream=c.downstream||0;S.submitted=true;
   $("inEmail").value=c.email;$("inName").value=c.name||"";$("inMajor").value=c.major||"";$("inSocial").value=c.social||"";$("inPhone2").value=c.phone||"";
   $("inConcern").value=c.concern||"";S.sms=!!c.sms_ok;S.role=c.role||"";S.year=c.year||"";paintChips();
   S.show=c.show_name!==false;S.info=c.show_info!==false;$("inTitle").value=c.title||"";

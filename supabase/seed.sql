@@ -39,23 +39,20 @@ select 'sample' || i || '@' || dom,
   case when t > now() - interval '2 days' and r[6] > .8 then null else least(now(), t + (2 + r[12] * 40) * interval '1 minute') end, least(now(), t)
 from r1;
 
+-- About a third arrived through an earlier person's share link, mostly someone at their own university.
+-- People who offered to share or organize bring in the most.
+update public.signups s set ref_by = coalesce((
+  select p.ref from public.signups p
+  where p.created_at < s.created_at - interval '20 minutes' and (p.dom = s.dom or left(s.id::text, 1) in ('0', '1', '2'))
+  order by random() * case when 'lead' = any(p.spread) then .08 when 'chats' = any(p.spread) then .45 else 1 end limit 1), '')
+where left(s.ref, 1) in ('0', '1', '2', '3', '4', '5');
+
 -- Local test mode (config.js: dev). These functions exist only here, in the seed, so a hosted project
--- never has them: confirm a sign-up without the email, and read the admin data without signing in.
-create function public.dev_confirm(p_token uuid) returns jsonb
-language plpgsql security definer set search_path = public as $$
-declare r signups;
-begin
-  update signups set verified_at = now() where edit_token = p_token returning * into r;
-  if not found then raise exception 'not_found'; end if;
-  -- pretend three people came through this person's share link, so the card has numbers to show
-  update signups set ref_by = r.ref where id in
-    (select id from signups where dom = r.dom and verified_at is not null and ref_by = '' and id <> r.id limit 3);
-  return entry_json(r);
-end $$;
+-- never has them: read the admin data without signing in.
 create function public.dev_admin_rows() returns jsonb language sql stable security definer set search_path = public as $$
   select coalesce(jsonb_agg(to_jsonb(s) - 'edit_token' order by s.created_at desc), '[]'::jsonb) from signups s;
 $$;
 create function public.dev_admin_set_hidden(p_id uuid, p_hidden boolean) returns void language sql security definer set search_path = public as $$
   update signups set name_hidden = p_hidden where id = p_id;
 $$;
-grant execute on function public.dev_confirm(uuid), public.dev_admin_rows(), public.dev_admin_set_hidden(uuid, boolean) to anon, authenticated;
+grant execute on function public.dev_admin_rows(), public.dev_admin_set_hidden(uuid, boolean) to anon, authenticated;

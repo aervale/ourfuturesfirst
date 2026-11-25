@@ -162,6 +162,10 @@ td.wide{white-space:normal;min-width:320px}
   <h2>Poll answers <small id="pollNote"></small></h2>
   <div class="grid three" id="poll"></div>
 
+  <h2>Share links <small id="refNote"></small></h2>
+  <p class="mute">Direct is people who joined from that person's own link. Downstream adds everyone who then joined through those people's links, and so on.</p>
+  <div class="scroll"><table id="tRef"></table></div>
+
   <h2>Campus organizers</h2>
   <div class="scroll"><table id="tOrg"></table></div>
 
@@ -324,6 +328,7 @@ function render(){
   if(SER){var big=SER.days.reduce(function(a,d){return d.n>a.n?d:a;});fact("Biggest day",fmtDay(big.t)+", "+plural(big.n,"sign-up","sign-ups"));
     fact("Average per day",num(Math.round(rows.length/SER.days.length))+" over "+plural(SER.days.length,"day","days"));}
   if(!F.uni){var fast=count(w1,function(r){return r.uni;}).slice(0,3);if(fast.length)fact("Growing fastest this week",fast.map(function(p){return p[0]+" +"+num(p[1]);}).join(", "));}
+  var viaLink=rows.filter(function(r){return r.ref_by;}).length;if(rows.length)fact("Joined through a share link",num(viaLink)+", "+Math.round(viaLink/rows.length*100)+"% of sign-ups");
   fact("Awaiting confirmation",num(scope({all:true}).filter(function(r){return !r.verified_at;}).length)+(F.confirmed?", not counted above":""));
   fact("Campus organizers",org.length?num(org.length)+(F.uni?"":" at "+plural(count(org,function(r){return r.dom;}).length,"university","universities")):"None yet");
   var held=rows.filter(function(r){return r.name_hidden;}).length;if(held)fact("Names held back",plural(held,"name","names")+" to review below");
@@ -354,6 +359,16 @@ function render(){
   clear($("poll"));Object.keys(QS).forEach(function(q){var c=mk("div","card");c.appendChild(mk("h3",null,QS[q]));var b=mk("div");c.appendChild(b);
     var ans=rows.filter(function(r){return r.answers&&r.answers[q];});bars(b,count(ans,function(r){return r.answers[q];}),ans.length);$("poll").appendChild(c);});
 
+  /* share links: who brought people in, directly and further down the chain. Counted over everyone under the
+     role and confirmed filters, so a chain that leaves the selected university still counts. */
+  var pool=scope({noUni:true}),kids={},byRef={};ROWS.forEach(function(r){byRef[r.ref]=r;});
+  pool.forEach(function(r){if(r.ref_by&&byRef[r.ref_by])(kids[r.ref_by]||(kids[r.ref_by]=[])).push(r);});
+  function down(ref,seen){var n=0;(kids[ref]||[]).forEach(function(c){if(seen[c.ref])return;seen[c.ref]=1;n+=1+down(c.ref,seen);});return n;}
+  var refs=Object.keys(kids).map(function(k){return {r:byRef[k],direct:kids[k].length,down:down(k,{})};}).filter(function(x){return !F.uni||x.r.dom===F.uni;})
+    .sort(function(a,b){return b.down-a.down||b.direct-a.direct;}),via=rows.filter(function(r){return r.ref_by&&byRef[r.ref_by];}).length;
+  $("refNote").textContent=rows.length?num(via)+" of "+num(rows.length)+" joined through someone's link ("+Math.round(via/rows.length*100)+"%), from "+plural(refs.length,"person's link","people's links"):"";
+  table($("tRef"),["Name","University","Direct","Downstream","Organizer","Email"],refs.slice(0,50),function(x){return [x.r.name,x.r.uni,num(x.direct),num(x.down),isLead(x.r)?"Yes":"",x.r.email];});
+
   table($("tOrg"),["Name","University","Email","Phone","Confirmed","Signed up"],org,function(r){return [r.name,r.uni,r.email,r.phone,r.verified_at?"Yes":"No",day(r.created_at)];});
   table($("tHidden"),["Name","University","Email","Confirmed",""],rows.filter(function(r){return r.name_hidden;}),function(r){return [r.name,r.uni,r.email,r.verified_at?"Yes":"No",hideBtn(r)];});
   table($("tConcern"),["Answer","University","Role"],rows.filter(function(r){return r.concern;}),function(r){var s=mk("span",null,r.concern);s.wide=true;return [s,r.uni,r.role];});
@@ -366,7 +381,7 @@ function render(){
 
 /* cells that start with = + - @ are prefixed so a spreadsheet does not run them as formulas */
 function csv(){
-  var cols=["name","show_name","name_hidden","email","uni","dom","role","year","title","major","social","show_info","phone","spread","verified_at","created_at","concern"].concat(Object.keys(QS));
+  var cols=["name","show_name","name_hidden","email","uni","dom","role","year","title","major","social","show_info","phone","spread","ref","ref_by","verified_at","created_at","concern"].concat(Object.keys(QS));
   function cell(v){v=v==null?"":Array.isArray(v)?v.join(" "):String(v);if(/^[=+\-@\t\r]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"';}
   var out=[cols.join(",")].concat(ROWS.map(function(r){return cols.map(function(c){return cell(QS[c]?(r.answers||{})[c]:r[c]);}).join(",");}));
   var a=mk("a");a.href=URL.createObjectURL(new Blob([out.join("\n")],{type:"text/csv"}));a.download="sign-ups-"+new Date().toISOString().slice(0,10)+".csv";a.click();
