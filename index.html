@@ -9,7 +9,9 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="Our Futures First">
 <meta property="og:description" content="Students are writing an open letter on regulating AI development and asking what belongs in it. Open to anyone at a U.S. university.">
-<meta property="og:image" content="https://aervale.github.io/uni_open_letter/og.png">
+<meta property="og:image" content="https://ourfuturesfirst.org/og.png">
+<meta property="og:url" content="https://ourfuturesfirst.org/">
+<link rel="canonical" href="https://ourfuturesfirst.org/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 60 60%27%3E%3Cpath d=%27M30 0L37 23L60 30L37 37L30 60L23 37L0 30L23 23Z%27 fill=%27%23A22C29%27/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,6 +28,8 @@
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
+*{scrollbar-width:none}
+*::-webkit-scrollbar{display:none}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
 .wrap{max-width:1200px;margin:0 auto;padding:0 28px}
 h1,h2,h3{margin:0;font-family:var(--head);font-weight:var(--hw);font-stretch:var(--hs);line-height:1.08;letter-spacing:0;text-wrap:balance}
@@ -63,7 +67,7 @@ a{color:inherit}
 .ticker{position:relative;overflow:hidden;white-space:nowrap;padding:8px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
 .ticker div{display:inline-block;animation:tick 60s linear infinite}
 .ticker:hover div{animation-play-state:paused}
-.ticker span{font-family:var(--head);font-size:12.5px;font-weight:var(--hw);letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-right:36px;font-variant-numeric:lining-nums}
+.ticker span{font-family:var(--head);font-size:15px;font-weight:var(--hw);letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-right:36px;font-variant-numeric:lining-nums}
 .ticker span{cursor:default;transition:color .15s}
 .ticker span:hover{color:var(--ink)}
 .ticker span b{color:var(--accent);font-weight:500;margin-left:8px}
@@ -84,12 +88,12 @@ a{color:inherit}
 .card>.field:last-child{margin-bottom:0}
 .field>.lab{display:block;margin-bottom:6px}
 .sel{display:block;text-align:left;width:100%;font:inherit;color:var(--ink);background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23F4F2ED' stroke-opacity='.55' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 14px center/11px #151518;border:0;transition:box-shadow .2s;border-radius:var(--r);padding:9px 36px 9px 12px;cursor:pointer;transition:border-color .2s,opacity .2s}
-.sel:focus,.sel[aria-expanded="true"]{outline:0;box-shadow:inset 0 -2px 0 var(--accent)}
+.sel:focus,.sel[aria-expanded="true"]{outline:0;background-color:#1C1C21}
 .sel:disabled{opacity:.4;cursor:default}
 .sel.empty{color:var(--faint)}
 .combo{position:relative;z-index:4}
 .combo:focus-within{z-index:6}
-.menu{position:absolute;left:0;right:0;top:calc(100% + 6px);margin:0;padding:4px;list-style:none;max-height:248px;overflow:auto;background:#1B1B20;border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);scrollbar-width:thin;scrollbar-color:var(--line2) transparent;animation:fade .18s var(--ease) both}
+.menu{position:absolute;left:0;right:0;top:calc(100% + 6px);margin:0;padding:4px;list-style:none;max-height:248px;overflow:auto;background:#1B1B20;border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);animation:fade .18s var(--ease) both}
 .menu li{padding:9px 10px;border-radius:4px;cursor:pointer;transition:background .12s}
 .menu li:hover,.menu li.on{background:var(--hover)}
 .menu li.on{color:var(--accent)}
@@ -133,7 +137,7 @@ a{color:inherit}
 .field{margin-bottom:12px}
 .field label{display:block;margin-bottom:6px}
 input[type=text],input[type=email],input[type=tel],input[type=search],textarea{width:100%;font:inherit;color:var(--ink);background:#151518;border:0;border-radius:var(--r);padding:10px 13px;transition:background .2s,box-shadow .2s}
-input:focus,textarea:focus{outline:0;background:#1A1A1E;box-shadow:inset 0 -2px 0 var(--accent)}
+input:focus,textarea:focus{outline:0;background:#1C1C21}
 textarea{display:block;min-height:150px;resize:none}
 .hint{margin-top:8px;font-size:.875rem;color:var(--mute);transition:color .2s}
 .hint.bad{color:var(--accent)}
@@ -185,7 +189,7 @@ textarea{display:block;min-height:150px;resize:none}
 .seg button{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);background:transparent;border:0;border-radius:4px;padding:9px;cursor:pointer;transition:color .2s,background .2s}
 .seg button:hover{color:var(--ink)}
 .seg button[aria-selected="true"]{color:var(--bg);background:var(--ink)}
-.list{list-style:none;margin:6px 0 0;padding:0;max-height:690px;overflow:auto;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
+.list{list-style:none;margin:6px 0 0;padding:0;max-height:690px;overflow:auto}
 .list li{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:7px 2px}
 .list .empty{display:block;padding:14px 2px}
 .list .u{color:var(--mute);font-size:.875rem;text-align:right;flex:none;max-width:45%}
@@ -246,11 +250,7 @@ textarea{display:block;min-height:150px;resize:none}
 .h2b{margin-top:56px}
 
 .hero{position:relative}
-#usMap{display:block;width:100%;height:auto;overflow:hidden;margin-bottom:34px;touch-action:pan-y}
-@property --fade{syntax:"<percentage>";inherits:false;initial-value:0%}
-#usMap{-webkit-mask-image:linear-gradient(90deg,transparent,#000 var(--fade),#000 calc(100% - var(--fade)),transparent),linear-gradient(transparent,#000 var(--fade),#000 calc(100% - var(--fade)),transparent);mask-image:linear-gradient(90deg,transparent,#000 var(--fade),#000 calc(100% - var(--fade)),transparent),linear-gradient(transparent,#000 var(--fade),#000 calc(100% - var(--fade)),transparent);-webkit-mask-composite:source-in;mask-composite:intersect;transition:--fade .5s ease}
-#usMap.zoomed{--fade:16%;cursor:grab}
-#usMap.drag{cursor:grabbing}
+#usMap{display:block;width:100%;height:auto;overflow:visible;margin-bottom:34px}
 #mapLand .land{fill:rgba(236,234,224,.04);stroke:rgba(236,234,224,.22);stroke-width:1;stroke-linejoin:round;vector-effect:non-scaling-stroke}
 #mapLand .edge{fill:none;stroke:rgba(236,234,224,.08);stroke-width:1;stroke-linejoin:round;vector-effect:non-scaling-stroke}
 #mapDots g{cursor:pointer}
@@ -938,38 +938,6 @@ function pie(el,pairs){clear(el);pairs=pairs.filter(function(p){return p[1]>0;})
     sl.addEventListener("mouseenter",function(){li.classList.add("hot");});sl.addEventListener("mouseleave",function(){li.classList.remove("hot");});});
   ring.appendChild(svg);el.appendChild(ring);el.appendChild(lg);}
 var NS="http://www.w3.org/2000/svg",demoKey="",popped=false,rippler=0,DOTS={};
-/* zooming the map, with no controls on show: a double click, a pinch, or ctrl and the scroll wheel; drag to move once
-   zoomed in, and shift with a double click zooms back out.
-   The view is the part of the 975 by 610 grid on show. Dots shrink a little as you zoom so close campuses separate. */
-var VB={x:0,y:0,w:975,h:610},ZMAX=8;
-function dotScale(){return Math.pow(975/VB.w,.7);}
-function setView(){var m=$("usMap"),z=975/VB.w;
-  VB.x=Math.max(0,Math.min(975-VB.w,VB.x));VB.y=Math.max(0,Math.min(610-VB.h,VB.y));
-  m.setAttribute("viewBox",[VB.x,VB.y,VB.w,VB.h].map(function(n){return n.toFixed(1);}).join(" "));m.classList.toggle("zoomed",z>1.01);
-  [].forEach.call($("mapDots").querySelectorAll(".area"),function(c){c.setAttribute("r",(c.getAttribute("data-r")/dotScale()).toFixed(1));});
-  $("mapTip").hidden=true;}
-function zoomAt(f,cx,cy){var w=Math.max(975/ZMAX,Math.min(975,VB.w/f)),h=w*610/975;
-  VB.x=cx-(cx-VB.x)*w/VB.w;VB.y=cy-(cy-VB.y)*h/VB.h;VB.w=w;VB.h=h;setView();}
-function mapPoint(e){var b=$("usMap").getBoundingClientRect();return [VB.x+(e.clientX-b.left)/b.width*VB.w,VB.y+(e.clientY-b.top)/b.height*VB.h];}
-(function(){var m=$("usMap"),pts={},drag=null,pinch=0,moved=false;
-  /* a double click glides to the new view over a third of a second */
-  var gl=0;function glide(f,cx,cy){var z0=975/VB.w,z1=Math.max(1,Math.min(ZMAX,z0*f)),t0=null;cancelAnimationFrame(gl);if(CALM){zoomAt(f,cx,cy);return;}
-    gl=requestAnimationFrame(function step(t){if(t0===null)t0=t;var k=Math.min(1,(t-t0)/340),e=1-Math.pow(1-k,3),z=z0+(z1-z0)*e;zoomAt(z/(975/VB.w),cx,cy);if(k<1)gl=requestAnimationFrame(step);});}
-  m.addEventListener("dblclick",function(e){e.preventDefault();var p=mapPoint(e);glide(e.shiftKey?1/2:2,p[0],p[1]);});
-  m.addEventListener("wheel",function(e){if(!e.ctrlKey&&!e.metaKey)return;e.preventDefault();var p=mapPoint(e);zoomAt(Math.exp(-e.deltaY*.01),p[0],p[1]);},{passive:false});
-  m.addEventListener("pointerdown",function(e){pts[e.pointerId]=e;var ids=Object.keys(pts);moved=false;
-    if(ids.length===2){drag=null;pinch=Math.hypot(pts[ids[0]].clientX-pts[ids[1]].clientX,pts[ids[0]].clientY-pts[ids[1]].clientY);}
-    else if(VB.w<974)drag={x:e.clientX,y:e.clientY,vx:VB.x,vy:VB.y};});
-  m.addEventListener("pointermove",function(e){if(!pts[e.pointerId])return;pts[e.pointerId]=e;var ids=Object.keys(pts),b=m.getBoundingClientRect();
-    if(ids.length===2&&pinch){var a=pts[ids[0]],c=pts[ids[1]],d=Math.hypot(a.clientX-c.clientX,a.clientY-c.clientY),p=mapPoint({clientX:(a.clientX+c.clientX)/2,clientY:(a.clientY+c.clientY)/2});
-      if(Math.abs(d-pinch)>2){zoomAt(d/pinch,p[0],p[1]);pinch=d;}}
-    else if(drag){var dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>3){moved=true;m.classList.add("drag");}
-      VB.x=drag.vx-dx/b.width*VB.w;VB.y=drag.vy-dy/b.height*VB.h;setView();}});
-  function up(e){delete pts[e.pointerId];drag=null;pinch=0;m.classList.remove("drag");}
-  m.addEventListener("pointerup",up);m.addEventListener("pointercancel",up);m.addEventListener("pointerleave",up);
-  /* a drag should not also count as a click on the dot it ended over */
-  m.addEventListener("click",function(e){if(moved){e.stopPropagation();moved=false;}},true);
-})();
 /* hovering a university in the moving strip or the lists lights its dot on the map */
 function lights(el,name){el.addEventListener("mouseenter",function(){if(DOTS[name])DOTS[name](true);});el.addEventListener("mouseleave",function(){if(DOTS[name])DOTS[name](false);});}
 function renderDemo(B){
@@ -990,18 +958,18 @@ function renderDemo(B){
   function svg(tag,cls,u,rad){var c=document.createElementNS(NS,tag);if(cls)c.setAttribute("class",cls);if(u){c.setAttribute("cx",u.x);c.setAttribute("cy",u.y);c.setAttribute("r",rad);}return c;}
   function show(u,el){if(on)on.classList.remove("on");on=el;if(!u){tip.hidden=true;return;}el.classList.add("on");
     clear(tip);tip.appendChild(document.createTextNode(u.name));tip.appendChild(mk("b",null,num(u.n)));
-    var m=$("usMap").getBoundingClientRect(),c=tip.parentNode.getBoundingClientRect();tip.style.top=m.top-c.top+(u.y-VB.y)/VB.h*m.height+"px";tip.hidden=false;
-    var half=tip.offsetWidth/2+8;tip.style.left=Math.max(half,Math.min(c.width-half,m.left-c.left+(u.x-VB.x)/VB.w*m.width))+"px";}
+    var m=$("usMap").getBoundingClientRect(),c=tip.parentNode.getBoundingClientRect();tip.style.top=m.top-c.top+u.y/610*m.height+"px";tip.hidden=false;
+    var half=tip.offsetWidth/2+8;tip.style.left=Math.max(half,Math.min(c.width-half,m.left-c.left+u.x/975*m.width))+"px";}
   /* one plain dot per university, largest first so smaller ones stay on top and can be pointed at */
   var live=[];
   B.unis.filter(function(u){return u.x!=null;}).forEach(function(u,i){var el=svg("g"),rad=(5+17*Math.sqrt(u.n/top)).toFixed(1);
     if(play){el.setAttribute("class","pop");el.style.animationDelay=Math.round(500+B.unis.indexOf(u)*gap)+"ms";}
     DOTS[u.name]=function(lit){show(lit?u:null,el);if(lit){g.appendChild(el);ripple(u,rad);}};
-    var ar=svg("circle","area",u,(rad/dotScale()).toFixed(1));ar.setAttribute("data-r",rad);el.appendChild(ar);if(u.day>0)live.push([u,rad]);
+    el.appendChild(svg("circle","area",u,rad));if(u.day>0)live.push([u,rad]);
     el.addEventListener("mouseenter",function(){show(u,el);});el.addEventListener("mouseleave",function(){show(null);});
     el.addEventListener("click",function(){on===el&&!tip.hidden?show(null):show(u,el);});g.appendChild(el);});
   /* now and then a single ripple leaves a university that gained sign-ups in the past day */
-  function ripple(u,rad){if(CALM)return;var r=svg("circle","ping",u,(rad/dotScale()).toFixed(1));g.appendChild(r);setTimeout(function(){if(r.parentNode)r.parentNode.removeChild(r);},1900);}
+  function ripple(u,rad){if(CALM)return;var r=svg("circle","ping",u,rad);g.appendChild(r);setTimeout(function(){if(r.parentNode)r.parentNode.removeChild(r);},1900);}
   clearInterval(rippler);
   if(live.length&&!CALM)rippler=setInterval(function(){if(document.hidden)return;var p=live[Math.floor(Math.random()*live.length)];ripple(p[0],p[1]);},1400);
 }
@@ -1100,12 +1068,12 @@ $("btnInvite").addEventListener("click",function(){var m=$("inviteMsg"),box=$("i
   if(!S.live){m.textContent="Preview mode: nothing is sent.";return;}
   m.textContent="Sending";
   sb.rpc("send_invites",{p_token:S.token,p_emails:list}).then(function(r){
-    if(r.error){m.textContent=FAIL.save;return;}var d=r.data;box.value="";
+    if(r.error){m.textContent=/slow_down/.test(r.error.message)?"Too many invitations for now. Please try again in an hour.":FAIL.save;return;}var d=r.data;box.value="";
     m.textContent=d.added?"We'll email "+(d.added===1?"them":d.added===2?"both":"all "+d.added)+" an invitation with your link. "+(d.limit-d.total)+" more left.":d.total>=d.limit?"You've reached the limit of "+d.limit+" invitations.":"Those are already invited.";});});
 $("shInsta").addEventListener("click",function(){copy("Link copied. Paste it into your story or a DM.");});
 
 /* ---------- backend ---------- */
-var FAIL={not_university:NOTUS,mail:"Your answers are saved, but we couldn't send the email. Wait a minute and try again.",save:"That didn't save. Check your connection and try again."};
+var FAIL={busy:"A lot of people are signing up from your network right now. Please try again in a few minutes.",not_university:NOTUS,mail:"Your answers are saved, but we couldn't send the email. Wait a minute and try again.",save:"That didn't save. Check your connection and try again."};
 function formRow(){return {name:$("inName").value.trim(),show_name:S.show,show_info:S.info,major:$("inMajor").value.trim(),role:S.role,year:S.year,title:S.role==="faculty"||S.role==="staff"?$("inTitle").value.trim():"",
   answers:Q.reduce(function(a,q,k){if(asked(k)&&S.answers[q.id])a[q.id]=S.answers[q.id];return a;},{}),concern:$("inConcern").value.trim(),spread:spreadList(),ref_by:REF};}
 /* first submit: stores the entry, then emails the confirmation link. Returns the university and an edit token. */
@@ -1114,7 +1082,7 @@ function save(row){
     S.local={name:row.show_name?shortName(row.name):"",uni:u.name,dom:u.dom,a:row.answers,ts:Date.now()};S.rows.push(S.local);S.verified=true;
     return Promise.resolve({dom:u.dom,name:u.name,token:"local"});}
   return sb.rpc("submit_interest",{p:row}).then(function(r){
-    if(r.error)throw (/not_university/.test(r.error.message)?"not_university":"save");
+    if(r.error)throw (/not_university/.test(r.error.message)?"not_university":/slow_down/.test(r.error.message)?"busy":"save");
     return sendLink(row.email).then(function(o){if(o.error)throw "mail";return r.data;});
   });
 }
