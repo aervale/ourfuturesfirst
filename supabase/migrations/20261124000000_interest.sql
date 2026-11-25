@@ -20,6 +20,7 @@ create table public.signups (
   phone       text not null default '',
   sms_ok      boolean not null default false,
   major       text not null default '',
+  social      text not null default '',           -- optional social media handle; never shown publicly
   role        text not null default '',
   year        text not null default '',
   title       text not null default '',           -- faculty and staff
@@ -78,7 +79,7 @@ $$;
 -- A person's own entry, as the page sees it. Internal helper.
 create function public.entry_json(s public.signups) returns jsonb language sql stable as $$
   select jsonb_build_object('email', s.email, 'uni', s.uni, 'dom', s.dom, 'verified', s.verified_at is not null,
-    'token', s.edit_token, 'name', s.name, 'show_name', s.show_name, 'major', s.major, 'role', s.role, 'year', s.year, 'title', s.title, 'show_info', s.show_info, 'phone', s.phone, 'sms_ok', s.sms_ok,
+    'token', s.edit_token, 'name', s.name, 'show_name', s.show_name, 'major', s.major, 'social', s.social, 'role', s.role, 'year', s.year, 'title', s.title, 'show_info', s.show_info, 'phone', s.phone, 'sms_ok', s.sms_ok,
     'answers', s.answers, 'concern', s.concern, 'letter', s.letter, 'spread', to_jsonb(s.spread), 'ref', s.ref,
     'invited', (select count(*) from signups x where x.ref_by = s.ref and x.verified_at is not null));
 $$;
@@ -98,8 +99,8 @@ begin
     raise exception 'bad_answers';
   end if;
   perform sweep_unconfirmed();
-  insert into signups (ref_by, email, name, name_hidden, show_name, show_info, title, phone, major, role, year, uni, dom, answers, concern, letter, spread)
-  values (coalesce((select ref from signups where ref = p->>'ref_by' and email <> e), ''), e, left(coalesce(p->>'name', ''), 120), not name_ok(left(coalesce(p->>'name', ''), 120)), coalesce((p->>'show_name')::boolean, true),
+  insert into signups (social, ref_by, email, name, name_hidden, show_name, show_info, title, phone, major, role, year, uni, dom, answers, concern, letter, spread)
+  values (left(trim(coalesce(p->>'social', '')), 120), coalesce((select ref from signups where ref = p->>'ref_by' and email <> e), ''), e, left(coalesce(p->>'name', ''), 120), not name_ok(left(coalesce(p->>'name', ''), 120)), coalesce((p->>'show_name')::boolean, true),
           coalesce((p->>'show_info')::boolean, true), left(trim(coalesce(p->>'title', '')), 80),
           left(coalesce(p->>'phone', ''), 30), norm_major(u->>'dom', p->>'major'),
           left(coalesce(p->>'role', ''), 30), left(coalesce(p->>'year', ''), 30), u->>'name', u->>'dom', p->'answers',
@@ -107,7 +108,7 @@ begin
           array(select left(x, 20) from jsonb_array_elements_text(coalesce(p->'spread', '[]'::jsonb)) x
                 where x <> 'lead' or trim(coalesce(p->>'phone', '')) <> '' limit 10))
   on conflict (email) do update set
-    name = excluded.name, name_hidden = excluded.name_hidden, show_name = excluded.show_name, show_info = excluded.show_info, title = excluded.title, phone = excluded.phone, major = excluded.major, role = excluded.role, year = excluded.year, uni = excluded.uni,
+    social = excluded.social, name = excluded.name, name_hidden = excluded.name_hidden, show_name = excluded.show_name, show_info = excluded.show_info, title = excluded.title, phone = excluded.phone, major = excluded.major, role = excluded.role, year = excluded.year, uni = excluded.uni,
     dom = excluded.dom, answers = excluded.answers, concern = excluded.concern, letter = excluded.letter,
     spread = excluded.spread, created_at = now(), edit_token = gen_random_uuid()
   where signups.verified_at is null
@@ -135,6 +136,7 @@ begin
     show_info = case when p ? 'show_info' then coalesce((p->>'show_info')::boolean, true) else show_info end,
     title     = case when p ? 'title' then left(trim(coalesce(p->>'title', '')), 80) else title end,
     major     = case when p ? 'major' then norm_major(dom, p->>'major') else major end,
+    social    = case when p ? 'social' then left(trim(coalesce(p->>'social', '')), 120) else social end,
     role      = case when p ? 'role' then left(coalesce(p->>'role', ''), 30) else role end,
     year      = case when p ? 'year' then left(coalesce(p->>'year', ''), 30) else year end,
     phone     = case when p ? 'phone' then left(coalesce(p->>'phone', ''), 30) else phone end,

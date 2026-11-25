@@ -43,7 +43,7 @@ a{color:inherit}
 .top{position:sticky;top:0;z-index:5;background:rgba(8,8,10,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .top .wrap{display:flex;align-items:center;justify-content:space-between;height:50px}
 .brand{display:flex;align-items:center;gap:10px;font-family:var(--head);font-weight:var(--hw);font-stretch:var(--hs);font-size:.875rem;letter-spacing:.06em;text-transform:uppercase}
-.brand i{width:10px;height:10px;background:var(--accent)}
+.brand .star{width:18px;height:18px;flex:none;color:var(--accent)}
 .tabs{display:flex;gap:28px;align-self:stretch}
 .tabs a{display:flex;align-items:center;text-decoration:none;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .2s,border-color .2s}
 .tabs a:hover{color:var(--ink)}
@@ -254,7 +254,14 @@ textarea{display:block;min-height:150px;resize:none}
 .stats div{border:1px solid var(--line);border-radius:var(--r);padding:10px 12px}
 .stats b{display:block;font-family:var(--head);font-weight:var(--hw);font-size:1.7rem;line-height:1.1}
 .stats span{display:block;margin-top:4px;font-size:.8125rem;color:var(--mute)}
-footer .lab a{color:inherit}
+.foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:10px 22px}
+.foot .by{margin-left:auto}
+.foot a{color:inherit;text-decoration:none;transition:color .2s}
+.foot a:hover{color:var(--ink)}
+.foot img{display:block;width:14px;height:14px;filter:invert(1);opacity:.8}
+.foot a:hover img{opacity:1}
+.contact{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.contact li{display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px;align-items:baseline;font-size:1.0625rem}
 .demo h3{font-family:var(--sans);font-weight:600;font-size:1.0625rem;letter-spacing:0;margin:26px 0 14px}
 .demo h3:first-child{margin-top:0}
 
@@ -288,7 +295,8 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
   .about{padding:44px 16px 64px}
   .card{padding:18px}
   .two{grid-template-columns:1fr;gap:0}
-  .tabs{gap:18px}
+  .tabs{gap:14px}
+  .foot .by{margin-left:0;flex-basis:100%}
 }
 @media (prefers-reduced-motion:reduce){
   *{transition:none!important;animation:none!important}
@@ -299,9 +307,10 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
 <body>
 
 <header class="top"><div class="wrap">
-  <span class="brand"><i></i>Our Futures First</span>
+  <span class="brand"><svg class="star" viewBox="0 0 60 60" aria-hidden="true"><path d="M30 0L37 23L60 30L37 37L30 60L23 37L0 30L23 23Z" fill="currentColor"/><circle cx="52" cy="8" r="3.5" fill="var(--ink)"/></svg>Our Futures First</span>
   <nav class="tabs" aria-label="Sections">
     <a href="#interest" id="tabInterest">Interest</a>
+    <a href="#draft" id="tabDraft">Letter</a>
     <a href="#about" id="tabAbout">About</a>
   </nav>
 </div></header>
@@ -334,6 +343,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
           </div>
           <div>
             <div class="field combo"><label class="lab" for="inMajor">Major or field</label><input type="text" id="inMajor" maxlength="80" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="majorMenu" aria-autocomplete="list"><ul class="menu" id="majorMenu" role="listbox" hidden></ul></div>
+            <div class="field"><label class="lab" for="inSocial">Social media</label><input type="text" id="inSocial" maxlength="120" autocomplete="off" placeholder="Instagram, X or LinkedIn handle"></div>
           </div>
           <div class="two">
             <div class="field combo"><span class="lab" id="roleLab">I am <span class="req">*</span></span><button type="button" class="sel" id="selRole" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="roleLab selRole"></button><ul class="menu" role="listbox" aria-labelledby="roleLab" hidden></ul></div>
@@ -441,47 +451,51 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
     <p>Anyone with a U.S. university email: undergraduates, graduate students, postdocs, faculty and staff.</p>
     <h2>Who is behind this?</h2>
     <p>It was started by students at MIT. It's run entirely by students.</p>
+    <h2 id="contact">Contact</h2>
+    <ul class="contact" id="contactList"></ul>
     <h2 id="organizers">What is a campus organizer?</h2>
     <p>Someone who has offered to help with the letter at their university. A university can have several.</p>
     <p>If you volunteer, we connect you with other groups of campus organizers at your university, which means sharing your name with them, and contact you by phone or text about next steps. A phone number is required. Organizers are listed by name on the public list and marked as organizers.</p>
     <h2>What happens to my information?</h2>
-    <p>We use your email just to confirm your affiliation with your university and to tell you when the letter is ready. Your first name and last initial are on the public list only if you choose to show them. Poll answers are shown as totals. Your answer to “What concerns you most about AI?” isn't displayed publicly. The <a href="#privacy">privacy notice</a> has the details.</p>
-    <h2>Press</h2>
-    <p>Write to <a href="mailto:media@ourfuturesfirst.org">media@ourfuturesfirst.org</a>.</p>
+    <p>We use your email just to confirm your affiliation with your university and to tell you when the letter is ready. Your first name and last initial are on the public list only if you choose to show them. Poll answers are shown as totals. Your answer to “What concerns you most about AI?” isn't displayed publicly. The <a href="#privacy">privacy page</a> has the details.</p>
   </div>
 </div>
 
 <div id="viewPrivacy" hidden>
   <div class="wrap about">
-    <h1>Privacy notice</h1>
+    <h1>Privacy</h1>
     <p class="lab" style="margin-bottom:14px">Last updated November 24, 2026.</p>
-    <p>Our Futures First is run by students. This notice covers this site and the sign-up form on it.</p>
+    <h2>Who we are</h2>
+    <p>Our Futures First is a project run by students at U.S. universities. It is collecting interest in an open letter on AI. You can reach us at <a href="mailto:ourfuturesfirst@gmail.com">ourfuturesfirst@gmail.com</a>.</p>
     <h2>What we collect</h2>
-    <p>What you type into the form: your name, your university email, and your answers to the questions. If you choose to give them, also your major or field, your role, year or title, your phone number, and how you offered to help.</p>
-    <p>If you arrived through someone's share link, we record that their link brought you.</p>
-    <p>We don't use advertising or analytics trackers. The site keeps a key in your browser's storage so that you can come back and edit your answers on the same device.</p>
+    <p>What you enter in the form: your name, your university email, your role and year or title, your major or field, a social media handle if you choose to give one, a phone number if you give one, your answers to the poll questions, your written answer, and whether you offered to help.</p>
+    <p>We also record whether and when you confirmed your email, and, if you arrived through someone's share link, that their link brought you. The services that host this website and its database receive your IP address and basic browser details when your browser loads the page. A code saved in your browser lets you reopen your own entry from the same device. We do not use advertising or analytics trackers.</p>
     <h2>What is public</h2>
-    <p>The number of people signed up, in total and at each university. Poll answers, roles, years and majors, shown as totals only.</p>
-    <p>If you choose to show your name, the list shows your first name and last initial with your university. If you also choose to show them, it shows your year or title and your major. Campus organizers are always listed and marked as organizers.</p>
-    <p>Your email, your phone number and your written answer are never shown publicly. Anything that has been public may have been copied by others, and we can't delete their copies.</p>
+    <p>If you choose to show your name, your first name and last initial appear on the public list with your university. If you also choose to show them, so do your year or title and your major. If you volunteered as a campus organizer, the list says so. Answers to the poll questions, roles, years and majors are shown only as totals, and each university is shown with its number of sign-ups.</p>
+    <p>Your email, phone number, social media handle and written answer are never shown. Anything that has been public may have been copied by others, and we can't delete their copies.</p>
     <h2>How we use it</h2>
-    <p>Your email confirms that you are at a U.S. university, and we use it to tell you when the letter is ready to sign. Your phone number is used for a text when the letter is out, only if you agreed to be texted. If you volunteered as a campus organizer, we share your name with other organizers at your university and contact you by phone or text about next steps.</p>
-    <p>Your answers help us decide what goes in the letter. We don't sell your information or use it for advertising.</p>
-    <h2>Who else handles it</h2>
-    <p>The companies that run the site for us: Supabase stores the sign-ups and sends the confirmation email, Cloudflare checks that a sign-up isn't automated, and Google and jsDelivr serve fonts and scripts. They see technical details such as your IP address. We may also share information if the law requires it.</p>
+    <p>To confirm that you belong to a U.S. university, to contact you about the letter, to count sign-ups and show totals, and to decide what goes in the letter. If you volunteer as a campus organizer, your name is shared with the other campus organizers at your university.</p>
+    <h2 id="texts">Text messages</h2>
+    <p>A phone number is optional unless you volunteer as a campus organizer. We text you only if you give a number and tick the box agreeing to be texted by Our Futures First, or if you volunteered as a campus organizer. Texts are about the letter and organizing on your campus. Message frequency varies. Message and data rates may apply. Reply STOP to stop at any time, or HELP for help.</p>
+    <p>We do not sell phone numbers or text-message consent, and we do not share them with anyone for their own marketing.</p>
+    <h2>Who we share it with</h2>
+    <p>Only the services that run the site for us: the company that hosts this website, Supabase for the database and sign-in emails, an email delivery service, and Cloudflare, which checks that a sign-up isn't automated. Google Fonts and jsDelivr deliver fonts and code to your browser and so see your IP address. We do not sell personal information. We may disclose information if the law requires it.</p>
     <h2>How long we keep it</h2>
-    <p>Until the letter project ends, or until you remove yourself. A sign-up that is never confirmed is taken off the main list after 7 days.</p>
+    <p>Until the letter project ends, or until you remove yourself or ask us to delete it. An entry whose email is never confirmed is not counted or shown, and is taken off the main list after 7 days.</p>
     <h2>Your choices</h2>
-    <p>You can edit your answers or remove yourself at any time with “Edit my answers” and “Remove me” on the form, from the device you signed up on. Removing yourself deletes your sign-up. To be removed from another device, or to ask what we hold about you, write to us from your university email.</p>
-    <p>This site is for people at universities and isn't meant for anyone under 16.</p>
-    <h2>Changes and contact</h2>
-    <p>If this notice changes, the date at the top changes with it. Questions and requests go to <a href="mailto:contact@ourfuturesfirst.org">contact@ourfuturesfirst.org</a>.</p>
+    <p>You can change your entry or remove yourself with “Edit my answers” and “Remove me” on the form, from the browser you signed up in. Removing yourself deletes your sign-up. To see, correct or delete what we hold about you from anywhere else, email <a href="mailto:ourfuturesfirst@gmail.com">ourfuturesfirst@gmail.com</a>.</p>
+    <h2>Do Not Track</h2>
+    <p>We do not track you across other websites, so this site behaves the same way whatever your browser's Do Not Track setting is.</p>
+    <h2>Children</h2>
+    <p>This site is for people at universities. It is not directed to children under 13.</p>
+    <h2>Changes</h2>
+    <p>If this page changes, we will update the date at the top.</p>
   </div>
 </div>
 
 <div id="viewDraft" hidden>
   <div class="wrap about">
-    <h1>The letter, so far</h1>
+    <h1>The letter so far</h1>
     <p class="lab" style="margin-bottom:14px">Working draft. Last updated November 24, 2026.</p>
     <blockquote class="draft">We study, teach and do research at American universities, and we ask our government to slow the race toward AI smarter than humans until it can be shown to be safe and under human control.</blockquote>
     <p>This is where the letter stands today. It'll change as answers come in from the form.</p>
@@ -491,7 +505,13 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
 </div>
 </main>
 
-<footer><div class="wrap"><p class="lab">Our Futures First is a working title. Run by students at U.S. universities. <a href="#privacy">Privacy</a></p></div></footer>
+<footer><div class="wrap foot lab">
+  <a href="https://www.instagram.com/ourfuturesfirst/" target="_blank" rel="noopener" aria-label="Our Futures First on Instagram"><img src="assets/instagram.svg" alt="Instagram" width="14" height="14" onerror="this.replaceWith(document.createTextNode(this.alt))"></a>
+  <a href="https://x.com/ourfuturesfirst" target="_blank" rel="noopener" aria-label="Our Futures First on X"><img src="assets/x.svg" alt="X" width="14" height="14" onerror="this.replaceWith(document.createTextNode(this.alt))"></a>
+  <a href="mailto:ourfuturesfirst@gmail.com">ourfuturesfirst@gmail.com</a>
+  <a href="#privacy">Privacy</a>
+  <span class="by">Run by students at U.S. universities.</span>
+</div></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
@@ -961,7 +981,7 @@ $("shInsta").addEventListener("click",function(){copy("Link copied. Paste it int
 
 /* ---------- backend ---------- */
 var FAIL={not_university:NOTUS,mail:"Your answers are saved, but we couldn't send the email. Wait a minute and try again.",save:"That didn't save. Check your connection and try again."};
-function formRow(){return {name:$("inName").value.trim(),show_name:S.show,show_info:S.info,major:$("inMajor").value.trim(),role:S.role,year:S.year,title:S.role==="faculty"||S.role==="staff"?$("inTitle").value.trim():"",
+function formRow(){return {name:$("inName").value.trim(),show_name:S.show,show_info:S.info,major:$("inMajor").value.trim(),social:$("inSocial").value.trim(),role:S.role,year:S.year,title:S.role==="faculty"||S.role==="staff"?$("inTitle").value.trim():"",
   answers:Q.reduce(function(a,q,k){if(asked(k)&&S.answers[q.id])a[q.id]=S.answers[q.id];return a;},{}),concern:$("inConcern").value.trim(),spread:spreadList(),ref_by:REF};}
 /* first submit: stores the entry, then emails the confirmation link. Returns the university and an edit token. */
 function save(row){
@@ -1007,7 +1027,7 @@ $("form").addEventListener("submit",function(e){
 /* fill the form from a stored entry: a returning visitor, or someone arriving from the emailed link */
 function applyEntry(c){
   S.email=c.email;S.verified=!!c.verified;S.token=c.token;S.ref=c.ref||"";S.invited=c.invited||0;S.submitted=true;
-  $("inEmail").value=c.email;$("inName").value=c.name||"";$("inMajor").value=c.major||"";$("inPhone2").value=c.phone||"";
+  $("inEmail").value=c.email;$("inName").value=c.name||"";$("inMajor").value=c.major||"";$("inSocial").value=c.social||"";$("inPhone2").value=c.phone||"";
   $("inConcern").value=c.concern||"";S.sms=!!c.sms_ok;S.role=c.role||"";S.year=c.year||"";paintChips();
   S.show=c.show_name!==false;S.info=c.show_info!==false;$("inTitle").value=c.title||"";
   Q.forEach(function(q){var a=c.answers&&c.answers[q.id];if(a&&optBtns[q.id][a])pick(q,a);});
@@ -1018,15 +1038,18 @@ function applyEntry(c){
 }
 
 /* ---------- tabs ---------- */
-var ANCH={"#organizers":1,"#why-wait":1,"#why-draft":1};
+var ANCH={"#organizers":1,"#why-wait":1,"#why-draft":1,"#contact":1};
+var CONTACT=[["Instagram","https://www.instagram.com/ourfuturesfirst/","@ourfuturesfirst"],["Email","mailto:ourfuturesfirst@gmail.com","ourfuturesfirst@gmail.com"],["X","https://x.com/ourfuturesfirst","@ourfuturesfirst"]];
+CONTACT.forEach(function(c){var li=mk("li"),a=mk("a",null,c[2]);li.appendChild(mk("span","lab",c[0]));
+  a.href=c[1];if(c[1].indexOf("mailto:")!==0){a.target="_blank";a.rel="noopener";}li.appendChild(a);$("contactList").appendChild(li);});
 function route(){
-  var h=location.hash,v=h==="#draft"?"viewDraft":h==="#privacy"?"viewPrivacy":(h==="#about"||ANCH[h])?"viewAbout":"viewInterest",el=$(v),about=v!=="viewInterest";
+  var h=location.hash,v=h==="#draft"?"viewDraft":(h==="#privacy"||h==="#texts")?"viewPrivacy":(h==="#about"||ANCH[h])?"viewAbout":"viewInterest",el=$(v),about=v!=="viewInterest";
   ["viewInterest","viewAbout","viewDraft","viewPrivacy"].forEach(function(id){$(id).hidden=id!==v;});
   el.classList.remove("fade");void el.offsetWidth;el.classList.add("fade");
-  about?$("tabAbout").setAttribute("aria-current","page"):$("tabAbout").removeAttribute("aria-current");
-  about?$("tabInterest").removeAttribute("aria-current"):$("tabInterest").setAttribute("aria-current","page");
+  [["tabInterest","viewInterest"],["tabDraft","viewDraft"],["tabAbout","viewAbout"]].forEach(function(t){
+    if(t[1]===v)$(t[0]).setAttribute("aria-current","page");else $(t[0]).removeAttribute("aria-current");});
 }
-window.addEventListener("hashchange",function(){route();var t=ANCH[location.hash]&&$(location.hash.slice(1));if(t)t.scrollIntoView();else window.scrollTo(0,0);});
+window.addEventListener("hashchange",function(){route();var t=(ANCH[location.hash]||location.hash==="#texts")&&$(location.hash.slice(1));if(t)t.scrollIntoView();else window.scrollTo(0,0);});
 /* ---------- boot ---------- */
 function renderAll(){$("previewNote").hidden=S.live;renderWidget();updateResults();renderAfter();}
 function loadBoard(){return sb.rpc("board").then(function(r){if(!r.error&&r.data){S.remote=r.data;renderAll();}});}
