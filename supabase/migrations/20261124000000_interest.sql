@@ -104,7 +104,8 @@ begin
           left(coalesce(p->>'phone', ''), 30), norm_major(u->>'dom', p->>'major'),
           left(coalesce(p->>'role', ''), 30), left(coalesce(p->>'year', ''), 30), u->>'name', u->>'dom', p->'answers',
           left(coalesce(p->>'concern', ''), 1500), left(coalesce(p->>'letter', ''), 1500),
-          array(select left(x, 20) from jsonb_array_elements_text(coalesce(p->'spread', '[]'::jsonb)) x limit 10))
+          array(select left(x, 20) from jsonb_array_elements_text(coalesce(p->'spread', '[]'::jsonb)) x
+                where x <> 'lead' or trim(coalesce(p->>'phone', '')) <> '' limit 10))
   on conflict (email) do update set
     name = excluded.name, name_hidden = excluded.name_hidden, show_name = excluded.show_name, show_info = excluded.show_info, title = excluded.title, phone = excluded.phone, major = excluded.major, role = excluded.role, year = excluded.year, uni = excluded.uni,
     dom = excluded.dom, answers = excluded.answers, concern = excluded.concern, letter = excluded.letter,
@@ -144,6 +145,10 @@ begin
     spread    = case when p ? 'spread' then array(select left(x, 20) from jsonb_array_elements_text(p->'spread') x limit 10) else spread end
   where edit_token = p_token returning * into r;
   if not found then raise exception 'not_found'; end if;
+  -- nobody is a campus organizer without a phone number
+  if 'lead' = any(r.spread) and trim(r.phone) = '' then
+    update signups set spread = array_remove(spread, 'lead') where edit_token = p_token returning * into r;
+  end if;
   -- campus organizers are always listed by name
   if 'lead' = any(r.spread) and not r.show_name then
     update signups set show_name = true where edit_token = p_token returning * into r;

@@ -250,6 +250,10 @@ textarea{display:block;min-height:150px;resize:none}
 .rcard .only{margin:0 0 16px;font-size:.8125rem;color:var(--faint)}
 .signed .acts{display:flex;gap:16px}
 #growth{margin-top:8px;color:var(--ink)}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
+.stats div{border:1px solid var(--line);border-radius:var(--r);padding:10px 12px}
+.stats b{display:block;font-family:var(--head);font-weight:var(--hw);font-size:1.7rem;line-height:1.1}
+.stats span{display:block;margin-top:4px;font-size:.8125rem;color:var(--mute)}
 footer .lab a{color:inherit}
 .demo h3{font-family:var(--sans);font-weight:600;font-size:1.0625rem;letter-spacing:0;margin:26px 0 14px}
 .demo h3:first-child{margin-top:0}
@@ -387,7 +391,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
             <button class="btn ghost" type="button" id="shInsta"><svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg><span>Instagram</span></button>
           </div>
           <p class="hint" id="copyMsg" role="status"></p>
-          <p class="hint" id="invited" hidden></p>
+          <div class="stats" id="stats" hidden></div>
         </div>
         <p class="signed" id="afterMine"><span id="mineText"></span><span class="acts"><button type="button" class="link" id="btnEdit">Edit my answers</button><button type="button" class="link" id="btnRemove">Remove me</button></span></p>
         <p class="signed" id="removeRow" hidden><span>Remove your sign-up? This deletes your answers and can't be undone.</span><span class="acts"><button type="button" class="link" id="btnRemoveYes">Yes, remove me</button><button type="button" class="link" id="btnRemoveNo">Keep it</button></span></p>
@@ -439,7 +443,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
     <p>It was started by students at MIT. It's run entirely by students.</p>
     <h2 id="organizers">What is a campus organizer?</h2>
     <p>Someone who has offered to help with the letter at their university. A university can have several.</p>
-    <p>If you volunteer, we connect you with other groups of campus organizers at your university, which means sharing your name with them, and contact you by phone or text about next steps. Organizers are listed by name on the public list and marked as organizers.</p>
+    <p>If you volunteer, we connect you with other groups of campus organizers at your university, which means sharing your name with them, and contact you by phone or text about next steps. A phone number is required. Organizers are listed by name on the public list and marked as organizers.</p>
     <h2>What happens to my information?</h2>
     <p>We use your email just to confirm your affiliation with your university and to tell you when the letter is ready. Your first name and last initial are on the public list only if you choose to show them. Poll answers are shown as totals. Your answer to “What concerns you most about AI?” isn't displayed publicly. The <a href="#privacy">privacy notice</a> has the details.</p>
     <h2>Press</h2>
@@ -587,7 +591,9 @@ function buildForm(){
     b.appendChild(mk("span","key"));b.appendChild(mk("span",null,s.t));b.appendChild(mk("span","saved","Saved"));
     function set(v){S.spread[s.id]=v;b.setAttribute("aria-pressed",String(v));}
     b.addEventListener("click",function(){var was=!!S.spread[s.id];set(!was);renderLead();
-      patch({spread:spreadList()}).then(function(){flash(b);},function(){set(was);renderLead();$("copyMsg").textContent=FAIL.save;});});
+      /* organizing needs a phone number: until there is one, the choice waits and is not saved */
+      var wait=s.id==="lead"&&!was&&!leadPhone();if(wait)$("inPhone2").focus();
+      patch({spread:spreadList()}).then(function(){if(!wait)flash(b);},function(){set(was);renderLead();$("copyMsg").textContent=FAIL.save;});});
     sp.appendChild(b);spreadBtns[s.id]=b;});
   renderNav();
 }
@@ -606,18 +612,19 @@ function asked(k){return k>=Q.length||!Q[k].stu||ROLES.indexOf(S.role)<2;}
 function step(i,dir){do{i+=dir;}while(i>=0&&i<slides.length&&!asked(i));return i;}
 function updateBtn(){var b=$("btnSubmit"),was=b.disabled;b.disabled=S.saving||!ready();if(was&&!b.disabled&&!S.saving&&!S.submitted)flash(b);}
 /* volunteering as a campus organizer asks for a phone number and consent to texts */
+function leadPhone(){var v=$("inPhone2").value.trim();return !!v&&phoneOk(v);}
 function renderLead(){
   paintShow();
   var on=!!S.spread.lead,phone=$("inPhone2").value.trim();
   $("leadPop").classList.toggle("open",on);$("phoneReq").hidden=!on;
   $("pkSms").setAttribute("aria-pressed",String(S.sms&&!!phone));
-  $("leadHint").textContent=on&&!phone?"Add your phone number above so we can reach you.":"";
+  $("leadHint").textContent=on&&!leadPhone()?"Add your phone number above. Organizers need one, and you're listed as an organizer once we have it.":"";
 }
 /* one phone number: optional for a text when the letter is out, needed for campus organizers */
 function savePhone(el){var phone=$("inPhone2").value.trim(),h=$("phoneHint");
   if(!phoneOk(phone)){h.textContent="That phone number looks incomplete.";return;}
   if(!phone)S.sms=false;h.textContent="";
-  patch({phone:phone,sms_ok:S.sms}).then(function(){flash(el);renderLead();},function(){h.textContent=FAIL.save;});}
+  patch({phone:phone,sms_ok:S.sms,spread:spreadList()}).then(function(){flash(el);if(S.spread.lead&&phone)flash(spreadBtns.lead);renderLead();},function(){h.textContent=FAIL.save;});}
 $("inPhone2").addEventListener("input",function(){this.value=fmtPhone(this.value);$("phoneHint").textContent="";});
 $("inPhone2").addEventListener("change",function(){savePhone(this);});
 $("pkSms").addEventListener("click",function(){var phone=$("inPhone2").value.trim();
@@ -902,7 +909,9 @@ function renderAfter(){
   $("askText").textContent="Help spread this to people at "+(u?u.name:"your university")+" and at other universities. It only reaches new campuses when people pass it on, and it's the most helpful thing you can do for us.";
   var g=null;board().unis.forEach(function(x){if(u&&x.key===u.dom)g=x;});
   $("growth").hidden=!g;if(g)$("growth").textContent=g.day>0?u.name+" has gained "+num(g.day)+(g.day===1?" sign-up":" sign-ups")+" in the past 24 hours.":num(g.n)+(g.n===1?" person":" people")+" from "+u.name+(g.n===1?" has":" have")+" signed up so far.";
-  $("invited").hidden=!S.invited;$("invited").textContent=num(S.invited||0)+(S.invited===1?" person has":" people have")+" signed up from your link.";
+  var st=$("stats"),rank=0;board().unis.forEach(function(x,k){if(g&&x.key===g.key)rank=k+1;});clear(st);st.hidden=!g||!S.verified;
+  if(g)[[num(g.n),"signed up at "+u.name],["#"+rank,"of "+num(board().unis.length)+" universities"],[num(S.invited||0),"signed up from your link"]].forEach(function(p){
+    var d=mk("div");d.appendChild(mk("b",null,p[0]));d.appendChild(mk("span",null,p[1]));st.appendChild(d);});
   $("removeRow").hidden=true;
   $("shSms").href="sms:?&body="+e(msg+url);
   $("shMail").href="mailto:?subject="+e("Students are writing an open letter on AI")+"&body="+e(msg+url);
@@ -961,6 +970,7 @@ function save(row){
     return Promise.resolve({dom:u.dom,name:u.name,token:"local"});}
   return sb.rpc("submit_interest",{p:row}).then(function(r){
     if(r.error)throw (/not_university/.test(r.error.message)?"not_university":"save");
+    if(CFG.dev)return sb.rpc("dev_confirm",{p_token:r.data.token}).then(function(m){if(m.error)throw "save";r.data.entry=m.data;return r.data;});
     return sendLink(row.email).then(function(o){if(o.error)throw "mail";return r.data;});
   });
 }
@@ -989,9 +999,9 @@ $("form").addEventListener("submit",function(e){
   }
   row.email=email;
   save(row).then(function(u){
-    S.mine={dom:u.dom,name:u.name};S.email=email;S.token=u.token||null;S.ref=u.ref||"";S.submitted=true;S.panel="unis";idle();
+    S.mine={dom:u.dom,name:u.name};S.email=email;S.token=u.token||null;S.ref=u.ref||"";S.submitted=true;if(u.entry){S.verified=true;S.invited=u.entry.invited||0;}S.panel="unis";idle();
     try{if(S.live&&S.token)localStorage.setItem("off_token",S.token);}catch(x){}
-    renderAll();toTop();
+    renderAll();toTop();if(S.live)loadBoard();
   },function(x){idle();fail(FAIL[x]||FAIL.save,x==="not_university"?$("inEmail"):null);});
 });
 /* fill the form from a stored entry: a returning visitor, or someone arriving from the emailed link */
