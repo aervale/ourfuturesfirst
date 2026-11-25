@@ -20,7 +20,6 @@ create table public.signups (
   phone       text not null default '',
   sms_ok      boolean not null default false,
   major       text not null default '',
-  social      text not null default '',           -- optional social media handle; never shown publicly
   role        text not null default '',
   year        text not null default '',
   title       text not null default '',           -- faculty and staff
@@ -76,16 +75,33 @@ create function public.name_ok(p text) returns boolean language sql immutable as
      and p !~* '\m(fuck\w*|motherfuck\w*|shit\w*|bullshit|bitch\w*|cunt\w*|ass(hole|hat|wipe)s?|bastard|whore|slut|pussy|penis|vagina|dildo|cock(s|sucker\w*)?|porn\w*|rape[sd]?|rapist|nazi\w*|hitler|nigg(er|a)\w*|fag(got)?s?|retard\w*|kike|spic|chink|tranny|pedo\w*)\M';
 $$;
 
+-- Friends' email addresses a confirmed person asks us to invite, each with that person's share link.
+-- At most 20 per person. Rows wait here for the mail sender; sent_at is set when one goes out.
+create table public.invites (
+  id         uuid primary key default gen_random_uuid(),
+  signup_id  uuid not null references public.signups(id) on delete cascade,
+  email      citext not null,
+  created_at timestamptz not null default now(),
+  sent_at    timestamptz,
+  unique (signup_id, email)
+);
+alter table public.invites enable row level security;
+
 -- A person's own entry, as the page sees it. Internal helper.
 create function public.entry_json(s public.signups) returns jsonb language sql stable as $$
   select jsonb_build_object('email', s.email, 'uni', s.uni, 'dom', s.dom, 'verified', s.verified_at is not null,
-    'token', s.edit_token, 'name', s.name, 'show_name', s.show_name, 'major', s.major, 'social', s.social, 'role', s.role, 'year', s.year, 'title', s.title, 'show_info', s.show_info, 'phone', s.phone, 'sms_ok', s.sms_ok,
+    'token', s.edit_token, 'name', s.name, 'show_name', s.show_name, 'major', s.major, 'role', s.role, 'year', s.year, 'title', s.title, 'show_info', s.show_info, 'phone', s.phone, 'sms_ok', s.sms_ok,
     'answers', s.answers, 'concern', s.concern, 'letter', s.letter, 'spread', to_jsonb(s.spread), 'ref', s.ref,
     -- confirmed people who joined straight from this person's share link, and everyone further down the chain
     'invited', (select count(*) from signups x where x.ref_by = s.ref and x.verified_at is not null),
     'downstream', (with recursive d as (select x.ref, x.verified_at from signups x where x.ref_by = s.ref
                      union select x.ref, x.verified_at from signups x join d on x.ref_by = d.ref)
-                   select count(*) from d where verified_at is not null));
+                   select count(*) from d where verified_at is not null),
+    -- the same chain, counted per university, for the person's own view of the universities list
+    'chain', (with recursive d as (select x.ref, x.verified_at, x.dom from signups x where x.ref_by = s.ref
+                union select x.ref, x.verified_at, x.dom from signups x join d on x.ref_by = d.ref)
+              select coalesce(jsonb_object_agg(dom, n), '{}'::jsonb) from (select dom, count(*) n from d where verified_at is not null group by dom) t),
+    'invites', (select count(*) from invites i where i.signup_id = s.id));
 $$;
 
 -- Store a submission as unverified. Resubmitting before verifying replaces it and restarts the 48 hours.
@@ -103,8 +119,8 @@ begin
     raise exception 'bad_answers';
   end if;
   perform sweep_unconfirmed();
-  insert into signups (social, ref_by, email, name, name_hidden, show_name, show_info, title, phone, major, role, year, uni, dom, answers, concern, letter, spread)
-  values (left(trim(coalesce(p->>'social', '')), 120), coalesce((select ref from signups where ref = p->>'ref_by' and email <> e), ''), e, left(coalesce(p->>'name', ''), 120), not name_ok(left(coalesce(p->>'name', ''), 120)), coalesce((p->>'show_name')::boolean, true),
+  insert into signups (ref_by, email, name, name_hidden, show_name, show_info, title, phone, major, role, year, uni, dom, answers, concern, letter, spread)
+  values (coalesce((select ref from signups where ref = p->>'ref_by' and email <> e), ''), e, left(coalesce(p->>'name', ''), 120), not name_ok(left(coalesce(p->>'name', ''), 120)), coalesce((p->>'show_name')::boolean, true),
           coalesce((p->>'show_info')::boolean, true), left(trim(coalesce(p->>'title', '')), 80),
           left(coalesce(p->>'phone', ''), 30), norm_major(u->>'dom', p->>'major'),
           left(coalesce(p->>'role', ''), 30), left(coalesce(p->>'year', ''), 30), u->>'name', u->>'dom', p->'answers',
@@ -112,7 +128,7 @@ begin
           array(select left(x, 20) from jsonb_array_elements_text(coalesce(p->'spread', '[]'::jsonb)) x
                 where x <> 'lead' or trim(coalesce(p->>'phone', '')) <> '' limit 10))
   on conflict (email) do update set
-    social = excluded.social, name = excluded.name, name_hidden = excluded.name_hidden, show_name = excluded.show_name, show_info = excluded.show_info, title = excluded.title, phone = excluded.phone, major = excluded.major, role = excluded.role, year = excluded.year, uni = excluded.uni,
+    name = excluded.name, name_hidden = excluded.name_hidden, show_name = excluded.show_name, show_info = excluded.show_info, title = excluded.title, phone = excluded.phone, major = excluded.major, role = excluded.role, year = excluded.year, uni = excluded.uni,
     dom = excluded.dom, answers = excluded.answers, concern = excluded.concern, letter = excluded.letter,
     spread = excluded.spread, created_at = now(), edit_token = gen_random_uuid()
   where signups.verified_at is null
@@ -140,7 +156,6 @@ begin
     show_info = case when p ? 'show_info' then coalesce((p->>'show_info')::boolean, true) else show_info end,
     title     = case when p ? 'title' then left(trim(coalesce(p->>'title', '')), 80) else title end,
     major     = case when p ? 'major' then norm_major(dom, p->>'major') else major end,
-    social    = case when p ? 'social' then left(trim(coalesce(p->>'social', '')), 120) else social end,
     role      = case when p ? 'role' then left(coalesce(p->>'role', ''), 30) else role end,
     year      = case when p ? 'year' then left(coalesce(p->>'year', ''), 30) else year end,
     phone     = case when p ? 'phone' then left(coalesce(p->>'phone', ''), 30) else phone end,
@@ -160,6 +175,26 @@ begin
     update signups set show_name = true where edit_token = p_token returning * into r;
   end if;
   return entry_json(r);
+end $$;
+
+-- Queue invitations for friends. Only a confirmed sign-up can do this, to a limit of 20 addresses in all.
+-- Returns how many were added and how many the person has queued.
+create function public.send_invites(p_token uuid, p_emails text[]) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare r signups; have int; added int := 0; e text;
+begin
+  select * into r from signups where edit_token = p_token;
+  if not found then raise exception 'not_found'; end if;
+  if r.verified_at is null then raise exception 'not_confirmed'; end if;
+  select count(*) into have from invites where signup_id = r.id;
+  foreach e in array coalesce(p_emails, '{}') loop
+    e := lower(trim(e));
+    continue when e !~ '^[^\s@]+@[^\s@]+\.[^\s@]+$' or length(e) > 160 or e = r.email;
+    exit when have + added >= 20;
+    insert into invites (signup_id, email) values (r.id, e) on conflict do nothing;
+    if found then added := added + 1; end if;
+  end loop;
+  return jsonb_build_object('added', added, 'total', have + added, 'limit', 20);
 end $$;
 
 -- Remove me: deletes the sign-up and the sign-in record for its address.
@@ -210,9 +245,9 @@ end $$;
 
 revoke execute on function public.lookup_uni(text), public.submit_interest(jsonb),
   public.confirm_signup(), public.get_interest(uuid), public.update_interest(uuid, jsonb),
-  public.entry_json(public.signups), public.name_ok(text), public.sweep_unconfirmed(), public.delete_interest(uuid), public.is_admin(), public.admin_rows(),
+  public.entry_json(public.signups), public.name_ok(text), public.sweep_unconfirmed(), public.delete_interest(uuid), public.send_invites(uuid, text[]), public.is_admin(), public.admin_rows(),
   public.admin_set_hidden(uuid, boolean) from public, anon, authenticated;
 grant execute on function public.lookup_uni(text), public.submit_interest(jsonb),
-  public.get_interest(uuid), public.update_interest(uuid, jsonb), public.delete_interest(uuid) to anon, authenticated;
+  public.get_interest(uuid), public.update_interest(uuid, jsonb), public.delete_interest(uuid), public.send_invites(uuid, text[]) to anon, authenticated;
 grant execute on function public.confirm_signup(), public.is_admin(), public.admin_rows(),
   public.admin_set_hidden(uuid, boolean) to authenticated;

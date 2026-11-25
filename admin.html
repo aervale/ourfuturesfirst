@@ -375,13 +375,13 @@ function render(){
 
   var q=$("inSearch").value.trim().toLowerCase(),hit=rows.filter(function(r){return !q||(r.name+" "+r.email+" "+r.uni).toLowerCase().indexOf(q)>-1;});
   $("count").textContent=num(hit.length)+(hit.length>300?" matches, showing 300":" shown");
-  table($("tAll"),["Name","Public","University","Email","Role","Year","Major","Social","Confirmed","Signed up",""],hit.slice(0,300),function(r){
-    return [r.name,r.name_hidden?"Hidden":r.show_name?"Yes":"No",r.uni,r.email,r.role,r.year,r.major,r.social,r.verified_at?"Yes":"No",day(r.created_at),hideBtn(r)];});
+  table($("tAll"),["Name","Public","University","Email","Role","Year","Major","Confirmed","Signed up",""],hit.slice(0,300),function(r){
+    return [r.name,r.name_hidden?"Hidden":r.show_name?"Yes":"No",r.uni,r.email,r.role,r.year,r.major,r.verified_at?"Yes":"No",day(r.created_at),hideBtn(r)];});
 }
 
 /* cells that start with = + - @ are prefixed so a spreadsheet does not run them as formulas */
 function csv(){
-  var cols=["name","show_name","name_hidden","email","uni","dom","role","year","title","major","social","show_info","phone","spread","ref","ref_by","verified_at","created_at","concern"].concat(Object.keys(QS));
+  var cols=["name","show_name","name_hidden","email","uni","dom","role","year","title","major","show_info","phone","spread","ref","ref_by","verified_at","created_at","concern"].concat(Object.keys(QS));
   function cell(v){v=v==null?"":Array.isArray(v)?v.join(" "):String(v);if(/^[=+\-@\t\r]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"';}
   var out=[cols.join(",")].concat(ROWS.map(function(r){return cols.map(function(c){return cell(QS[c]?(r.answers||{})[c]:r[c]);}).join(",");}));
   var a=mk("a");a.href=URL.createObjectURL(new Blob([out.join("\n")],{type:"text/csv"}));a.download="sign-ups-"+new Date().toISOString().slice(0,10)+".csv";a.click();

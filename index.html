@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <title>Our Futures First</title>
-<meta name="description" content="Students are writing an open letter on AI and asking what belongs in it. Open to anyone at a U.S. university.">
+<meta name="description" content="Students are writing an open letter on regulating AI development and asking what belongs in it. Open to anyone at a U.S. university.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Our Futures First">
-<meta property="og:description" content="Students are writing an open letter on AI and asking what belongs in it. Open to anyone at a U.S. university.">
+<meta property="og:description" content="Students are writing an open letter on regulating AI development and asking what belongs in it. Open to anyone at a U.S. university.">
 <meta property="og:image" content="https://ourfuturesfirst.org/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="data:,">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 60 60%27%3E%3Cpath d=%27M30 0L37 23L60 30L37 37L30 60L23 37L0 30L23 23Z%27 fill=%27%23A22C29%27/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Space+Grotesk:wght@400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Inter:wght@400..700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#08080A; --card:#131317; --inset:rgba(244,242,237,.035); --ink:#F4F2ED; --mute:rgba(244,242,237,.62); --faint:rgba(244,242,237,.36);
-  --line:rgba(244,242,237,.13); --line2:rgba(244,242,237,.24); --hover:rgba(244,242,237,.05);
-  --accent:#FF5A36; --on-accent:#08080A; --tint:rgba(255,90,54,.13);
-  --head:"Barlow Condensed","Arial Narrow",sans-serif; --hw:700; --hx:800; --hs:100%; --hc:none; --sans:"Space Grotesk",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+  --bg:#0B0B0C; --card:#161617; --inset:rgba(214,213,201,.07); --ink:#D6D5C9; --mute:rgba(185,186,163,.92); --faint:rgba(214,213,201,.36);
+  --line:rgba(214,213,201,.13); --line2:rgba(214,213,201,.24); --hover:rgba(214,213,201,.12);
+  --accent:#A22C29; --on-accent:#D6D5C9; --tint:rgba(162,44,41,.28);
+  --head:"EB Garamond",Garamond,Georgia,"Times New Roman",serif; --hw:500; --hx:400; --hs:100%; --hc:none; --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
   --r:6px; --rc:10px; --ease:cubic-bezier(.2,.7,.2,1);
   color-scheme:dark;
 }
@@ -42,8 +42,8 @@ a{color:inherit}
 /* header */
 .top{position:sticky;top:0;z-index:5;background:rgba(8,8,10,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .top .wrap{display:flex;align-items:center;justify-content:space-between;height:50px}
-.brand{display:flex;align-items:center;gap:10px;font-family:var(--head);font-weight:var(--hw);font-stretch:var(--hs);font-size:.875rem;letter-spacing:.06em;text-transform:uppercase}
-.brand i{width:10px;height:10px;background:var(--accent)}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--sans);font-weight:600;font-size:.8125rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);white-space:nowrap}
+.brand .star{width:20px;height:20px;flex:none}
 .tabs{display:flex;gap:28px;align-self:stretch}
 .tabs a{display:flex;align-items:center;text-decoration:none;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .2s,border-color .2s}
 .tabs a:hover{color:var(--ink)}
@@ -57,7 +57,7 @@ a{color:inherit}
 .banner .sub{margin-top:14px;max-width:64ch;font-size:1rem;color:var(--mute)}
 .banner .sub b{color:var(--ink);font-weight:600}
 .tally{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--rc);padding:16px 18px 14px;box-shadow:inset 0 1px 0 rgba(244,242,237,.05)}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--rc);padding:16px 18px 14px;box-shadow:inset 0 1px 0 rgba(214,213,201,.05)}
 .stat b{display:block;font-family:var(--head);font-weight:var(--hx);font-stretch:var(--hs);font-size:clamp(2.2rem,3.6vw,3.1rem);line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
 .stat .lab{display:block;margin-top:6px}
 .ticker{position:relative;border-top:1px solid var(--line);overflow:hidden;white-space:nowrap;padding:8px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
@@ -70,10 +70,10 @@ a{color:inherit}
 .note b{color:var(--accent);font-weight:500}
 
 /* cards */
-.card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--rc);padding:20px;box-shadow:inset 0 1px 0 rgba(244,242,237,.05);transition:border-color .3s}
+.card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--rc);padding:20px;box-shadow:inset 0 1px 0 rgba(214,213,201,.05);transition:border-color .3s}
 .card:hover{border-color:var(--line2)}
 .card .lab{transition:color .3s}
-.card:hover .lab{color:rgba(244,242,237,.82)}
+.card:hover .lab{color:rgba(214,213,201,.82)}
 .card>*{position:relative}
 .cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start;padding-top:20px;padding-bottom:40px}
 .stack{display:grid;gap:14px}
@@ -107,9 +107,9 @@ a{color:inherit}
 .opt.pick[aria-pressed="true"]{border-color:var(--line2);background:var(--hover)}
 .slide .opt{position:relative;overflow:hidden}
 .slide .opt>*{position:relative}
-.slide .opt::before{content:"";position:absolute;inset:0 auto 0 0;width:0;background:rgba(244,242,237,.07);transition:width .7s var(--ease)}
+.slide .opt::before{content:"";position:absolute;inset:0 auto 0 0;width:0;background:rgba(214,213,201,.07);transition:width .7s var(--ease)}
 .slide.answered .opt::before{width:var(--p,0%)}
-.slide .opt[aria-pressed="true"]::before{background:rgba(255,90,54,.2)}
+.slide .opt[aria-pressed="true"]::before{background:rgba(162,44,41,.2)}
 .opct{margin-left:auto;font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;color:var(--mute);opacity:0;transition:opacity .4s}
 .slide.answered .opct{opacity:1}
 .opt[aria-pressed="true"] .opct{color:var(--accent);font-weight:700}
@@ -145,7 +145,7 @@ textarea{display:block;min-height:150px;resize:none}
 .saved{margin-left:auto;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);opacity:0}
 .flash{animation:ring .7s ease-out}
 .flash .saved{animation:saved 1.9s ease both}
-@keyframes ring{from{box-shadow:0 0 0 0 rgba(255,90,54,.55)}to{box-shadow:0 0 0 12px rgba(255,90,54,0)}}
+@keyframes ring{from{box-shadow:0 0 0 0 rgba(162,44,41,.55)}to{box-shadow:0 0 0 12px rgba(162,44,41,0)}}
 @keyframes saved{0%{opacity:0;transform:translateY(4px)}14%,72%{opacity:1;transform:none}100%{opacity:0}}
 /* what appears after Count me in */
 .pop{display:grid;grid-template-rows:0fr;transition:grid-template-rows .6s var(--ease),margin-top .6s var(--ease)}
@@ -173,11 +173,6 @@ textarea{display:block;min-height:150px;resize:none}
 #leadPop.open{margin-top:8px}
 .leadbox{display:grid;gap:8px;padding:14px;border:1px solid var(--line);border-radius:var(--r)}
 .leadbox .hint{margin:0}
-.notify{margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}
-.notify .muted{margin:0 0 12px}
-.notify .lab{display:block;margin-bottom:6px}
-.phonerow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
-.notify .hint{margin-top:6px;min-height:0}
 .leadbox a{color:var(--ink)}
 .err{color:var(--accent);margin:12px 0 0;min-height:1.5em;font-size:.9375rem}
 
@@ -186,7 +181,7 @@ textarea{display:block;min-height:150px;resize:none}
 .seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--inset);border:1px solid var(--line);border-radius:var(--r);padding:4px;margin-bottom:14px}
 .seg button{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);background:transparent;border:0;border-radius:4px;padding:9px;cursor:pointer;transition:color .2s,background .2s}
 .seg button:hover{color:var(--ink)}
-.seg button[aria-selected="true"]{color:var(--on-accent);background:var(--ink)}
+.seg button[aria-selected="true"]{color:var(--bg);background:var(--ink)}
 .list{list-style:none;margin:6px 0 0;padding:0;max-height:690px;overflow:auto;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
 .list li{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:7px 2px;border-bottom:1px solid var(--line)}
 .list .empty{display:block;padding:14px 2px}
@@ -195,7 +190,7 @@ textarea{display:block;min-height:150px;resize:none}
 .list .who1{min-width:0}
 .list .info{display:block;margin-top:2px;color:var(--mute);font-size:.8125rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* campus organizers: accent name, an explanation on hover or focus, and a link to About */
-.list .lead{position:relative;color:var(--accent);font-weight:600;cursor:pointer;text-decoration:underline dotted;text-underline-offset:4px;text-decoration-color:rgba(255,90,54,.5)}
+.list .lead{position:relative;color:var(--accent);font-weight:600;cursor:pointer;text-decoration:underline dotted;text-underline-offset:4px;text-decoration-color:rgba(162,44,41,.5)}
 .list .lead::after{content:attr(data-tip);position:absolute;left:0;top:calc(100% + 8px);z-index:3;width:max-content;max-width:260px;padding:8px 10px;background:#1B1B20;border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);color:var(--ink);font-size:.8125rem;font-weight:400;line-height:1.4;opacity:0;pointer-events:none;transition:opacity .15s}
 .list .lead:hover::after,.list .lead:focus::after{opacity:1}
 .list li:nth-last-child(-n+2) .lead::after{top:auto;bottom:calc(100% + 8px)}
@@ -209,9 +204,12 @@ textarea{display:block;min-height:150px;resize:none}
 .track{grid-column:1/3;height:4px;background:var(--line);border-radius:2px;overflow:hidden}
 .fill{height:100%;width:0;background:var(--ink);border-radius:2px;transition:width .7s var(--ease),background .3s}
 .bars li.me{background:var(--tint);box-shadow:inset 0 0 0 1px var(--accent)}
-.bars li.me .nm,.bars li.me .n{color:var(--accent);font-weight:700}
+.bars li.me .nm,.bars li.me .n{color:var(--ink);font-weight:700}
 .bars li.me .fill{background:var(--accent)}
 .bars li.gap{margin-top:8px}
+.bars .plus{position:relative;margin-left:8px;padding:1px 6px;border-radius:4px;background:var(--tint);color:var(--ink);font-family:var(--mono);font-size:12px;font-weight:600;cursor:help}
+.bars .plus::after{content:attr(data-tip);position:absolute;left:0;top:calc(100% + 8px);z-index:3;width:max-content;max-width:250px;padding:8px 10px;background:#1B1B20;border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);color:var(--ink);font-family:var(--sans);font-size:.8125rem;font-weight:400;line-height:1.4;white-space:normal;opacity:0;pointer-events:none;transition:opacity .15s}
+.bars .plus:hover::after{opacity:1}
 
 /* results */
 .results{border-top:1px solid var(--line);padding:32px 0 56px}
@@ -219,38 +217,54 @@ textarea{display:block;min-height:150px;resize:none}
 .results h2 .count{color:var(--mute);font-family:var(--sans);font-weight:500;letter-spacing:0}
 .rgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:20px;margin-top:28px}
 .rcard{grid-column:span 2}
-.rcard h3{font-family:var(--sans);font-weight:600;font-size:1.0625rem;line-height:1.35;letter-spacing:0;margin:0 0 18px}
-.rrow{margin-bottom:13px}
-.rrow:last-child{margin-bottom:0}
-.rrow .l{display:flex;justify-content:space-between;gap:12px;font-size:.9375rem;margin-bottom:6px;color:var(--mute);transition:color .3s}
-.rrow .pct{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
-.rrow .track{height:6px;border-radius:3px}
-.rrow .fill{border-radius:3px;background:rgba(244,242,237,.5)}
-.rrow.mine .l{color:var(--accent);font-weight:600}
-.rrow.mine .fill{background:var(--accent)}
+.rcard h3{font-family:var(--sans);font-weight:600;font-size:1.0625rem;line-height:1.35;letter-spacing:0;margin:0}
+.sbar{display:flex;gap:2px;height:34px;margin-top:10px}
+.sbar div{min-width:3px;display:grid;place-items:center;overflow:hidden;font-family:var(--head);font-size:.9375rem;font-weight:600;font-variant-numeric:lining-nums tabular-nums;transition:flex-grow .6s var(--ease),filter .2s;cursor:default}
+.sbar div:first-child{border-radius:3px 0 0 3px}.sbar div:last-child{border-radius:0 3px 3px 0}
+.sbar div:hover{filter:brightness(1.12)}
+.sbar.none{background:var(--inset);border-radius:3px}
+.legend{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:3px 12px}
+.legend li{display:flex;align-items:baseline;gap:5px;font-size:.6875rem;white-space:nowrap;color:var(--ink);transition:opacity .2s}
+.legend i{flex:none;width:7px;height:7px;align-self:center}
+.legend b{font-family:var(--head);font-weight:600;font-size:.8125rem;font-variant-numeric:lining-nums tabular-nums}
+.legend:has(li.hot) li:not(.hot){opacity:.4}
+.legend li.mine .nm{font-weight:600}
+.legend li.mine .nm::after{content:" (you)";font-weight:400;color:var(--mute)}
+.where{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:28px;align-items:start}
+.piebox{display:grid;grid-template-columns:118px minmax(0,1fr);gap:18px;align-items:center}
+.pie{display:block;width:118px;height:118px}
+.pie path,.pie circle{stroke:var(--card);stroke-width:.025;transition:opacity .2s}
+.pie:hover path:not(:hover){opacity:.55}
+.legend.col{display:grid;gap:5px;margin:0}
+.legend.col li{white-space:normal;font-size:.75rem}
+.legend.col b{margin-left:auto;padding-left:8px}
 .h2b{margin-top:56px}
-.where{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;margin-top:28px;align-items:start}
+
 .hero{position:relative}
 #usMap{display:block;width:100%;height:auto;overflow:visible;margin-bottom:14px}
-#mapLand .land{fill:rgba(244,242,237,.07);stroke:rgba(244,242,237,.3);stroke-width:1;stroke-linejoin:round;vector-effect:non-scaling-stroke}
-#mapLand .edge{fill:none;stroke:rgba(244,242,237,.11);stroke-width:1;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+#mapLand .land{fill:rgba(214,213,201,.07);stroke:rgba(214,213,201,.3);stroke-width:1;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+#mapLand .edge{fill:none;stroke:rgba(214,213,201,.11);stroke-width:1;stroke-linejoin:round;vector-effect:non-scaling-stroke}
 #mapDots g{cursor:pointer}
-#mapDots .area{fill:var(--accent);fill-opacity:.72;transition:fill-opacity .2s}
-#mapDots g:hover .area,#mapDots g.on .area{fill-opacity:1}
-#mapDots g.pop{animation:arrive .7s ease-out both}
+#mapDots .area{fill:var(--accent);fill-opacity:.78;transform-box:fill-box;transform-origin:center;transition:fill-opacity .2s,transform .25s var(--ease)}
+#mapDots g:hover .area,#mapDots g.on .area{fill-opacity:1;transform:scale(1.45)}
+#mapDots g.pop{animation:arrive .35s ease-out both}
 #mapDots .ping{fill:none;stroke:var(--accent);stroke-width:1.2;vector-effect:non-scaling-stroke;pointer-events:none;transform-box:fill-box;transform-origin:center;animation:ping 1.8s ease-out both}
 @keyframes arrive{from{opacity:0}to{opacity:1}}
 @keyframes ping{from{transform:scale(1);opacity:.7}to{transform:scale(3);opacity:0}}
 #mapTip{position:absolute;transform:translate(-50%,-100%);margin-top:-10px;padding:5px 9px;border:1px solid var(--line2);border-radius:var(--r);background:var(--bg);font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;pointer-events:none}
 #mapTip b{color:var(--accent);font-weight:500;margin-left:8px}
-.rcard.stu h3{margin-bottom:6px}
-.rcard .only{margin:0 0 16px;font-size:.8125rem;color:var(--faint)}
+.rcard .only{margin:6px 0 0;font-size:.8125rem;color:var(--faint)}
 .signed .acts{display:flex;gap:16px}
-#growth{margin-top:8px;color:var(--ink)}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:10px;margin-top:16px}
-.stats div{border:1px solid var(--line);border-radius:var(--r);padding:10px 12px}
-.stats b{display:block;font-family:var(--head);font-weight:var(--hw);font-size:1.7rem;line-height:1.1}
-.stats span{display:block;margin-top:4px;font-size:.8125rem;color:var(--mute)}
+.two.solo{grid-template-columns:minmax(0,1fr)}
+.leadbox .lab{display:block;margin-top:8px}
+.leadbox .lab:first-child{margin-top:0}
+.linkrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.linkrow .btn{padding:0 18px}
+#myLink{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.875rem;color:var(--ink)}
+.myline{margin:18px 0 0;color:var(--mute)}
+.myline b{font-family:var(--head);font-weight:600;font-size:1.25rem;color:var(--ink)}
+#spreadNote{margin-top:10px}
+#afterHelp .pop .leadbox{margin-top:8px}
 .foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:10px 22px}
 .foot .by{margin-left:auto}
 .foot a{color:inherit;text-decoration:none;transition:color .2s}
@@ -258,12 +272,15 @@ textarea{display:block;min-height:150px;resize:none}
 .foot img{display:block;width:14px;height:14px;filter:invert(1);opacity:.8}
 .foot a:hover img{opacity:1}
 .contact{list-style:none;margin:0;padding:0;display:grid;gap:10px}
-.contact li{display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px;align-items:baseline;font-size:1.0625rem}
-.demo h3{font-family:var(--sans);font-weight:600;font-size:1.0625rem;letter-spacing:0;margin:26px 0 14px}
-.demo h3:first-child{margin-top:0}
+.contact li{display:grid;grid-template-columns:120px minmax(0,1fr);gap:12px;align-items:center;font-size:1.0625rem}
+.contact .lab{display:grid;grid-template-columns:14px auto;justify-content:start;align-items:center;gap:9px}
+.contact img{display:block;width:14px;height:14px;filter:invert(1);opacity:.8}
+.contact a{text-decoration:none;transition:color .2s}
+.contact a:hover{color:var(--accent)}
+.demo h3{font-family:var(--sans);font-weight:600;font-size:1.0625rem;letter-spacing:0;margin:0 0 16px}
 
 /* next steps */
-.share{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.share{display:flex;flex-wrap:wrap;gap:8px}
 .share .btn{display:inline-flex;align-items:center;gap:9px;padding:12px 15px}
 .ic{flex:none;width:17px;height:17px}
 .ask{font-size:clamp(1.35rem,2.1vw,1.7rem);margin:28px 0 8px;padding-top:24px;border-top:1px solid var(--line)}
@@ -278,7 +295,7 @@ textarea{display:block;min-height:150px;resize:none}
 footer{border-top:1px solid var(--line);padding:22px 0 36px}
 
 @media (max-width:920px){
-  #usMap{max-width:560px;margin-left:auto;margin-right:auto}
+  #usMap{max-width:560px;margin-left:auto;margin-right:auto;margin-bottom:28px}
   /* one column that can shrink to the screen: a bare 1fr lets long content push it wider than the phone */
   .banner .wrap{grid-template-columns:minmax(0,1fr);gap:28px;padding-top:36px;padding-bottom:28px}
   .cols{grid-template-columns:minmax(0,1fr)}
@@ -286,7 +303,6 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
   .list{max-height:320px}
   .rgrid{grid-template-columns:minmax(0,1fr)}
   .where{grid-template-columns:minmax(0,1fr)}
-  .phonerow{grid-template-columns:minmax(0,1fr)}
   .rcard{grid-column:auto}
 }
 @media (max-width:520px){
@@ -295,7 +311,10 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
   .about{padding:44px 16px 64px}
   .card{padding:18px}
   .two{grid-template-columns:minmax(0,1fr);gap:0}
-  .tabs{gap:14px}
+  .tabs{gap:12px}
+  .tabs a{font-size:10px;letter-spacing:.08em}
+  .brand{font-size:.75rem;gap:7px;letter-spacing:.04em}
+  .brand .star{width:16px;height:16px}
   .banner .wrap{gap:22px;padding-top:28px;padding-bottom:22px}
   .banner .sub{font-size:.9375rem}
   .stat{padding:12px 14px 11px}
@@ -313,7 +332,8 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
   .foot .by{margin-left:0;flex-basis:100%;margin-top:6px}
 }
 @media (max-width:360px){
-  .brand{font-size:.78rem;gap:7px;letter-spacing:.03em}
+  .brand{font-size:.74rem;gap:6px;letter-spacing:.03em}
+  .brand .star{width:15px;height:15px}
   .tabs{gap:10px}
   .tabs a{letter-spacing:.06em}
 }
@@ -326,7 +346,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
 <body>
 
 <header class="top"><div class="wrap">
-  <span class="brand"><i></i>Our Futures First</span>
+  <span class="brand"><svg class="star" viewBox="0 0 60 60" aria-hidden="true"><path d="M30 0L37 23L60 30L37 37L30 60L23 37L0 30L23 23Z" fill="currentColor"/><circle cx="52" cy="8" r="3.5" fill="var(--ink)"/></svg>Our Futures First</span>
   <nav class="tabs" aria-label="Sections">
     <a href="#interest" id="tabInterest">Interest</a>
     <a href="#draft" id="tabDraft">Letter</a>
@@ -339,8 +359,8 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
   <section class="banner">
     <div class="wrap">
       <div>
-        <h1>Students are writing an open letter on AI. <em>Tell us what belongs in it.</em></h1>
-        <p class="sub">This is the interest form, open to <b>anyone at a U.S. university</b>: students, postdocs, faculty and staff. Answer a few questions, leave your university email, and we'll tell you when the letter is ready to sign.</p>
+        <h1>Students are writing an open letter on regulating AI development. <em>Help us decide what's in it.</em></h1>
+        <p class="sub">We are seriously concerned about the exponentially growing speed of AI development in frontier labs. Together, we can call on them to put our futures first. This is an interest form for those who feel the same, open to <b>anyone at a U.S. university</b>. Leave your university email and feedback for us, and we'll notify you when the letter is ready to sign.</p>
       </div>
       <div class="hero">
         <svg id="usMap" viewBox="0 0 975 610" role="img" aria-label="Map of the United States with a circle on each university that has sign-ups"><g id="mapLand"></g><g id="mapDots"></g></svg>
@@ -366,7 +386,6 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
           </div>
           <div>
             <div class="field combo"><label class="lab" for="inMajor">Major or field</label><input type="text" id="inMajor" maxlength="80" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="majorMenu" aria-autocomplete="list"><ul class="menu" id="majorMenu" role="listbox" hidden></ul></div>
-            <div class="field"><label class="lab" for="inSocial">Social media</label><input type="text" id="inSocial" maxlength="120" autocomplete="off" placeholder="Instagram, X or LinkedIn handle"></div>
           </div>
           <div class="two">
             <div class="field combo"><span class="lab" id="roleLab">I am <span class="req">*</span></span><button type="button" class="sel" id="selRole" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="roleLab selRole"></button><ul class="menu" role="listbox" aria-labelledby="roleLab" hidden></ul></div>
@@ -395,36 +414,33 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
         <p class="muted" id="afterSub"></p>
         <p class="resend" id="resendRow" hidden><button type="button" class="link" id="btnResend">Send it again</button><span class="hint" id="resendMsg" role="status"></span></p>
         <div id="afterHelp">
-          <div class="notify">
-            <p class="muted" id="notifyText"></p>
-            <label class="lab" for="inPhone2">Phone number <span class="req" id="phoneReq" hidden>*</span></label>
-            <div class="phonerow">
-              <input type="tel" id="inPhone2" autocomplete="tel" maxlength="30" placeholder="(555) 555-5555">
-              <button type="button" class="opt pick" id="pkSms" aria-pressed="false"><span class="key"></span><span>I agree to be texted</span><span class="saved">Saved</span></button>
-            </div>
-            <p class="hint bad" id="phoneHint" role="status"></p>
-          </div>
           <p class="lab sub3">Can you help it reach your campus?</p>
           <div class="opts" id="spread"></div>
           <div class="pop" id="leadPop"><div><div class="leadbox">
             <p class="hint">We'll connect you with other groups of campus organizers at your university and contact you about next steps. Your name will be shown on the public list, marked as a campus organizer. <a href="#organizers">Click for information on what that means.</a></p>
+            <label class="lab" for="inPhone2">Phone number <span class="req">*</span></label>
+            <input type="tel" id="inPhone2" autocomplete="tel" maxlength="30" placeholder="(555) 555-5555">
+            <p class="hint bad" id="phoneHint" role="status"></p>
             <p class="hint bad" id="leadHint" role="status"></p>
           </div></div></div>
-        </div>
-        <div>
-          <h3 class="ask">Know someone who should see this?</h3>
-          <p class="muted" id="askText"></p>
-          <p class="muted" id="growth" hidden></p>
-          <div class="share">
-            <button class="btn" type="button" id="btnCopy"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><span>Copy link</span></button>
-            <a class="btn ghost" id="shSms"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><span>Text</span></a>
-            <a class="btn ghost" id="shMail"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg><span>Email</span></a>
-            <a class="btn ghost" id="shWa" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg><span>WhatsApp</span></a>
-            <a class="btn ghost" id="shThreads" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z"/></svg><span>Threads</span></a>
-            <button class="btn ghost" type="button" id="shInsta"><svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg><span>Instagram</span></button>
-          </div>
-          <p class="hint" id="copyMsg" role="status"></p>
-          <div class="stats" id="stats" hidden></div>
+          <div class="pop" id="sharePop"><div><div class="leadbox">
+            <p class="lab">Your personal link</p>
+            <div class="linkrow"><input type="text" id="myLink" readonly aria-label="Your personal link"><button class="btn" type="button" id="btnCopy">Copy</button></div>
+            <p class="hint" id="askText"></p>
+            <p class="hint" id="copyMsg" role="status"></p>
+            <label class="lab" for="inInvites">Email it to friends</label>
+            <div class="linkrow"><input type="text" id="inInvites" autocomplete="off" placeholder="friend@university.edu, another@university.edu"><button class="btn ghost" type="button" id="btnInvite">Send</button></div>
+            <p class="hint" id="inviteMsg" role="status"></p>
+            <p class="lab">Or post it</p>
+            <div class="share">
+              <a class="btn ghost" id="shSms"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><span>Text</span></a>
+              <a class="btn ghost" id="shWa" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg><span>WhatsApp</span></a>
+              <a class="btn ghost" id="shThreads" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z"/></svg><span>Threads</span></a>
+              <button class="btn ghost" type="button" id="shInsta"><svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg><span>Instagram</span></button>
+            </div>
+          </div></div></div>
+          <p class="myline" id="mineLine" hidden></p>
+          <p class="muted" id="spreadNote"></p>
         </div>
         <p class="signed" id="afterMine"><span id="mineText"></span><span class="acts"><button type="button" class="link" id="btnEdit">Edit my answers</button><button type="button" class="link" id="btnRemove">Remove me</button></span></p>
         <p class="signed" id="removeRow" hidden><span>Remove your sign-up? This deletes your answers and can't be undone.</span><span class="acts"><button type="button" class="link" id="btnRemoveYes">Yes, remove me</button><button type="button" class="link" id="btnRemoveNo">Keep it</button></span></p>
@@ -451,8 +467,9 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
     <div class="rgrid" id="resGrid"></div>
     <h2 class="h2b">Who has signed up</h2>
     <div class="where">
-      <div class="card demo"><h3>Role and year</h3><div id="dRole"></div></div>
-      <div class="card demo"><h3>Most common majors and fields</h3><div id="dMajor"></div></div>
+      <div class="card demo"><h3>Role</h3><div class="piebox" id="dRole"></div></div>
+      <div class="card demo"><h3>Undergraduate year</h3><div class="piebox" id="dYear"></div></div>
+      <div class="card demo"><h3>Most common majors and fields</h3><div class="piebox" id="dMajor"></div></div>
     </div>
   </div></section>
 </div>
@@ -472,13 +489,13 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
     <p>Anyone with a U.S. university email: undergraduates, graduate students, postdocs, faculty and staff.</p>
     <h2>Who is behind this?</h2>
     <p>It was started by students at MIT. It's run entirely by students.</p>
-    <h2 id="contact">Contact</h2>
-    <ul class="contact" id="contactList"></ul>
     <h2 id="organizers">What is a campus organizer?</h2>
     <p>Someone who has offered to help with the letter at their university. A university can have several.</p>
     <p>If you volunteer, we connect you with other groups of campus organizers at your university, which means sharing your name with them, and contact you by phone or text about next steps. A phone number is required. Organizers are listed by name on the public list and marked as organizers.</p>
     <h2>What happens to my information?</h2>
     <p>We use your email just to confirm your affiliation with your university and to tell you when the letter is ready. Your first name and last initial are on the public list only if you choose to show them. Poll answers are shown as totals. Your answer to “What concerns you most about AI?” isn't displayed publicly. The <a href="#privacy">privacy page</a> has the details.</p>
+    <h2 id="contact">Contact</h2>
+    <ul class="contact" id="contactList"></ul>
   </div>
 </div>
 
@@ -489,16 +506,17 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
     <h2>Who we are</h2>
     <p>Our Futures First is a project run by students at U.S. universities. It is collecting interest in an open letter on AI. You can reach us at <a href="mailto:ourfuturesfirst@gmail.com">ourfuturesfirst@gmail.com</a>.</p>
     <h2>What we collect</h2>
-    <p>What you enter in the form: your name, your university email, your role and year or title, your major or field, a social media handle if you choose to give one, a phone number if you give one, your answers to the poll questions, your written answer, and whether you offered to help.</p>
+    <p>What you enter in the form: your name, your university email, your role and year or title, your major or field, a phone number if you volunteer as a campus organizer, your answers to the poll questions, your written answer, and whether you offered to help.</p>
     <p>We also record whether and when you confirmed your email, and, if you arrived through someone's share link, that their link brought you. The services that host this website and its database receive your IP address and basic browser details when your browser loads the page. A code saved in your browser lets you reopen your own entry from the same device. We do not use advertising or analytics trackers.</p>
     <h2>What is public</h2>
     <p>If you choose to show your name, your first name and last initial appear on the public list with your university. If you also choose to show them, so do your year or title and your major. If you volunteered as a campus organizer, the list says so. Answers to the poll questions, roles, years and majors are shown only as totals, and each university is shown with its number of sign-ups.</p>
-    <p>Your email, phone number, social media handle and written answer are never shown. Anything that has been public may have been copied by others, and we can't delete their copies.</p>
+    <p>Your email, phone number and written answer are never shown. Anything that has been public may have been copied by others, and we can't delete their copies.</p>
     <h2>How we use it</h2>
     <p>To confirm that you belong to a U.S. university, to contact you about the letter, to count sign-ups and show totals, and to decide what goes in the letter. If you volunteer as a campus organizer, your name is shared with the other campus organizers at your university.</p>
-    <h2 id="texts">Text messages</h2>
-    <p>A phone number is optional unless you volunteer as a campus organizer. We text you only if you give a number and tick the box agreeing to be texted by Our Futures First, or if you volunteered as a campus organizer. Texts are about the letter and organizing on your campus. Message frequency varies. Message and data rates may apply. Reply STOP to stop at any time, or HELP for help.</p>
-    <p>We do not sell phone numbers or text-message consent, and we do not share them with anyone for their own marketing.</p>
+    <h2 id="texts">Phone numbers</h2>
+    <p>We ask for a phone number only if you volunteer as a campus organizer. Organizers are contacted by phone or text, by the students running this project, about the letter and organizing on their campus. We do not sell phone numbers or share them with anyone for marketing.</p>
+    <h2>Inviting friends</h2>
+    <p>If you ask us to email friends, we keep the addresses you type, send each one a single invitation with your link, and use them for nothing else. You can invite up to 20 people.</p>
     <h2>Who we share it with</h2>
     <p>Only the services that run the site for us: the company that hosts this website, Supabase for the database and sign-in emails, an email delivery service, and Cloudflare, which checks that a sign-up isn't automated. Google Fonts and jsDelivr deliver fonts and code to your browser and so see your IP address. We do not sell personal information. We may disclose information if the law requires it.</p>
     <h2>How long we keep it</h2>
@@ -535,7 +553,6 @@ footer{border-top:1px solid var(--line);padding:22px 0 36px}
 </div></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 <script src="config.js"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 <script>
@@ -558,9 +575,8 @@ var Q=[
 ];
 /* stu: asked of undergraduates and graduate students only. Postdocs, faculty and staff skip these. */
 var SPREAD=[
- {id:"lists",t:"I'll email my dorm, class or club lists"},
- {id:"chats",t:"I'll share it with friends and group chats"},
- {id:"lead",t:"I'd help organize this at my university"}
+ {id:"lead",t:"I'd help organize this at my university",pop:"leadPop"},
+ {id:"chats",t:"I'll share it with my friends",pop:"sharePop"}
 ];
 var TEXTQ=[{id:"inConcern",q:"What concerns you most about AI?"}];
 
@@ -579,7 +595,7 @@ function uniFromEmail(email){
 var CFG=window.OFF_CONFIG||{};
 var sb=CFG.url&&window.supabase?window.supabase.createClient(CFG.url,CFG.key):null;
 var EMPTY={total:0,named:0,unis:[],people:[],answers:{}};
-var S={live:!!sb,rows:[],remote:EMPTY,answers:{},spread:{},show:true,info:true,mine:null,panel:"people",slide:0,email:"",verified:false,submitted:false,editing:false,token:null,sms:false,saving:false,role:"",year:""};
+var S={live:!!sb,rows:[],remote:EMPTY,answers:{},spread:{},show:true,info:true,mine:null,panel:"people",slide:0,email:"",verified:false,submitted:false,editing:false,token:null,chain:{},saving:false,role:"",year:""};
 
 /* sample rows so the page can be reviewed without a backend; never used when connected */
 function sample(){
@@ -635,7 +651,7 @@ function buildForm(){
       /* organizing needs a phone number: until there is one, the choice waits and is not saved */
       var wait=s.id==="lead"&&!was&&!leadPhone();if(wait)$("inPhone2").focus();
       patch({spread:spreadList()}).then(function(){if(!wait)flash(b);},function(){set(was);renderLead();$("copyMsg").textContent=FAIL.save;});});
-    sp.appendChild(b);spreadBtns[s.id]=b;});
+    sp.appendChild(b);sp.appendChild($(s.pop));spreadBtns[s.id]=b;});
   renderNav();
 }
 function renderNav(){
@@ -656,21 +672,17 @@ function updateBtn(){var b=$("btnSubmit"),was=b.disabled;b.disabled=S.saving||!r
 function leadPhone(){var v=$("inPhone2").value.trim();return !!v&&phoneOk(v);}
 function renderLead(){
   paintShow();
-  var on=!!S.spread.lead,phone=$("inPhone2").value.trim();
-  $("leadPop").classList.toggle("open",on);$("phoneReq").hidden=!on;
-  $("pkSms").setAttribute("aria-pressed",String(S.sms&&!!phone));
-  $("leadHint").textContent=on&&!leadPhone()?"Add your phone number above. Organizers need one, and you're listed as an organizer once we have it.":"";
+  var on=!!S.spread.lead;
+  $("leadPop").classList.toggle("open",on);$("sharePop").classList.toggle("open",!!S.spread.chats);
+  $("leadHint").textContent=on&&!leadPhone()?"Organizers need a phone number. You're listed as an organizer once we have it.":"";
 }
-/* one phone number: optional for a text when the letter is out, needed for campus organizers */
+/* a phone number is asked only of campus organizers */
 function savePhone(el){var phone=$("inPhone2").value.trim(),h=$("phoneHint");
   if(!phoneOk(phone)){h.textContent="That phone number looks incomplete.";return;}
-  if(!phone)S.sms=false;h.textContent="";
-  patch({phone:phone,sms_ok:S.sms,spread:spreadList()}).then(function(){flash(el);if(S.spread.lead&&phone)flash(spreadBtns.lead);renderLead();},function(){h.textContent=FAIL.save;});}
+  h.textContent="";
+  patch({phone:phone,spread:spreadList()}).then(function(){flash(el);if(S.spread.lead&&phone)flash(spreadBtns.lead);renderLead();},function(){h.textContent=FAIL.save;});}
 $("inPhone2").addEventListener("input",function(){this.value=fmtPhone(this.value);$("phoneHint").textContent="";});
 $("inPhone2").addEventListener("change",function(){savePhone(this);});
-$("pkSms").addEventListener("click",function(){var phone=$("inPhone2").value.trim();
-  if(!phone||!phoneOk(phone)){$("phoneHint").textContent=phone?"That phone number looks incomplete.":"Add your phone number first.";$("inPhone2").focus();return;}
-  S.sms=!S.sms;renderLead();savePhone(this);});
 function go(i){
   if(busy||i===S.slide||i<0||i>=slides.length)return;
   var st=$("stage"),cur=slides[S.slide],nx=slides[i],dir=i>S.slide?1:-1;
@@ -711,7 +723,7 @@ function dropdown(btn,items,get,set){
 }
 var paintRole=dropdown($("selRole"),ROLES,function(){return S.role;},function(v){S.role=v;if(v!==ROLES[0])S.year="";$("err").textContent="";paintChips();}),
     paintYear=dropdown($("selYear"),YEARS,function(){return S.year;},function(v){S.year=v;});
-function paintChips(){var fac=S.role==="faculty"||S.role==="staff";$("inTitle").placeholder=S.role==="staff"?"Research Administrator":"Professor of Physics";$("selYear").disabled=S.role!==ROLES[0];$("yearField").hidden=fac;$("titleField").hidden=!fac;
+function paintChips(){var fac=S.role==="faculty"||S.role==="staff";$("inTitle").placeholder=S.role==="staff"?"Research Administrator":"Professor of Physics";$("yearField").hidden=S.role!==ROLES[0];$("titleField").hidden=!fac;$("yearField").parentNode.classList.toggle("solo",S.role!==ROLES[0]&&!fac);
   paintRole();paintYear();paintQ();paintShow();}
 function paintQ(){if(!slides.length)return;if(!asked(S.slide))go(step(S.slide,1));renderNav();}
 paintChips();
@@ -819,8 +831,12 @@ function grow(f,w){if(CALM){f.style.width=w;return;}setTimeout(function(){f.styl
 /* clicking a university opens the people list filtered to it */
 function showPeopleOf(name){S.panel="people";$("inSearch").value=name;renderWidget();}
 function uniRow(g,me,top){
-  var li=mk("li",me?"me":null);li.appendChild(mk("span","nm",g.name));li.appendChild(mk("span","n",num(g.n)));
-  li.tabIndex=0;li.setAttribute("role","button");li.title="Show people from "+g.name;
+  var li=mk("li",me?"me":null),nm=mk("span","nm",g.name),down=S.submitted&&g.key?(S.chain[g.key]||0):0,plus=(me&&S.submitted?1:0)+down;li.appendChild(nm);li.appendChild(mk("span","n",num(g.n)));
+  if(plus){var b=mk("span","plus","+"+num(plus));
+    b.setAttribute("data-tip",(me?"You"+(down?", and "+num(down)+(down===1?" person":" people")+" here who signed up":" count here. Others who sign up")+" through your link, or through the links of people you brought in"+(down?".":", will add to this.")
+      :num(down)+(down===1?" person":" people")+" here signed up through your link, or through the links of people you brought in.")+" Share your link to grow it.");
+    nm.appendChild(b);}
+  li.tabIndex=0;li.setAttribute("role","button");li.title="Show people from "+g.name;lights(li,g.name);
   li.addEventListener("click",function(){showPeopleOf(g.name);});
   li.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();showPeopleOf(g.name);}});
   var tr=mk("div","track"),f=mk("div","fill");grow(f,(top?Math.max(g.n?2:0,Math.round(g.n/top*100)):0)+"%");tr.appendChild(f);li.appendChild(tr);return li;
@@ -829,11 +845,11 @@ var uniKey="",panelShown="",tickKey="";
 function renderTicker(B){
   var key=B.unis.map(function(x){return x.key+x.n;}).join(",");if(key===tickKey)return;tickKey=key;
   var row=$("tickerRow");clear(row);$("ticker").hidden=B.unis.length<4;
-  for(var k=0;k<2;k++)B.unis.slice(0,24).forEach(function(x){var s=mk("span",null,x.name);s.appendChild(mk("b",null,num(x.n)));row.appendChild(s);});
+  for(var k=0;k<2;k++)B.unis.slice(0,24).forEach(function(x){var s=mk("span",null,x.name);s.appendChild(mk("b",null,num(x.n)));lights(s,x.name);row.appendChild(s);});
 }
 function renderWidget(){
   var B=board();
-  tween($("cPeople"),B.total);tween($("cUnis"),B.unis.length);renderTicker(B);
+  tween($("cPeople"),B.total);renderTicker(B);
   var people=S.panel==="people";
   $("segPeople").setAttribute("aria-selected",String(people));$("segUnis").setAttribute("aria-selected",String(!people));
   $("pPeople").hidden=!people;$("pUnis").hidden=people;
@@ -845,7 +861,7 @@ function renderWidget(){
   rows.slice(0,200).forEach(function(p){var li=mk("li"),nm=mk(p.lead?"a":"span",p.lead?"lead":null,p.name);
     if(p.lead){nm.href="#organizers";nm.setAttribute("data-tip","Campus organizer at "+(p.uni||"their university")+". Click for information on what that means.");}
     var who=mk("div","who1");who.appendChild(nm);if(p.info)who.appendChild(mk("span","info",p.info));
-    li.appendChild(who);li.appendChild(mk("span","u",p.uni||""));pl.appendChild(li);});
+    li.appendChild(who);li.appendChild(mk("span","u",p.uni||""));if(p.uni)lights(li,p.uni);pl.appendChild(li);});
   if(!rows.length)pl.appendChild(mk("li","empty",q?"No one matches that search.":"No names yet. Yours can be the first."));
   /* private names can't be searched by name, but they still count toward a university you search for */
   var anon=0;B.unis.forEach(function(x){if(!q||x.name.toLowerCase().indexOf(q)>-1)anon+=x.n-(x.named||0);});
@@ -854,13 +870,16 @@ function renderWidget(){
   $("anonNote").textContent=anon>0?"Plus "+num(anon)+(anon===1?" person who":" people who")+" kept their name private.":"";
 
   /* rebuild the ranking only when it changes, so the bars don't replay on every keystroke */
-  var mine=S.mine?S.mine.dom:null,key=mine+"|"+B.unis.map(function(x){return x.key+x.n;}).join(",");
+  var mine=S.mine?S.mine.dom:null,key=mine+"|"+S.submitted+JSON.stringify(S.chain)+"|"+B.unis.map(function(x){return x.key+x.n;}).join(",");
   if(key===uniKey)return;uniKey=key;
   var ul=$("uniList"),idx=-1;clear(ul);
   B.unis.forEach(function(x,i){if(x.key===mine)idx=i;});
   var top=B.unis.length?B.unis[0].n:0,inTop=!mine||(idx>-1&&idx<12);
   B.unis.slice(0,inTop?12:11).forEach(function(x){ul.appendChild(uniRow(x,x.key===mine,top));});
   if(!inTop){var row=uniRow(idx>-1?B.unis[idx]:{name:S.mine.name,n:0},true,top);if(B.unis.length)row.classList.add("gap");ul.appendChild(row);}
+  /* universities further down the list still appear when your link has reached them */
+  var cut=inTop?12:11,more=B.unis.filter(function(x,i){return i>=cut&&x.key!==mine&&S.submitted&&S.chain[x.key];}).slice(0,6);
+  more.forEach(function(x,i){var r=uniRow(x,false,top);if(i===0&&inTop)r.classList.add("gap");ul.appendChild(r);});
   if(!B.unis.length&&inTop)ul.appendChild(mk("li","empty","No universities yet."));
 }
 $("segPeople").addEventListener("click",function(){S.panel="people";renderWidget();});
@@ -869,36 +888,51 @@ $("inSearch").addEventListener("input",renderWidget);
 
 /* ---------- poll results: built once, then updated in place so the bars animate ---------- */
 var R={};
+var PIE=["#F2F1E8","#C2332F","#7F806B","#6E1E1A","#B9BAA3","#E07A5F","#55564A","#D9B8AC","#33332F"],INK_ON=["#0B0B0C","#F2F1E8","#0B0B0C","#F2F1E8"];
+/* one stacked bar per question, with a small key under it */
 function buildResults(){
   var grid=$("resGrid");
-  Q.forEach(function(q,i){
-    var card=mk("div","card rcard"+(q.stu?" stu":""));card.appendChild(mk("h3",null,q.q));R[q.id]={};
+  Q.forEach(function(q){
+    var card=mk("div","card rcard");card.appendChild(mk("h3",null,q.q));
     if(q.stu)card.appendChild(mk("p","only","Undergraduates and graduate students only"));
-    q.o.forEach(function(o){var row=mk("div","rrow"),l=mk("div","l"),pct=mk("span","pct","0%");
-      l.appendChild(mk("span",null,o));l.appendChild(pct);row.appendChild(l);
-      var tr=mk("div","track"),f=mk("div","fill");tr.appendChild(f);row.appendChild(tr);card.appendChild(row);R[q.id][o]={row:row,pct:pct,fill:f};});
-    grid.appendChild(card);
+    var bar=mk("div","sbar"),lg=mk("ul","legend");bar.setAttribute("role","img");R[q.id]={bar:bar,rows:{}};
+    q.o.forEach(function(o,i){var li=mk("li"),sw=mk("i"),pc=mk("b"),sg=mk("div");sw.style.background=PIE[i];li.appendChild(sw);li.appendChild(mk("span","nm",o));li.appendChild(pc);lg.appendChild(li);
+      sg.style.background=PIE[i];sg.style.color=INK_ON[i];bar.appendChild(sg);
+      sg.addEventListener("mouseenter",function(){li.classList.add("hot");});sg.addEventListener("mouseleave",function(){li.classList.remove("hot");});
+      R[q.id].rows[o]={li:li,pc:pc,sg:sg};});
+    card.appendChild(bar);card.appendChild(lg);grid.appendChild(card);
   });
 }
 /* who has signed up: totals by role, year and major, and a circle on the map for each university */
-function demoBars(el,pairs,total){clear(el);
-  if(!pairs.length){el.appendChild(mk("p","muted","Nothing yet."));return;}
-  pairs.forEach(function(p){var row=mk("div","rrow"),l=mk("div","l");l.appendChild(mk("span",null,p[0]));
-    l.appendChild(mk("span","pct",Math.round(p[1]/total*100)+"%"));row.appendChild(l);
-    var tr=mk("div","track"),f=mk("div","fill");f.style.width=p[1]/total*100+"%";tr.appendChild(f);row.appendChild(tr);el.appendChild(row);});}
-var NS="http://www.w3.org/2000/svg",demoKey="",popped=false,rippler=0;
+/* a pie with its key beside it: role, undergraduate year, majors */
+function pie(el,pairs){clear(el);pairs=pairs.filter(function(p){return p[1]>0;});
+  var tot=pairs.reduce(function(a,p){return a+p[1];},0);if(!tot){el.appendChild(mk("p","muted","Nothing yet."));return;}
+  var svg=document.createElementNS(NS,"svg"),lg=mk("ul","legend col"),a0=-Math.PI/2;
+  svg.setAttribute("viewBox","-1.02 -1.02 2.04 2.04");svg.setAttribute("class","pie");svg.setAttribute("role","img");
+  svg.setAttribute("aria-label",pairs.map(function(p){return p[0]+" "+Math.round(p[1]/tot*100)+"%";}).join(", "));
+  pairs.forEach(function(p,i){var f=p[1]/tot,a1=a0+f*2*Math.PI,whole=f>.9999,sl=document.createElementNS(NS,whole?"circle":"path"),li=mk("li"),sw=mk("i"),tt=document.createElementNS(NS,"title");
+    if(whole)sl.setAttribute("r",1);else sl.setAttribute("d","M0,0L"+Math.cos(a0).toFixed(4)+","+Math.sin(a0).toFixed(4)+"A1,1 0 "+(f>.5?1:0)+",1 "+Math.cos(a1).toFixed(4)+","+Math.sin(a1).toFixed(4)+"Z");
+    sl.setAttribute("fill",PIE[i%PIE.length]);tt.textContent=p[0]+": "+Math.round(f*100)+"% ("+num(p[1])+")";sl.appendChild(tt);svg.appendChild(sl);
+    sw.style.background=PIE[i%PIE.length];li.appendChild(sw);li.appendChild(mk("span","nm",p[0]));li.appendChild(mk("b",null,Math.round(f*100)+"%"));lg.appendChild(li);
+    sl.addEventListener("mouseenter",function(){li.classList.add("hot");});sl.addEventListener("mouseleave",function(){li.classList.remove("hot");});a0=a1;});
+  el.appendChild(svg);el.appendChild(lg);}
+var NS="http://www.w3.org/2000/svg",demoKey="",popped=false,rippler=0,DOTS={};
+/* hovering a university in the moving strip or the lists lights its dot on the map */
+function lights(el,name){el.addEventListener("mouseenter",function(){if(DOTS[name])DOTS[name](true);});el.addEventListener("mouseleave",function(){if(DOTS[name])DOTS[name](false);});}
 function renderDemo(B){
   var D=B.demo||{role:{},year:{},major:[]},key=JSON.stringify(D)+B.unis.map(function(u){return u.key+u.n;}).join();
   if(key===demoKey)return;demoKey=key;
   function ordered(o,keys){return keys.filter(function(k){return o[k];}).map(function(k){return [k,o[k]];});}
   function sum(ps){return ps.reduce(function(a,p){return a+p[1];},0);}
-  /* one chart: undergraduates by year, then the other roles */
-  var y=ordered(D.year,YEARS),rest=(D.role.Undergraduate||0)-sum(y),o=ordered(D.role,["Graduate student","Postdoc","Faculty","Staff"]),
-      r=y.concat(rest>0?[["Undergraduate, year not given",rest]]:[],o);
-  demoBars($("dRole"),r,sum(r));demoBars($("dMajor"),D.major,B.total);
+  var y=ordered(D.year,YEARS),rest=(D.role.Undergraduate||0)-sum(y),other=B.total-sum(D.major);
+  pie($("dRole"),ordered(D.role,["Undergraduate","Graduate student","Postdoc","Faculty","Staff"]));
+  pie($("dYear"),y.concat(rest>0?[["Not given",rest]]:[]));
+  pie($("dMajor"),D.major.concat(other>0?[["Other or not given",other]]:[]));
   var g=$("mapDots"),tip=$("mapTip"),top=B.unis.length?B.unis[0].n:1,on=null;clear(g);tip.hidden=true;
-  /* the first time there is data, the universities fade in one after another, a moment after the page has settled */
-  var play=!popped&&B.unis.length>0&&!CALM,gap=play?Math.min(60,2400/B.unis.length):0;if(B.unis.length)popped=true;
+  /* the first time there is data, each university's dot appears as the university counter ticks past it */
+  var play=!popped&&B.unis.length>0&&!CALM,gap=play?Math.min(90,3200/B.unis.length):0,cu=$("cUnis");if(B.unis.length)popped=true;
+  cu.textContent=play?"0":num(B.unis.length);DOTS={};
+  if(play)B.unis.forEach(function(u,i){setTimeout(function(){if(demoKey===key)cu.textContent=num(i+1);},Math.round(500+i*gap));});
   function svg(tag,cls,u,rad){var c=document.createElementNS(NS,tag);if(cls)c.setAttribute("class",cls);if(u){c.setAttribute("cx",u.x);c.setAttribute("cy",u.y);c.setAttribute("r",rad);}return c;}
   function show(u,el){if(on)on.classList.remove("on");on=el;if(!u){tip.hidden=true;return;}el.classList.add("on");
     clear(tip);tip.appendChild(document.createTextNode(u.name));tip.appendChild(mk("b",null,num(u.n)));
@@ -907,34 +941,35 @@ function renderDemo(B){
   /* one plain dot per university, largest first so smaller ones stay on top and can be pointed at */
   var live=[];
   B.unis.filter(function(u){return u.x!=null;}).forEach(function(u,i){var el=svg("g"),rad=(5+17*Math.sqrt(u.n/top)).toFixed(1);
-    if(play){el.setAttribute("class","pop");el.style.animationDelay=Math.round(700+i*gap)+"ms";}
+    if(play){el.setAttribute("class","pop");el.style.animationDelay=Math.round(500+B.unis.indexOf(u)*gap)+"ms";}
+    DOTS[u.name]=function(lit){show(lit?u:null,el);if(lit){g.appendChild(el);ripple(u,rad);}};
     el.appendChild(svg("circle","area",u,rad));if(u.day>0)live.push([u,rad]);
     el.addEventListener("mouseenter",function(){show(u,el);});el.addEventListener("mouseleave",function(){show(null);});
     el.addEventListener("click",function(){on===el&&!tip.hidden?show(null):show(u,el);});g.appendChild(el);});
   /* now and then a single ripple leaves a university that gained sign-ups in the past day */
+  function ripple(u,rad){if(CALM)return;var r=svg("circle","ping",u,rad);g.appendChild(r);setTimeout(function(){if(r.parentNode)r.parentNode.removeChild(r);},1900);}
   clearInterval(rippler);
-  if(live.length&&!CALM)rippler=setInterval(function(){if(document.hidden)return;var p=live[Math.floor(Math.random()*live.length)],r=svg("circle","ping",p[0],p[1]);
-    g.appendChild(r);setTimeout(function(){if(r.parentNode)r.parentNode.removeChild(r);},1900);},1400);
+  if(live.length&&!CALM)rippler=setInterval(function(){if(document.hidden)return;var p=live[Math.floor(Math.random()*live.length)];ripple(p[0],p[1]);},1400);
 }
-/* the outline comes from the us-atlas map file (us-states.json, kept beside this page), which is already drawn on the same 975 by 610 grid as the stored positions */
-function loadMap(){
-  if(!window.topojson||!window.fetch)return;
-  fetch("us-states.json").then(function(r){return r.json();}).then(function(us){
-    function path(geo){var polys=geo.type==="Polygon"?[geo.coordinates]:geo.type==="MultiPolygon"?geo.coordinates:[geo.coordinates],close=geo.type!=="MultiLineString";
-      return polys.map(function(rings){return rings.map(function(ring){return "M"+ring.map(function(p){return p[0].toFixed(1)+","+p[1].toFixed(1);}).join("L")+(close?"Z":"");}).join("");}).join("");}
-    function add(cls,d){var p=document.createElementNS(NS,"path");p.setAttribute("class",cls);p.setAttribute("d",d);$("mapLand").appendChild(p);}
-    add("land",path(topojson.feature(us,us.objects.nation).features[0].geometry));
-    add("edge",path(topojson.mesh(us,us.objects.states)));
-  }).catch(function(){});
-}
+/* the outline is kept in the page so the banner map draws at once: a simplified copy of us-atlas (states-albers-10m),
+   on the same 975 by 610 grid as the stored positions */
+var MAP_LAND="M780,466L787,486L795,500L805,511L806,514L805,517L807,522L822,549L824,575L823,573L822,574L821,578L822,581L821,583L822,583L824,578L824,580L822,587L816,593L820,586L807,590L805,589L805,585L801,578L793,574L792,575L787,564L783,561L781,563L779,558L781,559L780,552L779,553L780,556L777,558L765,541L767,541L771,535L771,532L769,532L770,534L768,533L768,531L765,530L764,532L767,534L765,539L762,533L761,526L763,529L762,527L764,521L762,510L759,505L755,505L754,506L753,503L746,498L745,495L743,494L739,490L732,487L727,487L726,490L726,492L723,492L716,497L716,496L714,498L712,498L714,500L720,496L714,501L710,499L707,500L706,496L706,495L708,499L708,497L706,494L689,486L678,486L655,492L659,490L656,488L655,483L653,482L652,490L649,489L644,491L636,490L629,492L629,491L626,495L623,496L621,499L618,500L619,501L621,501L622,503L624,502L626,498L628,498L627,500L628,501L631,500L629,502L631,502L628,503L630,504L630,505L628,504L627,507L625,506L625,507L623,508L624,509L622,508L626,513L630,513L632,515L632,514L635,517L637,517L635,518L636,518L634,522L632,520L629,524L631,518L629,519L624,516L620,515L613,521L611,517L610,516L609,518L608,515L607,517L605,517L603,521L600,522L598,520L592,519L590,517L592,516L595,518L594,516L592,514L590,515L590,513L588,514L586,510L584,510L584,508L579,509L580,506L573,508L576,512L572,513L565,512L554,508L548,508L535,511L522,518L524,516L528,514L527,513L522,514L524,511L522,509L520,511L518,511L517,514L520,515L520,519L515,522L515,524L522,518L523,519L510,530L494,538L482,547L474,558L470,570L474,592L472,582L470,582L471,581L469,574L470,564L476,551L482,545L489,541L489,540L484,542L484,540L482,540L482,544L479,546L477,545L474,547L475,548L477,547L474,553L473,552L468,552L470,553L470,555L473,556L469,564L467,565L467,563L465,566L469,566L468,580L472,588L471,592L474,593L474,595L470,596L470,598L467,597L464,593L452,592L447,589L443,588L440,585L435,584L431,574L428,570L428,565L426,563L427,558L420,552L419,548L412,541L411,536L408,532L405,522L398,513L394,511L394,509L394,511L391,506L378,505L373,503L372,505L366,505L362,514L362,516L359,517L357,522L351,520L348,517L337,511L330,504L328,498L328,492L325,487L324,482L316,475L306,463L302,460L298,453L264,448L263,458L208,450L142,412L145,407L99,402L100,400L98,398L99,388L97,382L88,371L82,369L83,367L82,362L76,362L71,358L65,349L49,344L46,340L50,328L46,326L47,320L42,313L40,305L35,296L35,290L38,289L40,286L39,283L38,281L35,281L31,274L33,261L35,261L35,266L39,270L39,265L36,262L37,259L36,257L39,256L39,255L36,254L34,258L35,259L34,258L33,260L29,254L26,253L28,248L20,230L24,209L18,197L19,193L27,184L31,173L32,166L30,164L33,160L31,157L31,152L34,146L33,140L45,121L58,90L62,75L64,74L64,69L66,71L71,70L69,69L66,69L64,67L63,68L66,60L65,66L66,66L66,63L68,63L67,60L70,59L66,57L66,54L67,55L71,54L67,51L66,53L67,48L68,34L65,28L66,24L68,21L67,19L77,27L85,31L89,31L90,33L92,33L92,36L93,33L95,33L94,34L94,35L95,34L94,36L95,39L91,43L91,40L84,48L88,49L85,48L96,40L96,38L97,39L92,52L91,54L90,52L91,50L90,51L91,54L89,55L88,52L89,50L88,51L87,54L89,56L93,52L94,53L96,52L96,47L97,46L97,45L101,39L101,33L99,33L100,36L98,34L99,32L101,32L101,30L100,27L98,28L97,26L99,25L101,27L101,25L102,24L102,20L100,21L99,15L100,14L153,29L210,42L265,52L326,60L404,68L479,71L511,71L511,62L514,62L516,64L519,76L531,79L532,81L536,80L538,79L544,79L549,80L548,82L551,82L553,87L555,87L555,84L558,84L560,87L566,89L566,91L571,90L576,86L578,89L588,88L592,91L598,90L577,101L559,119L561,122L578,115L580,116L577,123L580,120L585,123L591,120L595,117L601,116L607,112L615,103L622,100L626,101L622,102L623,103L619,106L615,112L616,117L620,112L618,115L620,113L624,112L628,114L633,121L638,120L642,122L642,121L644,121L643,119L645,121L652,115L662,114L667,112L670,111L669,113L670,118L676,117L676,118L679,116L683,115L684,121L682,123L684,123L689,126L690,126L689,124L693,124L695,126L695,127L685,127L681,129L676,127L676,132L671,128L663,127L660,131L651,132L647,140L645,138L647,133L646,135L644,135L643,138L641,138L640,135L640,138L632,152L632,156L629,157L627,162L626,166L628,166L633,159L636,158L638,151L642,148L641,152L635,165L635,174L633,176L632,181L633,185L631,195L634,206L635,219L640,230L645,231L650,229L655,224L660,210L659,198L652,184L654,180L652,175L655,168L655,160L657,159L657,155L661,154L665,147L664,156L665,157L666,152L666,158L668,153L667,146L674,142L671,140L670,138L673,134L672,134L675,133L681,135L685,135L687,138L697,140L699,142L701,147L699,146L698,147L702,154L702,162L700,164L699,169L694,173L694,177L695,179L699,180L702,177L702,173L703,174L704,173L702,172L710,168L713,169L715,172L722,191L721,200L719,202L718,200L719,199L716,199L715,207L713,208L713,213L708,222L718,225L719,224L726,227L733,223L738,223L744,216L759,207L776,192L780,186L776,180L775,176L784,172L796,170L800,172L809,169L817,162L819,161L819,158L817,154L819,152L815,150L815,146L820,141L825,132L832,124L886,111L886,105L888,103L891,104L892,101L895,103L894,99L897,99L895,96L896,94L899,90L898,89L900,86L898,80L900,74L899,67L906,48L909,48L910,51L912,52L920,48L920,46L926,48L930,50L939,80L945,80L946,87L949,90L950,88L952,88L957,95L955,99L954,100L953,99L951,100L952,101L950,103L951,104L950,106L947,104L946,107L944,108L944,110L941,110L942,113L939,114L937,112L938,110L935,111L937,114L936,117L937,120L935,117L935,115L932,114L931,110L929,113L930,114L929,119L930,123L929,123L927,127L927,125L925,125L924,128L923,127L922,130L921,129L920,132L918,131L915,134L915,138L913,138L913,142L911,143L909,155L911,159L914,158L914,160L911,162L910,169L912,167L915,169L917,171L916,173L919,174L922,178L925,178L929,175L926,170L924,170L927,170L930,174L931,180L930,178L925,180L916,188L920,183L920,180L918,179L918,182L915,183L915,185L912,188L910,184L911,187L909,188L911,183L910,182L909,184L907,181L908,191L891,198L885,199L885,198L882,203L875,207L872,212L873,213L877,208L882,208L883,207L891,204L896,199L896,201L900,202L903,199L883,214L872,219L869,216L870,218L867,221L868,223L871,222L873,237L871,245L867,251L864,259L863,259L863,254L860,253L859,254L850,250L850,244L849,245L849,249L853,252L855,258L860,263L861,263L864,270L863,279L861,284L858,288L858,295L856,303L854,304L852,299L854,288L856,286L854,285L855,284L852,285L852,282L851,282L852,280L850,281L850,280L851,279L850,278L850,275L849,278L848,276L848,279L846,279L844,278L841,274L843,274L842,271L846,271L842,268L840,270L841,266L842,266L842,264L839,266L839,262L840,263L842,262L842,260L841,262L839,259L840,255L843,253L843,249L841,250L842,252L839,254L838,252L839,256L837,254L838,257L836,259L833,258L838,263L836,269L838,274L841,277L840,278L842,279L844,284L841,282L841,283L838,281L835,282L833,279L834,281L832,281L830,278L826,280L825,278L827,274L825,274L825,279L826,281L830,279L832,283L838,283L840,285L846,287L845,289L846,293L845,294L842,294L840,291L834,288L842,295L846,295L846,296L848,297L848,300L845,299L847,302L844,303L849,305L847,309L843,306L842,304L837,305L840,306L841,304L842,307L846,310L849,310L850,308L855,308L862,323L868,332L864,328L860,319L857,317L856,317L858,319L862,326L859,323L860,325L858,325L854,323L857,326L855,327L853,326L855,327L850,326L853,328L849,331L846,328L845,325L845,328L847,333L858,329L860,337L860,330L862,329L865,332L866,336L863,338L860,344L853,345L851,342L853,341L850,342L852,345L843,343L844,345L853,346L854,347L853,352L850,355L846,353L846,355L850,356L855,353L855,351L857,353L858,353L857,352L859,352L859,354L856,360L854,358L853,360L856,361L863,350L856,362L853,361L847,363L838,370L834,377L833,384L825,384L818,389L814,396L814,404L811,408L807,409L807,411L803,415L802,415L803,417L801,419L795,423L792,423L793,427L790,429L788,427L787,428L790,430L786,434L787,436L785,437L785,439L783,439L784,441L781,442L783,445L781,447L782,447L781,454L778,460L780,460ZM93,575L96,573L97,574L97,572L100,572L99,571L101,572L103,571L103,574L105,573L104,575L102,574L103,575L100,577L102,577L100,578L99,577L96,580L97,577L95,580ZM44,547L50,547L51,551L48,552ZM31,601L37,599L36,597L40,597L38,599L40,598L37,601ZM51,505L64,500L66,500L65,504L71,505L73,503L74,504L71,502L70,498L71,498L73,502L72,500L73,498L67,496L66,492L59,484L62,481L67,481L69,480L72,475L75,471L78,471L83,468L87,468L89,465L93,466L92,469L94,466L96,469L99,468L101,469L101,470L103,471L102,472L109,471L122,474L126,472L133,474L147,547L151,547L155,545L155,547L162,552L164,555L167,552L167,548L169,546L173,549L181,554L192,566L200,567L203,573L201,578L198,575L198,571L198,575L194,574L194,571L194,574L193,574L192,569L191,572L189,570L190,567L183,563L181,560L184,560L181,559L178,556L176,557L170,550L175,558L173,557L171,557L169,554L167,553L166,554L169,555L170,557L168,559L160,554L153,552L153,548L151,551L146,551L147,550L141,550L135,552L134,553L136,551L132,550L132,548L131,550L128,549L129,548L125,551L125,549L128,548L125,547L127,546L125,546L125,544L124,546L123,544L123,546L119,547L119,545L119,550L120,549L121,553L120,554L119,552L119,554L115,555L115,553L114,557L112,556L111,559L110,557L109,560L106,561L105,559L109,556L107,557L105,556L107,552L107,549L111,546L112,547L115,547L112,545L113,542L112,544L109,544L106,546L101,555L100,556L100,557L96,560L96,562L100,564L96,567L96,569L88,574L86,576L87,577L86,578L83,580L82,579L80,582L78,582L77,583L79,584L77,586L76,585L76,586L72,586L71,589L72,587L71,586L64,590L63,589L64,588L63,588L61,591L58,591L58,589L58,592L55,591L56,592L54,593L55,594L54,593L47,595L49,592L53,591L54,592L55,590L57,590L62,585L66,585L66,587L67,586L69,587L67,585L69,583L75,579L76,579L78,576L81,573L82,566L84,563L80,565L78,563L78,562L76,567L71,561L65,564L64,558L66,557L64,551L61,553L57,553L53,547L54,547L53,547L55,543L54,541L53,542L53,539L51,538L53,537L52,536L53,536L54,534L60,526L64,528L67,525L71,525L73,523L73,519L71,518L74,516L73,514L67,518L66,515L66,517L59,516L55,514L54,509L56,509ZM34,518L35,516L38,518L39,518L45,522L41,524L38,520L34,519ZM185,573L185,570L187,570L193,574L191,575L194,576L196,580L193,580L192,577L192,579L190,578L193,580L192,581L189,578L188,578L189,576L186,574L186,572ZM180,567L182,567L182,565L185,564L189,567L186,569L184,569L183,573ZM175,556L176,557L178,557L180,559L181,561L179,559L181,563L180,566ZM174,565L175,563L177,563L181,573L175,568L175,565ZM169,561L169,559L172,558L175,559L177,563L174,562L173,565ZM794,604L800,598L805,600ZM305,584L310,579L309,574L310,573L322,578L326,582L326,584L328,584L332,590L329,593L322,595L317,598L314,603L308,599L309,594ZM292,558L294,555L296,559L302,558L306,561L307,562L305,564L299,566L297,565L297,561L293,560ZM284,558L287,558L289,560L286,562ZM279,554L280,551L291,553L288,555ZM258,543L261,543L265,540L267,546L269,547L270,546L271,549L262,549ZM226,533L227,530L231,528L234,528L237,530L236,534L233,536L230,536ZM601,92L614,84L610,89L605,91L607,92L603,93ZM95,31L99,28L99,31L96,32L97,33L97,37L98,35L100,37L99,40L98,37L97,38L97,33ZM91,21L93,21L94,23L93,21L96,20L98,22L96,27L92,24ZM577,511L580,511L583,512L580,514Z",
+    MAP_EDGE="M642,384L689,380M689,380L702,427L708,436L707,439L710,440L707,443L706,450L709,457L708,465L711,469M711,469L661,474L660,477L665,481L665,485L666,486L664,490M646,489L642,455L644,386L642,384M176,313L265,328M265,328L247,456M145,407L149,407L150,405L150,401L147,400L147,399L148,395L147,394L148,392L152,389L154,380L157,377L163,374L159,369L158,363L156,359L157,356M157,356L159,353L160,331L167,331L168,335L170,335L173,331L176,313M277,237L361,247M361,247L395,249L394,272M394,272L390,341M390,341L372,339M372,339L315,334L265,328M265,328L277,237M711,469L714,475L766,471L767,476L770,476L769,466L770,465L780,466M689,380L713,377M713,377L735,374M735,374L732,379L732,382L738,385L741,385L748,396L762,406L762,408L766,412L771,414L774,423L779,426L781,433L786,435M652,228L686,224L686,225M686,225L693,284M693,284L691,286L692,289L694,289L694,292L688,295L683,294L684,298L679,305L677,305L676,311L674,313L670,311L668,308L664,316L660,314L655,319L651,316L648,317L647,315L647,318L645,317L643,318L641,317L642,319L639,320M639,320L638,317L639,318L639,314L640,312L639,310L640,308L642,309L647,297L643,288L645,284L640,230M394,272L454,275L510,275M510,275L513,278L516,278L517,281L516,281L514,286L517,289L519,293L523,294L523,344M523,344L459,344L390,341M910,150L908,149L907,147L904,144L891,102M871,168L884,165M884,165L903,161L906,156L909,155M913,186L912,183L911,183M910,182L908,181L905,176L899,178M899,178L871,184M871,184L871,168M560,121L559,120L556,122L556,136L550,140L548,144L548,147L549,147L551,150L550,154L549,166L554,170L557,170L564,175L565,178L572,182L576,187L576,193M576,193L491,195M491,195L491,154L487,152L484,147L489,142L489,140M489,140L489,131L486,123L485,102L481,89L481,78L479,71M850,244L851,241M851,241L855,239L855,237L861,231L854,226L850,221L852,216L850,214L855,204M855,204L870,209L869,216M869,217L867,218L867,221M756,334L794,329L859,316M823,386L798,368L778,371L777,369L774,365L772,367L772,365L747,367L735,374M713,377L713,371L717,369L717,367L719,364L726,362L732,356L735,356L736,352L737,352L740,348L742,351L746,346L751,346L752,341L756,340L756,334M489,140L432,138L371,134M371,134L377,66M523,344L523,355M523,355L527,381L526,421M526,421L520,418L517,416L512,413L511,415L507,415L506,414L501,416L499,415L496,416L492,420L486,416L487,415L485,415L484,417L479,414L477,419L476,419L475,414L471,417L471,415L467,413L463,416L461,415L462,413L459,412L458,409L458,410L454,409L452,411L449,408L447,409L443,407L439,407L438,404L435,401L435,403L429,403L426,399L424,398L426,354L372,351M372,351L372,339M768,200L769,206L841,192L843,195L846,195L850,202L854,203L855,204M851,241L847,242L845,245M845,245L782,257M782,257L765,260L761,239M761,239L756,209M369,156L371,134M491,195L488,195L489,198L489,202L490,202L491,204L488,212L491,218M491,218L488,218L487,215L478,210L468,209L464,212L457,206L365,201M365,201L369,156M526,421L529,423L532,422L535,423L535,435M535,435L535,458L540,463L540,467L542,469L546,480L546,484L542,491L543,502L539,507L541,510M296,452L294,449L295,447L363,453L372,351M365,201L361,247M277,237L244,232L247,210M247,210L256,154M256,154L258,142L321,151L369,156M874,208L872,206L876,203L874,201L871,184M899,178L902,191L902,193M502,262L531,262L571,260L576,265M576,265L575,271L578,280L590,290L590,294L593,298L595,296L601,298L598,309L598,313L606,319L605,320L607,320L613,324L615,331L614,333L617,339L619,340L619,338L621,340M621,340L621,347L620,349L617,349L617,351M617,351L616,351M616,351L616,350L614,350L615,352M615,352L615,354L614,356L615,357L612,357L614,360L612,363M612,363L600,364L605,357L604,352L523,355M510,275L508,274L507,270L505,268L504,262L502,263L502,262M733,295L738,293L738,290L740,289L739,285L741,280L744,283L746,281L745,278L746,273L748,273L750,269L752,271L754,269L759,263L761,247L759,241L761,239M782,257L784,269L790,261L792,262L794,257L797,259L800,258L800,257L805,253L808,255L811,254L811,256L814,260M814,260L813,265L803,259L803,266L797,277L794,275L790,286L784,283L783,291L776,305L778,306L776,308L777,309L774,312L773,310L769,314L767,313L767,315L761,318L758,316L755,320L753,320L748,317L747,313M747,313L741,311L736,306L737,304L733,301L733,295M576,265L577,261L581,258L581,255L584,252L584,248L581,245L582,241L591,238L596,231L596,224L592,222L587,215M587,215L634,212M639,320L637,323L639,327L632,330L633,337L623,334L621,338L621,340M612,363L614,365L611,366L613,367L608,369L609,371L610,371L608,373L609,374L607,374L607,377L607,376L605,377L607,378L605,380L607,383L603,387M603,387L604,389L601,391L600,389L601,392L599,393L599,391L598,393L600,394L599,395L598,394L599,400L597,402L595,402L594,405L592,405L595,406L592,407L593,409L590,411L592,415L589,415L589,417L591,418L587,418L589,420L588,420L588,422L588,423L589,422L589,425L591,423L589,425L590,428L591,427L591,430L589,431L590,432L589,433M589,433L535,435M33,160L100,179M100,179L83,246L157,356M864,270L853,273L845,245M826,267L827,265L830,267L828,270M828,270L826,267M576,193L577,196L579,199L577,202L580,211L586,212L587,215M502,262L500,259L501,255L499,242L496,240L496,230L494,230L492,226L491,218M693,284L694,283L696,285L699,283L702,285L704,290L710,290L714,293L716,291L721,292L727,288L728,292L733,295M747,313L741,320L735,325L733,330L730,332L729,334L720,339M720,339L645,346L641,345L641,350L617,351M616,351L615,352M850,285L849,285M863,280L855,284M827,274L828,270M826,267L818,264L819,262L817,260L814,260M708,222L686,225M632,153L630,151L630,146L627,147L628,140L625,138L623,138L623,135L612,134L607,131L590,128L588,124L585,123M603,387L642,384M625,495L623,494L621,489L618,485L620,477L583,479L584,478L582,473L585,473L583,470L584,469L585,471L584,467L586,466L584,465L586,465L586,463L589,461L587,461L587,460L592,455L591,455L592,455L593,452L590,453L590,451L594,451L595,448L594,448L593,446L591,445L591,444L593,444L592,443L592,441L591,443L590,441L592,439L590,439L591,436L591,434L590,435L589,435L589,433M256,154L252,147L250,148L249,151L244,151L243,150L239,150L237,148L235,151L228,149L227,152L225,149L224,142L222,140L221,141L219,139L220,134L217,127L217,121L215,118L208,123L205,120L206,117L206,115L209,113L208,107L213,96L209,96L208,93L207,94L201,80L195,74L197,74L196,72L197,69L193,62L198,39M884,165L882,162L883,159L881,146L883,133L882,128L885,126L888,122L886,117L886,111M858,118L859,127L861,131L861,140L864,145L864,150L866,148L867,150L871,168M171,102L172,107L175,109L176,112L167,124L167,126L162,130L157,137L158,140L161,141L162,143L158,150L149,191M149,191L100,179M71,70L73,73L77,74L80,77L79,87L85,91L94,90L101,92L103,95L112,94L115,96L129,94L136,96L139,95L171,102M720,339L756,334M198,201L247,210M176,313L198,201M184,36L170,94L171,98L171,102M198,201L149,191";
+function loadMap(){[["land",MAP_LAND],["edge",MAP_EDGE]].forEach(function(a){var p=document.createElementNS(NS,"path");p.setAttribute("class",a[0]);p.setAttribute("d",a[1]);$("mapLand").appendChild(p);});}
 function updateResults(){
   var B=board();renderDemo(B);
   $("resCount").textContent=B.total?"("+num(B.total)+(B.total===1?" person)":" people)"):"";
   Q.forEach(function(q){
-    var c=B.answers[q.id]||{},tot=0;q.o.forEach(function(o){tot+=c[o]||0;});
-    q.o.forEach(function(o){var x=R[q.id][o],pct=tot?Math.round((c[o]||0)/tot*100):0;
-      x.pct.textContent=pct+"%";grow(x.fill,pct+"%");x.row.classList.toggle("mine",S.answers[q.id]===o);
-      var b=optBtns[q.id][o];b.lastChild.textContent=pct+"%";b.style.setProperty("--p",pct+"%");b.parentNode.parentNode.classList.toggle("answered",!!S.answers[q.id]);});
+    var c=B.answers[q.id]||{},tot=0,x=R[q.id],g=x.bar,desc=[];
+    q.o.forEach(function(o){tot+=c[o]||0;});g.classList.toggle("none",!tot);
+    q.o.forEach(function(o){
+      var n=c[o]||0,f=tot?n/tot:0,pct=Math.round(f*100),row=x.rows[o];
+      row.li.classList.toggle("mine",S.answers[q.id]===o);desc.push(o+" "+pct+"%");
+      var ob=optBtns[q.id][o];ob.lastChild.textContent=pct+"%";ob.style.setProperty("--p",pct+"%");ob.parentNode.parentNode.classList.toggle("answered",!!S.answers[q.id]);
+      row.pc.textContent=pct+"%";row.sg.hidden=!n;row.sg.style.flexGrow=n;row.sg.style.flexBasis="0";row.sg.textContent=f>=.09?pct+"%":"";
+      row.sg.title=o+": "+pct+"% ("+num(n)+(n===1?" person)":" people)");
+    });
+    g.setAttribute("aria-label",q.q+" "+(tot?desc.join(", "):"No answers yet."));
   });
 }
 
@@ -950,18 +985,16 @@ function renderAfter(){
   $("afterHead").textContent=S.verified?"You're in.":"Check your email.";
   $("afterSub").textContent=S.verified?"You're counted"+(u?" for "+u.name:"")+"."
     :S.live?"We sent a link to "+S.email+". Open it within 24 hours and you're counted.":"Preview mode: no email is sent.";
-  $("notifyText").textContent="We'll email you at "+S.email+" when the letter is ready. Want a text as well? Add your number.";
   $("afterHelp").hidden=!S.token;$("resendRow").hidden=S.verified||!S.live;
-  var url=shareUrl(),msg="Students are writing an open letter on AI and asking what should be in it. It takes two minutes: ",e=encodeURIComponent;
-  $("askText").textContent="Help spread this to people at "+(u?u.name:"your university")+" and at other universities. It only reaches new campuses when people pass it on, and it's the most helpful thing you can do for us.";
-  var g=null;board().unis.forEach(function(x){if(u&&x.key===u.dom)g=x;});
-  $("growth").hidden=!g;if(g)$("growth").textContent=g.day>0?u.name+" has gained "+num(g.day)+(g.day===1?" sign-up":" sign-ups")+" in the past 24 hours.":num(g.n)+(g.n===1?" person":" people")+" from "+u.name+(g.n===1?" has":" have")+" signed up so far.";
-  var st=$("stats"),rank=0;board().unis.forEach(function(x,k){if(g&&x.key===g.key)rank=k+1;});clear(st);st.hidden=!g||!S.verified;
-  if(g)[[num(g.n),"signed up at "+u.name],["#"+rank,"of "+num(board().unis.length)+" universities"],[num(S.invited||0),"joined from your link"],[num(S.downstream||0),"joined downstream of it"]].forEach(function(p){
-    var d=mk("div");d.appendChild(mk("b",null,p[0]));d.appendChild(mk("span",null,p[1]));st.appendChild(d);});
+  var url=shareUrl(),msg="Students are writing an open letter on regulating AI development and asking what should be in it. It takes two minutes: ",e=encodeURIComponent;
+  $("myLink").value=url.replace(/^https?:\/\//,"");
+  $("askText").textContent="This link is yours alone. Everyone who signs up through it, and everyone who then signs up through theirs, is counted for you.";
+  var ml=$("mineLine"),d=S.invited||0,t=S.downstream||0;clear(ml);ml.hidden=!S.verified;
+  ml.appendChild(mk("b",null,num(d)));ml.appendChild(document.createTextNode(d===1?" person joined from your link, ":" people joined from your link, "));
+  ml.appendChild(mk("b",null,num(t)));ml.appendChild(document.createTextNode(" downstream in all."));
+  $("spreadNote").textContent="The most helpful thing you can do is get this to other people at "+(u?u.name:"your university")+": your dorm, your classes and your clubs.";
   $("removeRow").hidden=true;
   $("shSms").href="sms:?&body="+e(msg+url);
-  $("shMail").href="mailto:?subject="+e("Students are writing an open letter on AI")+"&body="+e(msg+url);
   $("shWa").href="https://wa.me/?text="+e(msg+url);
   $("shThreads").href="https://www.threads.net/intent/post?text="+e(msg+url);
   $("pop").classList.add("open");
@@ -1001,14 +1034,25 @@ $("btnRemoveYes").addEventListener("click",function(){
   sb.rpc("delete_interest",{p_token:S.token}).then(function(r){if(r.error){$("removeRow").firstChild.textContent="That didn't work. Check your connection and try again.";return;}
     sb.auth.signOut().then(gone,gone);});
 });
-function copy(note){var url=shareUrl(),m=$("copyMsg");
+function copy(note){var url=shareUrl(),m=$("copyMsg");$("myLink").select();
   try{navigator.clipboard.writeText(url).then(function(){m.textContent=note;},function(){m.textContent="Copy the address from your browser bar.";});}catch(x){m.textContent="Copy the address from your browser bar.";}}
 $("btnCopy").addEventListener("click",function(){copy("Link copied.");});
+$("myLink").addEventListener("focus",function(){this.select();});
+/* friends' addresses go to us, and the invitations are sent from the project's own address */
+$("btnInvite").addEventListener("click",function(){var m=$("inviteMsg"),box=$("inInvites"),list=box.value.split(/[\s,;]+/).filter(Boolean),bad=list.filter(function(x){return !MAIL.test(x);});
+  if(!list.length){m.textContent="Type one or more email addresses.";box.focus();return;}
+  if(bad.length){m.textContent="This doesn't look like an email address: "+bad[0];box.focus();return;}
+  if(!S.verified){m.textContent="Confirm your own email first, then you can invite friends.";return;}
+  if(!S.live){m.textContent="Preview mode: nothing is sent.";return;}
+  m.textContent="Sending";
+  sb.rpc("send_invites",{p_token:S.token,p_emails:list}).then(function(r){
+    if(r.error){m.textContent=FAIL.save;return;}var d=r.data;box.value="";
+    m.textContent=d.added?"We'll email "+(d.added===1?"them":d.added===2?"both":"all "+d.added)+" an invitation with your link. "+(d.limit-d.total)+" more left.":d.total>=d.limit?"You've reached the limit of "+d.limit+" invitations.":"Those are already invited.";});});
 $("shInsta").addEventListener("click",function(){copy("Link copied. Paste it into your story or a DM.");});
 
 /* ---------- backend ---------- */
 var FAIL={not_university:NOTUS,mail:"Your answers are saved, but we couldn't send the email. Wait a minute and try again.",save:"That didn't save. Check your connection and try again."};
-function formRow(){return {name:$("inName").value.trim(),show_name:S.show,show_info:S.info,major:$("inMajor").value.trim(),social:$("inSocial").value.trim(),role:S.role,year:S.year,title:S.role==="faculty"||S.role==="staff"?$("inTitle").value.trim():"",
+function formRow(){return {name:$("inName").value.trim(),show_name:S.show,show_info:S.info,major:$("inMajor").value.trim(),role:S.role,year:S.year,title:S.role==="faculty"||S.role==="staff"?$("inTitle").value.trim():"",
   answers:Q.reduce(function(a,q,k){if(asked(k)&&S.answers[q.id])a[q.id]=S.answers[q.id];return a;},{}),concern:$("inConcern").value.trim(),spread:spreadList(),ref_by:REF};}
 /* first submit: stores the entry, then emails the confirmation link. Returns the university and an edit token. */
 function save(row){
@@ -1052,9 +1096,9 @@ $("form").addEventListener("submit",function(e){
 });
 /* fill the form from a stored entry: a returning visitor, or someone arriving from the emailed link */
 function applyEntry(c){
-  S.email=c.email;S.verified=!!c.verified;S.token=c.token;S.ref=c.ref||"";S.invited=c.invited||0;S.downstream=c.downstream||0;S.submitted=true;
-  $("inEmail").value=c.email;$("inName").value=c.name||"";$("inMajor").value=c.major||"";$("inSocial").value=c.social||"";$("inPhone2").value=c.phone||"";
-  $("inConcern").value=c.concern||"";S.sms=!!c.sms_ok;S.role=c.role||"";S.year=c.year||"";paintChips();
+  S.email=c.email;S.verified=!!c.verified;S.token=c.token;S.ref=c.ref||"";S.invited=c.invited||0;S.downstream=c.downstream||0;S.chain=c.chain||{};S.submitted=true;
+  $("inEmail").value=c.email;$("inName").value=c.name||"";$("inMajor").value=c.major||"";$("inPhone2").value=c.phone||"";
+  $("inConcern").value=c.concern||"";S.role=c.role||"";S.year=c.year||"";paintChips();
   S.show=c.show_name!==false;S.info=c.show_info!==false;$("inTitle").value=c.title||"";
   Q.forEach(function(q){var a=c.answers&&c.answers[q.id];if(a&&optBtns[q.id][a])pick(q,a);});
   S.spread={};(c.spread||[]).forEach(function(k){S.spread[k]=true;});
@@ -1065,8 +1109,10 @@ function applyEntry(c){
 
 /* ---------- tabs ---------- */
 var ANCH={"#organizers":1,"#why-wait":1,"#why-draft":1,"#contact":1};
-var CONTACT=[["Instagram","https://www.instagram.com/ourfuturesfirst/","@ourfuturesfirst"],["Email","mailto:ourfuturesfirst@gmail.com","ourfuturesfirst@gmail.com"],["X","https://x.com/ourfuturesfirst","@ourfuturesfirst"]];
-CONTACT.forEach(function(c){var li=mk("li"),a=mk("a",null,c[2]);li.appendChild(mk("span","lab",c[0]));
+var CONTACT=[["Email","mailto:ourfuturesfirst@gmail.com","ourfuturesfirst@gmail.com",""],["Instagram","https://www.instagram.com/ourfuturesfirst/","@ourfuturesfirst","assets/instagram.svg"],["X","https://x.com/ourfuturesfirst","@ourfuturesfirst","assets/x.svg"]];
+CONTACT.forEach(function(c){if(!c[1])return;var li=mk("li"),a=mk("a",null,c[2]),k=mk("span","lab");
+  if(c[3]){var im=document.createElement("img");im.src=c[3];im.alt="";im.width=14;im.height=14;im.onerror=function(){im.remove();};k.appendChild(im);}
+  else k.appendChild(mk("span"));k.appendChild(mk("span",null,c[0]));li.appendChild(k);
   a.href=c[1];if(c[1].indexOf("mailto:")!==0){a.target="_blank";a.rel="noopener";}li.appendChild(a);$("contactList").appendChild(li);});
 function route(){
   var h=location.hash,v=h==="#draft"?"viewDraft":(h==="#privacy"||h==="#texts")?"viewPrivacy":(h==="#about"||ANCH[h])?"viewAbout":"viewInterest",el=$(v),about=v!=="viewInterest";
