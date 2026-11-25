@@ -67,7 +67,9 @@ a{color:inherit}
 .pie svg{display:block;width:100%;max-width:300px;height:auto;margin:0 auto}
 /* hovering a slice enlarges it from the centre of the pie (130,96 in the chart's own units) */
 .pie .slice{transform-box:view-box;transform-origin:130px 96px;transition:transform .22s var(--ease);cursor:pointer}
-.pie .slice:hover{transform:scale(1.09)}
+.pie .slice{transition:transform .22s var(--ease),opacity .22s}
+.pie svg:hover .slice{opacity:.38}
+.pie svg:hover .slice:hover{opacity:1;transform:scale(1.15)}
 .pie text{font-family:var(--sans);font-size:11px;fill:var(--ink);font-variant-numeric:tabular-nums}
 .legend{list-style:none;margin:6px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 16px}
 .legend li{display:grid;grid-template-columns:10px minmax(0,1fr);gap:8px;align-items:baseline;font-size:.9375rem;color:var(--mute);transition:color .2s}
@@ -185,13 +187,14 @@ textarea{display:block;min-height:150px;resize:none}
 .pop.open #after>*:nth-child(5){transition-delay:.46s}.pop.open #after>*:nth-child(n+6){transition-delay:.52s}
 #after h2{font-size:clamp(1.8rem,3.2vw,2.6rem);font-weight:var(--hx);text-transform:var(--hc);margin:10px 0 10px}
 .sub3{margin:24px 0 10px}
-#leadPop.open,#invitePop.open{margin-top:14px}
+#leadPop.open{margin-top:14px}
+#invitePop.open{margin:4px 0 8px}
 .leadbox{display:grid;gap:8px;padding:4px 0 4px 14px;border-left:2px solid var(--line2)}
 .leadbox .hint{margin:0}
 .notify{margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}
 .notify .muted{margin:0 0 12px}
 .notify .lab{display:block;margin-bottom:6px}
-.phonerow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.phonerow{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
 .notify .hint{margin-top:6px;min-height:0}
 .leadbox a{color:var(--ink)}
 .err{color:var(--accent);margin:12px 0 0;min-height:1.5em;font-size:.9375rem}
@@ -247,6 +250,10 @@ textarea{display:block;min-height:150px;resize:none}
 .h2b{margin-top:56px}
 .where{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px;margin-top:28px;align-items:start}
 #usMap{display:block;width:100%;height:auto}
+.where>.card:first-child,.where>.card:first-child:hover{border-left:0;padding-left:0}
+#usMap,.hero{overflow:visible}
+#mapDots circle,#heroDots circle{cursor:pointer}
+.maptip{font:600 30px var(--sans);fill:var(--ink);pointer-events:none;opacity:0;transition:opacity .15s;paint-order:stroke;stroke:var(--bg);stroke-width:9px;stroke-linejoin:round}
 #mapLand .land{fill:rgba(214,213,201,.07)}
 #mapLand .edge{fill:none;stroke:rgba(10,16,13,.9);stroke-width:.8;stroke-linejoin:round}
 #mapDots circle{fill:rgba(162,44,41,.55);stroke:var(--accent);stroke-width:1.2;transition:fill .2s}
@@ -405,10 +412,10 @@ select:hover,select:focus,.opt:hover,.opt[aria-pressed="true"]{color:var(--ink)}
             <label class="lab" for="inPhone2">Phone number <span class="req" id="phoneReq" hidden>*</span></label>
             <div class="phonerow">
               <input type="tel" id="inPhone2" autocomplete="tel" maxlength="30" placeholder="(555) 555-5555">
-              <button type="button" class="opt pick" id="pkSms" aria-pressed="false"><span class="key"></span><span>I agree to be texted</span><span class="saved">Saved</span></button>
+              <button type="button" class="opt pick" id="pkSms" aria-pressed="false" hidden><span class="key"></span><span>I agree to be texted</span><span class="saved">Saved</span></button>
             </div>
             <p class="hint bad" id="phoneHint" role="status"></p>
-            <p class="hint">Message frequency varies. Message and data rates may apply. Reply STOP to stop, HELP for help. <a href="#privacy">Privacy</a></p>
+            <p class="hint">By adding your number you agree to be texted by Our Futures First about the letter. Message frequency varies. Message and data rates may apply. Reply STOP to stop, HELP for help. <a href="#privacy">Privacy</a></p>
           </div>
           <p class="lab sub3">Can you help it reach your campus?</p>
           <div class="opts" id="spread"></div>
@@ -416,8 +423,7 @@ select:hover,select:focus,.opt:hover,.opt[aria-pressed="true"]{color:var(--ink)}
           <div class="pop" id="invitePop"><div><div class="leadbox">
             <label class="lab" for="inInvite">Emails of the people you want to send it to</label>
             <textarea id="inInvite" style="min-height:76px" placeholder="friend@university.edu, another@university.edu"></textarea>
-            <div><a class="btn ghost" id="btnInvite" href="#">Write the email</a></div>
-            <p class="hint" id="inviteMsg" role="status">This opens a draft in your own email app, addressed to them. We never receive these addresses.</p>
+            <p class="hint" id="inviteMsg" role="status">Saved automatically. We'll send them the letter when it's ready.</p>
           </div></div></div>
           <div class="pop" id="leadPop"><div><div class="leadbox">
             <p class="hint">We'll connect you with other groups of campus organizers at your university and contact you about next steps. Your name will be shown on the public list, marked as a campus organizer. <a href="#organizers">Click for information on what that means.</a></p>
@@ -507,14 +513,14 @@ select:hover,select:focus,.opt:hover,.opt[aria-pressed="true"]{color:var(--ink)}
     <h2>How we use it</h2>
     <p>To confirm that you belong to a U.S. university, to contact you about the letter, to count sign-ups and show totals, and to decide what goes in the letter. If you volunteer as a campus organizer, your name is shared with the other campus organizers at your university.</p>
     <h2 id="texts">Text messages</h2>
-    <p>A phone number is optional. We text you only if you give a number and tick the box agreeing to be texted by Our Futures First. Texts are about the letter and organizing on your campus. Message frequency varies. Message and data rates may apply. Reply STOP to stop at any time, or HELP for help.</p>
+    <p>A phone number is optional. We text you only if you give a number; adding it is your agreement to be texted by Our Futures First. Texts are about the letter and organizing on your campus. Message frequency varies. Message and data rates may apply. Reply STOP to stop at any time, or HELP for help.</p>
     <p>We do not sell phone numbers or text-message consent, and we do not share them with anyone for their own marketing.</p>
     <h2>Who we share it with</h2>
     <p>Only the services that run the site for us: the company that hosts this website, Supabase for the database and sign-in emails, and an email delivery service. Google Fonts and jsDelivr deliver fonts and code to your browser and so see your IP address. We do not sell personal information. We may disclose information if the law requires it.</p>
     <h2>How long we keep it</h2>
     <p>Until the letter project ends, or until you ask us to delete it. An entry whose email is never confirmed is not counted or shown.</p>
     <h2>Your choices</h2>
-    <p>If you use the form to invite friends, the addresses you type only open a draft in your own email app. We do not receive or store them.</p>
+    <p>If you list fellow students to share the letter with, we keep those addresses with your sign-up and use them only to send those people the letter. We do not show them or pass them on.</p>
     <p>You can change your entry from the browser you signed up in, or from the link we emailed you. To see, correct or delete what we hold about you, email <a href="mailto:ourfuturesfirst@gmail.com">ourfuturesfirst@gmail.com</a>.</p>
     <h2>Do Not Track</h2>
     <p>We do not track you across other websites, so this site behaves the same way whatever your browser's Do Not Track setting is.</p>
@@ -568,7 +574,7 @@ var Q=[
 /* stu: asked of undergraduates and graduate students only. Postdocs, faculty and staff skip these. */
 var SPREAD=[
  {id:"lists",t:"I'll email my dorm, class or club lists"},
- {id:"chats",t:"I'll share it with friends and group chats"},
+ {id:"chats",t:"I'll share it with fellow students"},
  {id:"lead",t:"I'd help organize this at my university"}
 ];
 var TEXTQ=[{id:"inConcern",q:"What concerns you most about AI?"}];
@@ -636,7 +642,7 @@ function buildForm(){
     var os=mk("div","opts");optBtns[q.id]={};
     q.o.forEach(function(o,oi){var b=mk("button","opt");b.type="button";b.setAttribute("aria-pressed","false");
       b.appendChild(mk("span","key","ABCD".charAt(oi)));b.appendChild(mk("span",null,o));b.appendChild(mk("span","opct"));optBtns[q.id][o]=b;
-      b.addEventListener("click",function(){if(busy)return;pick(q,o);setTimeout(function(){go(step(qi,1));},CALM?0:1100);});
+      b.addEventListener("click",function(){if(busy)return;pick(q,o);setTimeout(function(){go(step(qi,1));},CALM?0:260);});
       os.appendChild(b);});
     sl.appendChild(os);add(sl);
   });
@@ -652,7 +658,7 @@ function buildForm(){
     b.addEventListener("click",function(){var was=!!S.spread[s.id];set(!was);renderLead();
       if(s.id==="lists"){if(was)$("spreadMsg").textContent="";else copy("Link copied to your clipboard. Paste it into the email to your lists.","spreadMsg");}
       patch({spread:spreadList()}).then(function(){flash(b);},function(){set(was);renderLead();$("copyMsg").textContent=FAIL.save;});});
-    sp.appendChild(b);spreadBtns[s.id]=b;});
+    sp.appendChild(b);spreadBtns[s.id]=b;if(s.id==="chats")sp.appendChild($("invitePop"));});
   renderNav();
 }
 function renderNav(){
@@ -679,7 +685,7 @@ function renderLead(){
 /* one phone number: optional for a text when the letter is out, needed for campus organizers */
 function savePhone(el){var phone=$("inPhone2").value.trim(),h=$("phoneHint");
   if(!phoneOk(phone)){h.textContent="That phone number looks incomplete.";return;}
-  if(!phone)S.sms=false;h.textContent="";
+  S.sms=!!phone;h.textContent="";
   patch({phone:phone,sms_ok:S.sms}).then(function(){flash(el);renderLead();},function(){h.textContent=FAIL.save;});}
 $("inPhone2").addEventListener("input",function(){this.value=fmtPhone(this.value);$("phoneHint").textContent="";});
 $("inPhone2").addEventListener("change",function(){savePhone(this);});
@@ -691,16 +697,16 @@ function go(i){
   var st=$("stage"),cur=slides[S.slide],nx=slides[i],dir=i>S.slide?1:-1;
   if(CALM){cur.hidden=true;nx.hidden=false;S.slide=i;renderNav();return;}
   busy=true;st.classList.add("moving");st.style.height=st.offsetHeight+"px";
-  cur.style.transition="opacity .18s ease,transform .18s ease";cur.style.opacity="0";cur.style.transform="translateX("+(-28*dir)+"px)";
+  cur.style.transition="opacity .11s ease,transform .11s ease";cur.style.opacity="0";cur.style.transform="translateX("+(-28*dir)+"px)";
   setTimeout(function(){
     cur.hidden=true;cur.style.cssText="";
     nx.style.opacity="0";nx.style.transform="translateX("+(28*dir)+"px)";nx.hidden=false;
     S.slide=i;renderNav();st.style.height=nx.offsetHeight+"px";
     setTimeout(function(){
-      nx.style.transition="opacity .32s ease,transform .32s cubic-bezier(.2,.7,.2,1)";nx.style.opacity="1";nx.style.transform="none";
-      setTimeout(function(){nx.style.cssText="";st.style.height="";st.classList.remove("moving");busy=false;},340);
+      nx.style.transition="opacity .18s ease,transform .18s cubic-bezier(.2,.7,.2,1)";nx.style.opacity="1";nx.style.transform="none";
+      setTimeout(function(){nx.style.cssText="";st.style.height="";st.classList.remove("moving");busy=false;},200);
     },20);
-  },180);
+  },110);
 }
 /* who is answering: role, and year for undergraduates */
 var ROLES=["an undergraduate","a graduate student","a postdoc","faculty","staff"],YEARS=["First-year","Sophomore","Junior","Senior"];
@@ -826,13 +832,18 @@ function loadMajors(dom){
 /* ---------- board ---------- */
 /* the people number is shown as it is. On a wide screen the banner map adds one dot per university as the page
    loads and the university number counts up with them; later changes, small screens and reduced motion skip the animation */
+/* hovering or tapping a dot names the university and its count */
+function mapTip(g){var t=document.createElementNS("http://www.w3.org/2000/svg","text");t.setAttribute("class","maptip");g.parentNode.appendChild(t);
+  g.addEventListener("pointerover",function(e){var c=e.target;if(c.tagName!=="circle")return;var x=+c.getAttribute("cx"),y=+c.getAttribute("cy"),r=+c.getAttribute("r");
+    t.textContent=c.getAttribute("data-label");t.setAttribute("x",x);t.setAttribute("y",Math.max(30,y-r-12));t.setAttribute("text-anchor",x>760?"end":x<215?"start":"middle");t.style.opacity=1;});
+  g.addEventListener("pointerout",function(){t.style.opacity=0;});}
 var heroKey="",HERO_WIDE=window.matchMedia&&window.matchMedia("(min-width:921px)").matches;
 function heroMap(B){
   var el=$("cUnis"),g=$("heroDots"),n=B.unis.length,key=B.unis.map(function(u){return u.key+u.n;}).join();
   if(key===heroKey)return;var first=!heroKey&&n>0;heroKey=key;clear(g);
   var top=n?B.unis[0].n:1,play=first&&HERO_WIDE&&!CALM,step=play?Math.min(110,1800/n):0;
   B.unis.forEach(function(u,i){
-    if(u.x!=null){var c=document.createElementNS(NS,"circle");c.setAttribute("cx",u.x);c.setAttribute("cy",u.y);c.setAttribute("r",(6+12*Math.sqrt(u.n/top)).toFixed(1));
+    if(u.x!=null){var c=document.createElementNS(NS,"circle");c.setAttribute("cx",u.x);c.setAttribute("cy",u.y);c.setAttribute("r",(6+12*Math.sqrt(u.n/top)).toFixed(1));c.setAttribute("data-label",u.name+": "+num(u.n));
       if(play){c.setAttribute("class","pop");c.style.animationDelay=Math.round(i*step)+"ms";}g.appendChild(c);}
     if(play)setTimeout(function(){if(heroKey===key)el.textContent=num(i+1);},i*step);});
   if(!play)el.textContent=num(n);else el.textContent="0";
@@ -923,9 +934,9 @@ function renderDemo(B){
   var r=ordered(D.role,["Undergraduate","Graduate student","Postdoc","Faculty","Staff"]),y=ordered(D.year,YEARS);
   demoBars($("dRole"),r,sum(r));demoBars($("dYear"),y,sum(y));demoBars($("dMajor"),D.major,B.total);
   var g=$("mapDots"),top=B.unis.length?B.unis[0].n:1;clear(g);
-  B.unis.filter(function(u){return u.x!=null;}).forEach(function(u){var c=document.createElementNS(NS,"circle"),t=document.createElementNS(NS,"title");
+  B.unis.filter(function(u){return u.x!=null;}).forEach(function(u){var c=document.createElementNS(NS,"circle");
     c.setAttribute("cx",u.x);c.setAttribute("cy",u.y);c.setAttribute("r",(5+21*Math.sqrt(u.n/top)).toFixed(1));
-    t.textContent=u.name+": "+num(u.n);c.appendChild(t);g.appendChild(c);});
+    c.setAttribute("data-label",u.name+": "+num(u.n));g.appendChild(c);});
 }
 /* the outline comes from the us-atlas map file, which is already drawn on the same 975 by 610 grid as the stored positions */
 function loadMap(){[["land",MAP_LAND],["edge",MAP_EDGE]].forEach(function(a){var p=document.createElementNS(NS,"path");p.setAttribute("class",a[0]);p.setAttribute("d",a[1]);$("mapLand").appendChild(p);});}
@@ -999,14 +1010,14 @@ $("btnResend").addEventListener("click",function(){var m=$("resendMsg");m.textCo
 function copy(note,id){var url=location.href.split(/[?#]/)[0],m=$(id||"copyMsg");
   try{navigator.clipboard.writeText(url).then(function(){m.textContent=note;},function(){m.textContent="Copy the address from your browser bar.";});}catch(x){m.textContent="Copy the address from your browser bar.";}}
 $("btnCopy").addEventListener("click",function(){copy("Link copied.");});
-/* inviting friends: the visitor's own email app sends it, so their friends' addresses never reach us */
-$("btnInvite").addEventListener("click",function(e){
-  var list=$("inInvite").value.split(/[\s,;]+/).filter(Boolean),bad=list.filter(function(x){return !MAIL.test(x);}),m=$("inviteMsg");
-  if(!list.length||bad.length){e.preventDefault();m.className="hint bad";m.textContent=list.length?"Check this address: "+bad[0]:"Enter at least one email address.";return;}
-  var url=location.href.split(/[?#]/)[0],en=encodeURIComponent;
-  this.href="mailto:?bcc="+en(list.join(","))+"&subject="+en("Students are writing an open letter on AI")+"&body="+en("Students across U.S. universities are putting together an open letter on regulating AI development, and they are asking what should be in it. It takes two minutes:\n\n"+url);
-  m.className="hint";m.textContent="Opening a draft to "+list.length+(list.length===1?" person":" people")+" in your email app.";
-});
+/* inviting fellow students: the list saves itself a moment after typing stops */
+var inviteTimer=null;
+$("inInvite").addEventListener("input",function(){var el=this,m=$("inviteMsg");clearTimeout(inviteTimer);inviteTimer=setTimeout(function(){
+  var list=el.value.split(/[\s,;]+/).filter(Boolean),bad=list.filter(function(x){return !MAIL.test(x);});
+  if(bad.length){m.className="hint bad";m.textContent="Check this address: "+bad[0];return;}
+  var done=function(){m.className="hint";m.textContent=list.length?"Saved "+list.length+(list.length===1?" address.":" addresses.")+" We'll send them the letter when it's ready.":"Saved automatically. We'll send them the letter when it's ready.";};
+  if(!S.live||!S.token||S.token==="local"){done();return;}
+  sb.rpc("set_invites",{p_token:S.token,p_list:list.join(", ")}).then(function(r){if(r.error){m.className="hint bad";m.textContent=FAIL.save;}else done();});},700);});
 $("shInsta").addEventListener("click",function(){copy("Link copied. Paste it into your story or a DM.");});
 
 /* ---------- backend ---------- */
@@ -1079,7 +1090,7 @@ window.addEventListener("hashchange",function(){route();var t=(ANCH[location.has
 /* ---------- boot ---------- */
 function renderAll(){$("previewNote").hidden=S.live;renderWidget();updateResults();renderAfter();}
 function loadBoard(){return sb.rpc("board").then(function(r){if(!r.error&&r.data){S.remote=r.data;renderAll();}});}
-buildForm();buildResults();showUni(null,false);route();paintShow();loadMap();
+buildForm();buildResults();showUni(null,false);route();paintShow();loadMap();mapTip($("heroDots"));mapTip($("mapDots"));
 if(!S.live){S.rows=sample();renderAll();}
 else{
   renderAll();loadBoard();setInterval(loadBoard,30000);
