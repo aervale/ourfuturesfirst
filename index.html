@@ -1195,7 +1195,12 @@ else{
   renderAll();loadBoard();setInterval(loadBoard,30000);
   sb.rpc("majors_for",{p_dom:""}).then(function(r){if(!r.error&&r.data&&r.data.length)MAJ.all=r.data;});
   /* arriving from the emailed link signs the visitor in and confirms them; otherwise a saved edit token brings their entry back */
-  sb.auth.getSession().then(function(r){
+  /* the emailed link points at this site (?token_hash=...&type=email) rather than at Supabase, so mail filters see one domain;
+     trade the token for a session here, then take it out of the address bar */
+  var qs=new URLSearchParams(location.search),th=qs.get("token_hash"),
+      verified=th?sb.auth.verifyOtp({token_hash:th,type:qs.get("type")||"email"}).catch(function(){return null;}):Promise.resolve(null);
+  if(th){qs.delete("token_hash");qs.delete("type");try{history.replaceState(null,"",location.pathname+(qs.toString()?"?"+qs:"")+location.hash);}catch(x){}}
+  verified.then(function(){return sb.auth.getSession();}).then(function(r){
     if(r.data&&r.data.session)return sb.rpc("confirm_signup").then(function(m){return m.data;});
     var t=null;try{t=localStorage.getItem("off_token");}catch(x){}
     return t?sb.rpc("get_interest",{p_token:t}).then(function(m){return m.data;}):null;
