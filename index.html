@@ -1251,12 +1251,12 @@ function paintReach(){
   for(i=0;i<nf;i++){a=i*2.39996+.6;var rr=58+(i*7%3)*8;x=80+rr*Math.cos(a);y=80+rr*Math.sin(a);
     st=el("path","st far"+(i>=wasF?" born":""),{d:starPath(+x.toFixed(1),+y.toFixed(1),3.4)});st.style.animationDelay=(i>=wasF?(i-wasF)*90:-(i*530%4500))+"ms";st.style.setProperty("--o",[.7,.5,.34][i*7%3]);}
   el("path","me",{d:starPath(80,80,11)});
-  /* the numbers live in the pop-up: one line for each circle, then every university the chain has reached */
+  /* the numbers live in the pop-up: who joined from the link, the entire chain, then every university the chain has reached */
   var ul=$("reachUnis"),more=$("skyMore"),nm={},doms=Object.keys(S.chain||{}).sort(function(p,q){return S.chain[q]-S.chain[p]||(p<q?-1:1);});
-  $("skyBtn").setAttribute("aria-label","Your reach: "+num(d)+(d===1?" person":" people")+" joined from your link, "+num(t)+" in all. Show the details.");
+  $("skyBtn").setAttribute("aria-label","Your reach: "+num(d)+(d===1?" person":" people")+" joined from your link, "+num(t)+" in your entire chain. Show the details.");
   $("skyNone").hidden=t>0;$("skyRings").hidden=!t;more.hidden=!doms.length;
-  $("rDirect").textContent=num(d);$("rDirectLab").textContent="joined from your link (the inner circle)";
-  $("rFar").textContent=num(far);$("rFarLab").textContent="joined through them (the outer circles)";
+  $("rDirect").textContent=num(d);$("rDirectLab").textContent="joined from your link";
+  $("rFar").textContent=num(t);$("rFarLab").textContent="in your entire chain";
   more.firstChild?more.firstChild.textContent=uniLabel(doms.length):more.appendChild(document.createTextNode(uniLabel(doms.length)));
   clear(ul);board().unis.forEach(function(u){nm[u.key]=u.name;});
   doms.forEach(function(k){var li=mk("li",null,nm[k]||k);li.appendChild(mk("b",null,num(S.chain[k])));ul.appendChild(li);});
