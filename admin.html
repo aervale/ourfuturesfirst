@@ -7,7 +7,7 @@
 <meta name="referrer" content="no-referrer">
 <!-- This page may only load its own files, the database client, the spam check and the fonts, and may only send data to the database.
      If anything hostile ever ran here, it could not ship the sign-ups to another server. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://challenges.cloudflare.com; connect-src https://pexnchjiphwyftvhykih.supabase.co http://127.0.0.1:54421 https://challenges.cloudflare.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; frame-src https://challenges.cloudflare.com; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://challenges.cloudflare.com; connect-src https://pexnchjiphwyftvhykih.supabase.co http://127.0.0.1:54421 https://challenges.cloudflare.com https://status.supabase.com https://resend-status.com https://script.google.com https://script.googleusercontent.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; frame-src https://challenges.cloudflare.com; base-uri 'none'; form-action 'none'">
 <title>Admin, Our Futures First</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -104,6 +104,13 @@ input:focus{outline:0;background:var(--field-on)}
 .facts div>span:first-child{white-space:nowrap}
 .facts div>span:last-child{text-align:right}
 .up{color:var(--good)}.down{color:var(--accent-ink)}
+/* service status strip */
+.svc{display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center;margin:0 0 18px;font-size:.8125rem;color:var(--mute)}
+.svc a{display:inline-flex;align-items:center;gap:7px;color:inherit;text-decoration:none}
+.svc a:hover{color:var(--ink)}
+.svc b{font-weight:600;color:var(--ink)}
+.svc i{width:8px;height:8px;border-radius:50%;background:var(--faint);flex:none}
+.svc i.ok{background:var(--good)}.svc i.warn{background:#E0A43A}.svc i.bad{background:var(--accent-ink)}
 
 /* chart */
 .chart{position:relative;margin-top:36px}
@@ -193,6 +200,17 @@ td.wide{white-space:normal;min-width:320px}
     <button class="toggle" id="chConfirmed" aria-pressed="true"><i></i>Confirmed only</button>
   </div>
 
+  <p class="svc" id="svc" aria-live="polite">
+    <a id="svcSupabase" href="https://status.supabase.com/" target="_blank" rel="noopener noreferrer"><i></i><b>Supabase</b><span>Checking</span></a>
+    <a id="svcResend" href="https://resend-status.com/" target="_blank" rel="noopener noreferrer"><i></i><b>Resend</b><span>Checking</span></a>
+    <span id="svcDb"></span>
+  </p>
+  <p class="svc">
+    <span class="lab">Messages</span>
+    <a href="https://mail.google.com/" target="_blank" rel="noopener noreferrer"><b>Gmail</b><span id="msgGmail">Not connected yet</span></a>
+    <a href="https://x.com/messages" target="_blank" rel="noopener noreferrer"><b>X</b><span>Open inbox</span></a>
+    <a href="https://www.instagram.com/direct/inbox/" target="_blank" rel="noopener noreferrer"><b>Instagram</b><span>Open inbox</span></a>
+  </p>
   <p class="sum" id="sum"></p>
   <div class="card switches">
     <p class="lab">Shown on the public page</p>
@@ -486,10 +504,32 @@ function csv(){
 var MAXAGE=12*3600;
 function signedInAt(session){try{var p=JSON.parse(atob(session.access_token.split(".")[1].replace(/-/g,"+").replace(/_/g,"/"))),t=0;
   (p.amr||[]).forEach(function(m){if(m.timestamp>t)t=m.timestamp;});return t;}catch(x){return 0;}}
+/* Supabase and Resend publish their own status; each link opens the full status page */
+/* Gmail counts come from a small Google Apps Script running as the project's Gmail account (tools/gmail-count.gs).
+   Paste its Web app URL here, the one ending in /exec. X and Instagram do not offer message counts for free, so they are links. */
+var GMAIL_COUNT="";
+function gmail(){if(!GMAIL_COUNT)return;var el=$("msgGmail");
+  fetch(GMAIL_COUNT,{cache:"no-store"}).then(function(r){return r.json();}).then(function(j){
+    el.textContent=j.people+(j.people===1?" person":" people")+" have written · "+j.week+" this week · "+j.unread+" unread";},
+  function(){el.textContent="Count did not load";});}
+function dbTime(ms){$("svcDb").textContent=ms<0?"Our database: not answering":"Our database answered in "+Math.round(ms)+" ms";}
+function services(){gmail();
+  [["svcSupabase","https://status.supabase.com/api/v2/status.json"],["svcResend","https://resend-status.com/api/v2/status.json"]].forEach(function(p){
+    var el=$(p[0]),dot=el.querySelector("i"),txt=el.querySelector("span");
+    fetch(p[1],{cache:"no-store"}).then(function(r){return r.json();}).then(function(j){var s=j.status||{},k=s.indicator;
+      dot.className=k==="none"?"ok":k==="minor"||k==="maintenance"?"warn":"bad";txt.textContent=s.description||"Unknown";
+      el.title="Updated "+new Date().toLocaleTimeString();},
+    function(){dot.className="";txt.textContent="Status page did not answer";});});
+  /* and our own database: how long a small query takes from here */
+  if(C.dev)return;var t0=performance.now();
+  sb.rpc("admin_events").then(function(o){dbTime(o.error?-1:performance.now()-t0);});
+}
 function start(session){
   if(!C.dev&&Date.now()/1000-signedInAt(session)>MAXAGE){sb.auth.signOut().then(function(){$("signin").hidden=false;$("msg").textContent="Your sign-in has expired. Ask for a new link.";});return;}
   $("who").textContent=session.user.email;$("btnOut").hidden=false;
+  var t0=performance.now();
   sb.rpc(C.dev?"dev_admin_rows":"admin_rows").then(function(o){
+    dbTime(o.error?-1:performance.now()-t0);
     if(o.error){$("signin").hidden=false;$("msg").textContent=/not_admin/.test(o.error.message)?session.user.email+" is not on the admin list.":"Could not load. Try again.";return;}
     ROWS=o.data;$("dash").hidden=false;
     paintUni=dropdown($("ddUni"),function(){var c=count(scope({noUni:true}),function(r){return r.dom;}),nm={};ROWS.forEach(function(r){nm[r.dom]=r.uni;});
@@ -499,7 +539,7 @@ function start(session){
     /* any university's progress, charted on its own without filtering the rest of the page */
     paintPlot=dropdown($("ddPlot"),function(){var c=count(scope({noUni:true}),function(r){return r.dom;}),nm={};ROWS.forEach(function(r){nm[r.dom]=r.uni;});
       return [["",F.uni?nm[F.uni]+" (as filtered above)":"All universities",null]].concat(c.map(function(p){return [p[0],nm[p[0]],p[1]];}));},function(){return F.plotUni;},function(v){F.plotUni=v;},true);
-    paintUni();paintRole();render();
+    paintUni();paintRole();render();services(true);setInterval(function(){if(!document.hidden)services();},120000);
     /* the three parts of the public page that are switched on from here; a change shows there within half a minute */
     /* the switches are a draft until Save is pressed. The draft is kept in this browser so the preview can show it. */
     var SW={ticker:$("swTicker"),results:$("swResults"),who:$("swWho"),sharing:$("swSharing")},SAVED=null,DRAFT=null,msg=$("swMsg");
