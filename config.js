@@ -14,6 +14,7 @@ window.OFF_CONFIG=/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)?{
 }:{
   url:"https://pexnchjiphwyftvhykih.supabase.co",
   key:"sb_publishable_i-3pCBiKdA94E52wiPQ9iA_WxLqp6y1",
-  /* Put the real Cloudflare Turnstile site key here once the spam check is switched on in the hosted project. */
-  turnstile:""
+  /* Cloudflare Turnstile site key (public) for the "Our Futures First sign-up" widget. Its secret key goes in
+     Supabase: Authentication > Attack Protection > Captcha, provider Turnstile. */
+  turnstile:"0x4AAAAAAGUXpCs3DKLRjllg"
 };
