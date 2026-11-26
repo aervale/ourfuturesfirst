@@ -90,6 +90,10 @@ input:focus{outline:0;background:var(--field-on)}
 .swrow{display:flex;flex-wrap:wrap;gap:6px 34px;margin-top:8px}
 .swsave{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:14px 0 0}
 #swMsg{font-size:.875rem}
+#swMsg.unsaved{color:var(--accent-ink);font-weight:600}
+.swsave .btn{padding:6px 14px}
+.swnote{margin:6px 0 12px;color:var(--mute);font-size:.875rem}
+.swnote b{color:var(--ink);font-weight:600}
 .toggle.changed{color:var(--accent-ink)}
 .btn:disabled,.btn:disabled:hover{background:var(--field);border-color:transparent;color:var(--faint);cursor:default}
 #lnkPreview{color:var(--ink);text-underline-offset:3px}
@@ -214,6 +218,7 @@ td.wide{white-space:normal;min-width:320px}
   <p class="sum" id="sum"></p>
   <div class="card switches">
     <p class="lab">Shown on the public page</p>
+    <p class="swnote">Flipping a switch changes <b>your preview</b> straight away. The <b>live site</b> changes only when you press Save.</p>
     <div class="swrow">
       <button class="toggle" id="swTicker" aria-pressed="false" disabled><i></i>Scrolling list of universities</button>
       <button class="toggle" id="swResults" aria-pressed="false" disabled><i></i>Poll results</button>
@@ -546,12 +551,12 @@ function start(session){
     function dirty(){return Object.keys(SW).filter(function(k){return !!DRAFT[k]!==!!SAVED[k];});}
     function paintSw(){var ch=dirty();Object.keys(SW).forEach(function(k){SW[k].disabled=false;SW[k].setAttribute("aria-pressed",String(!!DRAFT[k]));SW[k].classList.toggle("changed",ch.indexOf(k)>-1);});
       $("btnSwSave").disabled=!ch.length;$("btnSwUndo").hidden=!ch.length;try{localStorage.setItem("off_draft",JSON.stringify(DRAFT));}catch(x){}
-      if(ch.length)msg.textContent="Not saved yet. The preview shows these changes; visitors don't see them until you save.";}
+      msg.classList.toggle("unsaved",ch.length>0);if(ch.length)msg.textContent="Not saved. "+(ch.length===1?"This change is":"These "+ch.length+" changes are")+" in your preview only; the live site is unchanged.";}
     function took(f){SAVED={};DRAFT={};Object.keys(SW).forEach(function(k){SAVED[k]=DRAFT[k]=k in f?!!f[k]:k==="sharing";});paintSw();}
     sb.rpc("page_switches").then(function(r){if(r.error||!r.data){msg.textContent="Not available yet: the database change for these switches has not been applied.";return;}took(r.data);});
     Object.keys(SW).forEach(function(k){SW[k].addEventListener("click",function(){DRAFT[k]=!DRAFT[k];msg.textContent="";paintSw();});});
     $("btnSwUndo").addEventListener("click",function(){took(SAVED);msg.textContent="Changes discarded.";});
-    $("btnSwSave").addEventListener("click",function(){var ch=dirty(),last=null;if(!ch.length)return;$("btnSwSave").disabled=true;msg.textContent="Saving";
+    $("btnSwSave").addEventListener("click",function(){var ch=dirty(),last=null;if(!ch.length)return;$("btnSwSave").disabled=true;msg.classList.remove("unsaved");msg.textContent="Saving";
       ch.reduce(function(p,k){return p.then(function(){return sb.rpc(C.dev?"dev_admin_set_switch":"admin_set_switch",{p_name:k,p_shown:!!DRAFT[k]}).then(function(r){if(r.error||!r.data)throw r.error||{};last=r.data;});});},Promise.resolve())
       .then(function(){took(last);msg.textContent="Saved. The public page picks it up within half a minute.";},
         function(e){paintSw();msg.textContent=/not_admin/.test((e&&e.message)||"")?"Your sign-in has expired. Reload and ask for a new link.":"That didn't save. Try again.";});});
