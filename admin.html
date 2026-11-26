@@ -179,8 +179,16 @@ td.wide{white-space:normal;min-width:320px}
   <h2>Poll answers <small id="pollNote"></small></h2>
   <div class="grid three" id="poll"></div>
 
+  <h2>Sharing <small id="shareNote"></small></h2>
+  <div class="card facts" id="shareFacts"></div>
+  <div class="grid three" style="margin-top:16px">
+    <div class="card"><h3>Share buttons pressed</h3><div id="byButton"></div></div>
+    <div class="card"><h3>How opened links were sent</h3><div id="bySource"></div></div>
+    <div class="card"><h3>Links opened per day <span class="mute" style="font-weight:400">last 14 days</span></h3><div id="byOpenDay"></div></div>
+  </div>
+
   <h2>Share links <small id="refNote"></small></h2>
-  <p class="mute">Direct is people who joined from that person's own link. Downstream adds everyone who then joined through those people's links, and so on.</p>
+  <p class="mute">Opens is how many times the link was opened. Direct is people who joined from that person's own link. Downstream adds everyone who then joined through those people's links, and so on. Buttons is how many times that person pressed Copy or a share button.</p>
   <div class="scroll"><table id="tRef"></table></div>
 
   <h2>Campus organizers</h2>
@@ -211,12 +219,14 @@ function clear(e){while(e.firstChild)e.removeChild(e.firstChild);}
 var C=window.OFF_CONFIG||{};
 if(!C.url){$("signin").hidden=false;$("msg").textContent="No backend is configured.";return;}
 var sb=window.supabase.createClient(C.url,C.key);
-var ROWS=[],F={uni:"",role:"",confirmed:true,mode:"total",allUnis:false};
+var EV={events:[],invites:[],ok:false},ROWS=[],F={uni:"",role:"",confirmed:true,mode:"total",allUnis:false};
 var ROLES=["an undergraduate","a graduate student","a postdoc","faculty","staff"],YEARS=["Freshman","Sophomore","Junior","Senior"];
 var RLAB={"an undergraduate":"Undergraduates","a graduate student":"Graduate students","a postdoc":"Postdocs","faculty":"Faculty","staff":"Staff"};
 var QS={feel:"How do you feel about where AI is headed?",plans:"Has AI changed your plans?",job:"When can AI do an entry-level job in your field?",
   control:"Humans lose meaningful control in your lifetime?",risk:"Which worries you more?",say:"How much say do people like you have?"};
-var HELP={lists:"Email dorm, class or club lists",chats:"Share with friends and group chats",lead:"Help organize"};
+var HELP={lists:"Email dorm, class or club lists",chats:"Share with friends and group chats",email:"Email friends an invitation",lead:"Help organize"};
+var BTN={copy:"Copy link",text:"Text",whatsapp:"WhatsApp",threads:"Threads",instagram:"Instagram",share:"Phone share sheet"},
+    SRC={"":"Copied link, or not known",text:"Text",whatsapp:"WhatsApp",threads:"Threads",email:"Invitation email",share:"Phone share sheet"};
 var NS="http://www.w3.org/2000/svg",DAY=864e5;
 function num(n){return n.toLocaleString("en-US");}
 function plural(n,one,many){return num(n)+" "+(n===1?one:many);}
@@ -229,7 +239,7 @@ function count(rows,fn){var m={};rows.forEach(function(r){[].concat(fn(r)).forEa
 function bars(el,pairs,total,limit){clear(el);if(!pairs.length){el.appendChild(mk("p","mute","Nothing yet."));return;}
   var top=Math.max.apply(null,pairs.map(function(p){return p[1];}));
   pairs.slice(0,limit||50).forEach(function(p){var r=mk("div","row");r.appendChild(mk("span",null,p[0]));
-    r.appendChild(mk("span",null,num(p[1])+" · "+Math.round(p[1]/total*100)+"%"));
+    r.appendChild(mk("span",null,num(p[1])+" ("+Math.round(p[1]/total*100)+"%)"));
     var i=mk("i"),u=mk("u");u.style.width=p[1]/top*100+"%";i.appendChild(u);r.appendChild(i);el.appendChild(r);});}
 function table(el,heads,rows,cells){clear(el);var tr=mk("tr");heads.forEach(function(h){tr.appendChild(mk("th",null,h));});el.appendChild(tr);
   if(!rows.length){var e=mk("tr"),td=mk("td","mute","Nothing here.");td.colSpan=heads.length;e.appendChild(td);el.appendChild(e);}
@@ -384,10 +394,29 @@ function render(){
   var pool=scope({noUni:true}),kids={},byRef={};ROWS.forEach(function(r){byRef[r.ref]=r;});
   pool.forEach(function(r){if(r.ref_by&&byRef[r.ref_by])(kids[r.ref_by]||(kids[r.ref_by]=[])).push(r);});
   function down(ref,seen){var n=0;(kids[ref]||[]).forEach(function(c){if(seen[c.ref])return;seen[c.ref]=1;n+=1+down(c.ref,seen);});return n;}
-  var refs=Object.keys(kids).map(function(k){return {r:byRef[k],direct:kids[k].length,down:down(k,{})};}).filter(function(x){return !F.uni||x.r.dom===F.uni;})
-    .sort(function(a,b){return b.down-a.down||b.direct-a.direct;}),via=rows.filter(function(r){return r.ref_by&&byRef[r.ref_by];}).length;
-  $("refNote").textContent=rows.length?num(via)+" of "+num(rows.length)+" joined through someone's link ("+Math.round(via/rows.length*100)+"%), from "+plural(refs.length,"person's link","people's links"):"";
-  table($("tRef"),["Name","University","Direct","Downstream","Organizer","Email"],refs.slice(0,50),function(x){return [x.r.name,x.r.uni,num(x.direct),num(x.down),isLead(x.r)?"Yes":"",x.r.email];});
+  /* sharing counts: link opens and share-button presses, for links owned by people at the selected university */
+  var evs=EV.events.filter(function(e){var o=byRef[e[2]];return o&&(!F.uni||o.dom===F.uni);}),opens={},presses={},pressers={},nOpen=0,nPress=0,days={};
+  evs.forEach(function(e){if(e[1]==="open"){nOpen++;opens[e[2]]=(opens[e[2]]||0)+1;var d=new Date(e[0]*1000).toISOString().slice(0,10);days[d]=(days[d]||0)+1;}
+    else{nPress++;presses[e[2]]=(presses[e[2]]||0)+1;pressers[e[2]]=1;}});
+  var inv=EV.invites.filter(function(i){var o=byRef[i[1]];return o&&(!F.uni||o.dom===F.uni);}),sent=inv.filter(function(i){return i[2];}).length,
+      via=pool.filter(function(r){return r.ref_by&&byRef[r.ref_by]&&(!F.uni||byRef[r.ref_by].dom===F.uni);}).length,
+      owners=ROWS.filter(function(r){return !F.uni||r.dom===F.uni;}).length,sf=$("shareFacts");
+  clear(sf);function sfact(l,v){var d=mk("div");d.appendChild(mk("span","lab",l));d.appendChild(mk("span",null,v));sf.appendChild(d);}
+  $("shareNote").textContent=!EV.ok?"Not available yet: the database change for sharing counts has not been applied.":uni?"Links owned by people at "+uni:"";
+  sfact("Personal links opened",num(nOpen)+(nOpen?", from "+plural(Object.keys(opens).length,"person's link","people's links"):""));
+  sfact("Sign-ups that came from a link",num(via)+(nOpen?", one for every "+(via?(nOpen/via).toFixed(1):"0")+" opens":""));
+  sfact("Share buttons pressed",num(nPress)+(owners?", by "+num(Object.keys(pressers).length)+" people ("+Math.round(Object.keys(pressers).length/owners*100)+"% of sign-ups)":""));
+  sfact("Invitation emails",num(inv.length)+" addresses entered, "+num(sent)+" sent");
+  bars($("byButton"),count(evs.filter(function(e){return e[1]!=="open";}),function(e){return BTN[e[1]]||e[1];}),nPress||1);
+  bars($("bySource"),count(evs.filter(function(e){return e[1]==="open";}),function(e){return SRC[e[3]]||e[3];}),nOpen||1);
+  var dl=[];for(var k=0;k<14;k++){var dk=new Date(now-k*DAY).toISOString().slice(0,10);dl.push([fmtDay(dk+"T12:00:00Z"),days[dk]||0]);}
+  var dTot=dl.reduce(function(a,p){return a+p[1];},0);bars($("byOpenDay"),dTot?dl:[],dTot||1,14);
+
+  var refs=Object.keys(byRef).filter(function(k){return kids[k]||opens[k];}).map(function(k){return {r:byRef[k],direct:(kids[k]||[]).length,down:down(k,{}),opens:opens[k]||0,press:presses[k]||0};}).filter(function(x){return !F.uni||x.r.dom===F.uni;})
+    .sort(function(a,b){return b.down-a.down||b.direct-a.direct||b.opens-a.opens;});
+  var viaAll=rows.filter(function(r){return r.ref_by&&byRef[r.ref_by];}).length,bring=refs.filter(function(x){return x.direct;}).length;
+  $("refNote").textContent=rows.length?num(viaAll)+" of "+num(rows.length)+" joined through someone's link ("+Math.round(viaAll/rows.length*100)+"%), from "+plural(bring,"person's link","people's links"):"";
+  table($("tRef"),["Name","University","Opens","Direct","Downstream","Buttons","Organizer","Email"],refs.slice(0,50),function(x){return [x.r.name,x.r.uni,num(x.opens),num(x.direct),num(x.down),num(x.press),isLead(x.r)?"Yes":"",x.r.email];});
 
   table($("tOrg"),["Name","University","Email","Phone","Confirmed","Signed up"],org,function(r){return [r.name,r.uni,r.email,r.phone,r.verified_at?"Yes":"No",day(r.created_at)];});
   table($("tHidden"),["Name","University","Email","Confirmed",""],rows.filter(function(r){return r.name_hidden;}),function(r){return [r.name,r.uni,r.email,r.verified_at?"Yes":"No",hideBtn(r)];});
@@ -417,6 +446,8 @@ function start(session){
     paintRole=dropdown($("ddRole"),function(){var c={};scope({noUni:false}).forEach(function(r){c[r.role]=(c[r.role]||0)+1;});
       return [["","All roles",null]].concat(ROLES.map(function(r){return [r,RLAB[r],F.role&&F.role!==r?null:c[r]||0];}));},function(){return F.role;},function(v){F.role=v;});
     paintUni();paintRole();render();
+    /* sharing counts load separately, so the page still opens if they are missing */
+    sb.rpc(C.dev?"dev_admin_events":"admin_events").then(function(e){if(e.error||!e.data)return;EV=e.data;EV.ok=true;render();});
   });
 }
 $("chConfirmed").addEventListener("click",function(){F.confirmed=!F.confirmed;render();});

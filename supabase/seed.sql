@@ -56,3 +56,27 @@ create function public.dev_admin_set_hidden(p_id uuid, p_hidden boolean) returns
   update signups set name_hidden = p_hidden where id = p_id;
 $$;
 grant execute on function public.dev_admin_rows(), public.dev_admin_set_hidden(uuid, boolean) to anon, authenticated;
+
+-- Sharing counts (local test mode): the admin page reads them without signing in, like the rows above.
+create function public.dev_admin_events() returns jsonb language sql stable security definer set search_path = public as $$
+  select jsonb_build_object(
+    'events', coalesce((select jsonb_agg(jsonb_build_array(extract(epoch from e.at)::bigint, e.kind, e.ref, e.src) order by e.at) from events e), '[]'::jsonb),
+    'invites', coalesce((select jsonb_agg(jsonb_build_array(extract(epoch from i.created_at)::bigint, s.ref, i.sent_at is not null) order by i.created_at)
+                         from invites i join signups s on s.id = i.signup_id), '[]'::jsonb));
+$$;
+grant execute on function public.dev_admin_events() to anon, authenticated;
+
+-- Sample sharing activity. About four in ten people press a share button; links that brought people in were opened
+-- a few times for each person who joined, and a spread of other links were opened without anyone joining.
+select setseed(0.42);
+insert into events (at, kind, ref, src)
+select s.created_at + random() * interval '20 minutes', k.kind, s.ref, ''
+from signups s, lateral (select (array['copy','copy','copy','text','text','whatsapp','instagram','threads','share'])[1 + floor(random() * 9)::int] kind
+                         from generate_series(1, case when random() < .4 then 1 + floor(random() * 2)::int else 0 end + (s.id is null)::int)) k;
+insert into events (at, kind, ref, src)
+select c.created_at - random() * interval '30 minutes', 'open', c.ref_by, (array['','','','text','text','whatsapp','email','threads','share'])[1 + floor(random() * 9)::int]
+from signups c, generate_series(1, 4) g
+where c.ref_by <> '' and (g = 1 or random() < .45);
+insert into events (at, kind, ref, src)
+select s.created_at + random() * interval '2 days', 'open', s.ref, (array['','','text','whatsapp','email'])[1 + floor(random() * 5)::int]
+from signups s, generate_series(1, 3) g where random() < .12;
