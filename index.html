@@ -319,6 +319,8 @@ textarea{display:block;min-height:150px;resize:none}
 .noresults .slide.answered .opt::before{width:0}
 .noresults .opct{display:none}
 /* with sharing switched off, the card has no personal link, share buttons, reach sky or invitation option */
+/* a page that is switched off loses its tab and the links that lead to it; with both off there are no tabs at all */
+.noletter #tabDraft,.noletter a[href="#draft"],.noabout #tabAbout,.noabout .hint a[href="#organizers"],.noabout #viewDraft a[href="#why-wait"],.noletter.noabout .tabs{display:none}
 .nosharing #reach,.nosharing .mylink,.nosharing #spreadNote,.nosharing .sharebit{display:none}
 
 .hero{position:relative}
@@ -790,7 +792,7 @@ var sb=!PREVIEW&&CFG.url&&window.supabase?window.supabase.createClient(CFG.url,C
 var EMPTY={total:0,named:0,unis:[],people:[],answers:{}};
 /* show3: the parts an admin switches on or off. Without a backend everything shows; in the admin preview the page follows the
    switches as they stand on the admin page in this browser, including changes that have not been saved yet. */
-function draftSwitches(){var d=null;try{if(PREVIEW)d=JSON.parse(localStorage.getItem("off_draft"));}catch(x){}return d||{ticker:true,results:true,who:true,sharing:true};}
+function draftSwitches(){var d=null;try{if(PREVIEW)d=JSON.parse(localStorage.getItem("off_draft"));}catch(x){}return d||{ticker:true,results:true,who:true,sharing:true,letter:true,about:true};}
 var S={show3:sb?{}:draftSwitches(),live:!!sb,rows:[],remote:EMPTY,answers:{},spread:{},show:true,info:true,mine:null,panel:"people",slide:0,email:"",verified:false,submitted:false,editing:false,token:null,chain:{},saving:false,role:"",year:""};
 
 /* sample rows so the page can be reviewed without a backend; never used when connected */
@@ -1063,7 +1065,7 @@ function renderWidget(){
   var rows=B.people.filter(function(p){return !q||(p.name+" "+(p.uni||"")+" "+(p.info||"")).toLowerCase().indexOf(q)>-1;});
   var pl=$("peopleList");clear(pl);
   rows.slice(0,200).forEach(function(p){var li=mk("li"),nm=mk(p.lead?"a":"span",p.lead?"lead":null,p.name);
-    if(p.lead){nm.href="#organizers";nm.setAttribute("data-tip","Campus organizer at "+(p.uni||"their university")+". Click for information on what that means.");}
+    if(p.lead){var ab=S.show3.about!==false;if(ab)nm.href="#organizers";nm.setAttribute("data-tip","Campus organizer at "+(p.uni||"their university")+"."+(ab?" Click for information on what that means.":""));}
     var who=mk("div","who1");who.appendChild(nm);if(p.info)who.appendChild(mk("span","info",p.info));
     li.appendChild(who);li.appendChild(mk("span","u",p.uni||""));if(p.uni)lights(li,p.uni);pl.appendChild(li);});
   if(!rows.length)pl.appendChild(mk("li","empty",q?"No one matches that search.":"No names yet. Yours can be the first."));
@@ -1421,7 +1423,10 @@ CONTACT.forEach(function(c){if(!c[1])return;var li=mk("li"),a=mk("a",null,c[2]),
   else k.appendChild(mk("span"));k.appendChild(mk("span",null,c[0]));li.appendChild(k);
   a.href=c[1];if(c[1].indexOf("mailto:")!==0){a.target="_blank";a.rel="noopener";}li.appendChild(a);$("contactList").appendChild(li);});
 function route(){
-  var h=location.hash,v=h==="#draft"?"viewDraft":(h==="#privacy"||h==="#texts")?"viewPrivacy":(h==="#about"||ANCH[h])?"viewAbout":"viewInterest",el=$(v),about=v!=="viewInterest";
+  var h=location.hash,v=h==="#draft"?"viewDraft":(h==="#privacy"||h==="#texts")?"viewPrivacy":(h==="#about"||ANCH[h])?"viewAbout":"viewInterest",el,about;
+  /* a page an admin has switched off cannot be opened, whatever the address says */
+  if((v==="viewDraft"&&S.show3.letter===false)||(v==="viewAbout"&&S.show3.about===false))v="viewInterest";
+  if(!$(v).hidden&&v===route.at)return;route.at=v;el=$(v);about=v!=="viewInterest";
   ["viewInterest","viewAbout","viewDraft","viewPrivacy"].forEach(function(id){$(id).hidden=id!==v;});
   el.classList.remove("fade");void el.offsetWidth;el.classList.add("fade");
   [["tabInterest","viewInterest"],["tabDraft","viewDraft"],["tabAbout","viewAbout"]].forEach(function(t){
@@ -1430,7 +1435,8 @@ function route(){
 window.addEventListener("hashchange",function(){route();var t=(ANCH[location.hash]||location.hash==="#texts")&&$(location.hash.slice(1));if(t)t.scrollIntoView();else window.scrollTo(0,0);});
 /* ---------- boot ---------- */
 function paintSwitches(){var f=S.show3;$("resPart").hidden=!f.results;$("whoPart").hidden=!f.who;$("resSection").hidden=!f.results&&!f.who;
-  document.body.classList.toggle("noresults",!f.results);document.body.classList.toggle("nosharing",f.sharing===false);}
+  document.body.classList.toggle("noresults",!f.results);document.body.classList.toggle("nosharing",f.sharing===false);
+  document.body.classList.toggle("noletter",f.letter===false);document.body.classList.toggle("noabout",f.about===false);route();}
 function loadSwitches(){if(!S.live)return;sb.rpc("page_switches").then(function(r){if(r.error||!r.data)return;S.show3=r.data;renderAll();},function(){});}
 function renderAll(){$("previewNote").hidden=S.live;paintSwitches();renderWidget();updateResults();renderAfter();}
 function loadBoard(){return sb.rpc("board").then(function(r){if(!r.error&&r.data){S.remote=r.data;renderAll();}else if(!S.remote.total)setTimeout(loadBoard,3000);});}
