@@ -6,8 +6,6 @@ window.OFF_CONFIG=/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)?{
   key:"sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH",
   /* Cloudflare Turnstile site key for the spam check. This is Cloudflare's test key, which always passes. */
   turnstile:"1x00000000000000000000BB",
-  /* The scrolling banner of universities is off by default. It is switched on here, locally, so it can be looked at. */
-  ticker:true,
   /* Local test mode: admin.html opens without signing in.
      It only works against the local database (see supabase/seed.sql). */
   dev:true

@@ -84,6 +84,12 @@ input:focus{outline:0;background:var(--field-on)}
 .toggle i{width:34px;height:20px;border-radius:10px;background:var(--line2);position:relative;transition:background .15s}
 .toggle i::after{content:"";position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--ink);transition:left .15s}
 .toggle[aria-pressed="true"] i{background:var(--accent)}
+.toggle[aria-pressed="true"]{color:var(--ink)}
+.toggle:disabled{opacity:.5;cursor:default}
+.switches{margin-bottom:26px}
+.swrow{display:flex;flex-wrap:wrap;gap:6px 34px;margin-top:8px}
+#swMsg{margin:6px 0 0;font-size:.875rem}
+#swMsg:empty{display:none}
 .toggle[aria-pressed="true"] i::after{left:17px}
 
 /* summary */
@@ -185,6 +191,15 @@ td.wide{white-space:normal;min-width:320px}
   </div>
 
   <p class="sum" id="sum"></p>
+  <div class="card switches">
+    <p class="lab">Shown on the public page</p>
+    <div class="swrow">
+      <button class="toggle" id="swTicker" aria-pressed="false" disabled><i></i>Scrolling list of universities</button>
+      <button class="toggle" id="swResults" aria-pressed="false" disabled><i></i>Poll results</button>
+      <button class="toggle" id="swWho" aria-pressed="false" disabled><i></i>Who has signed up</button>
+    </div>
+    <p class="mute" id="swMsg" role="status"></p>
+  </div>
   <div class="card facts" id="facts"></div>
 
   <div class="card chart">
@@ -480,6 +495,14 @@ function start(session){
     paintPlot=dropdown($("ddPlot"),function(){var c=count(scope({noUni:true}),function(r){return r.dom;}),nm={};ROWS.forEach(function(r){nm[r.dom]=r.uni;});
       return [["",F.uni?nm[F.uni]+" (as filtered above)":"All universities",null]].concat(c.map(function(p){return [p[0],nm[p[0]],p[1]];}));},function(){return F.plotUni;},function(v){F.plotUni=v;},true);
     paintUni();paintRole();render();
+    /* the three parts of the public page that are switched on from here; a change shows there within half a minute */
+    var SW={ticker:$("swTicker"),results:$("swResults"),who:$("swWho")};
+    function paintSw(f){Object.keys(SW).forEach(function(k){SW[k].disabled=false;SW[k].setAttribute("aria-pressed",String(!!f[k]));});}
+    sb.rpc("page_switches").then(function(r){if(r.error||!r.data){$("swMsg").textContent="Not available yet: the database change for these switches has not been applied.";return;}paintSw(r.data);});
+    Object.keys(SW).forEach(function(k){SW[k].addEventListener("click",function(){var b=SW[k],on=b.getAttribute("aria-pressed")!=="true";b.disabled=true;$("swMsg").textContent="";
+      sb.rpc(C.dev?"dev_admin_set_switch":"admin_set_switch",{p_name:k,p_shown:on}).then(function(r){b.disabled=false;
+        if(r.error||!r.data){$("swMsg").textContent=/not_admin/.test((r.error||{}).message||"")?"Your sign-in has expired. Reload and ask for a new link.":"That didn't save. Try again.";return;}
+        paintSw(r.data);$("swMsg").textContent=(on?"Switched on. ":"Switched off. ")+"The public page picks it up within half a minute.";});});});
     /* sharing counts load separately, so the page still opens if they are missing */
     sb.rpc(C.dev?"dev_admin_events":"admin_events").then(function(e){if(e.error||!e.data)return;EV=e.data;EV.ok=true;render();});
   });

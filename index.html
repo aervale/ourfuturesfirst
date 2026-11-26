@@ -313,6 +313,10 @@ textarea{display:block;min-height:150px;resize:none}
 .legend.col li{white-space:normal;font-size:.75rem}
 .legend.col b{margin-left:auto;padding-left:8px}
 .h2b{margin-top:56px}
+#resPart[hidden]+#whoPart .h2b{margin-top:0}
+/* with the poll results switched off, the answers in the form show no percentages either */
+.noresults .slide.answered .opt::before{width:0}
+.noresults .opct{display:none}
 
 .hero{position:relative}
 #usMap{display:block;width:100%;height:auto;overflow:visible;margin-bottom:34px}
@@ -622,14 +626,19 @@ footer{padding:22px 0 36px}
     </aside>
   </div>
 
-  <section class="results"><div class="wrap">
+  <!-- both parts stay off the page until an admin switches them on (admin page, "Public page") -->
+  <section class="results" id="resSection" hidden><div class="wrap">
+    <div id="resPart" hidden>
     <h2>Results so far <span class="count" id="resCount"></span></h2>
     <div class="rgrid" id="resGrid"></div>
+    </div>
+    <div id="whoPart" hidden>
     <h2 class="h2b">Who has signed up</h2>
     <div class="where">
       <div class="card demo"><h3>Role</h3><div class="piebox" id="dRole"></div></div>
       <div class="card demo"><h3>Undergraduate year</h3><div class="piebox" id="dYear"></div></div>
       <div class="card demo"><h3>Most common majors and fields</h3><div class="piebox" id="dMajor"></div></div>
+    </div>
     </div>
   </div></section>
 </div>
@@ -760,7 +769,8 @@ function uniFromEmail(email){
 var CFG=window.OFF_CONFIG||{};
 var sb=CFG.url&&window.supabase?window.supabase.createClient(CFG.url,CFG.key):null;
 var EMPTY={total:0,named:0,unis:[],people:[],answers:{}};
-var S={live:!!sb,rows:[],remote:EMPTY,answers:{},spread:{},show:true,info:true,mine:null,panel:"people",slide:0,email:"",verified:false,submitted:false,editing:false,token:null,chain:{},saving:false,role:"",year:""};
+/* show3: the three parts an admin switches on. Without a backend (preview mode) everything shows. */
+var S={show3:sb?{}:{ticker:true,results:true,who:true},live:!!sb,rows:[],remote:EMPTY,answers:{},spread:{},show:true,info:true,mine:null,panel:"people",slide:0,email:"",verified:false,submitted:false,editing:false,token:null,chain:{},saving:false,role:"",year:""};
 
 /* sample rows so the page can be reviewed without a backend; never used when connected */
 function sample(){
@@ -1013,10 +1023,10 @@ function uniRow(g,me,top){
 }
 var uniKey="",panelShown="",tickKey="";
 function renderTicker(B){
-  var key=B.unis.map(function(x){return x.key+x.n;}).join(",");if(key===tickKey)return;tickKey=key;
-  /* NOTE: the scrolling banner is off by default. It shows only where config.js sets ticker:true, and then only once
-     four or more universities have sign-ups. */
-  var row=$("tickerRow");clear(row);$("ticker").hidden=!CFG.ticker||B.unis.length<4;
+  var key=!!S.show3.ticker+"|"+B.unis.map(function(x){return x.key+x.n;}).join(",");if(key===tickKey)return;tickKey=key;
+  /* NOTE: the scrolling banner is off by default. An admin switches it on from the admin page ("Public page"), and even then
+     it waits until there are at least four universities. */
+  var row=$("tickerRow");clear(row);$("ticker").hidden=!S.show3.ticker||B.unis.length<4;
   for(var k=0;k<2;k++)B.unis.slice(0,24).forEach(function(x){var s=mk("span",null,x.name);s.appendChild(mk("b",null,num(x.n)));lights(s,x.name);row.appendChild(s);});
 }
 function renderWidget(){
@@ -1387,12 +1397,15 @@ function route(){
 }
 window.addEventListener("hashchange",function(){route();var t=(ANCH[location.hash]||location.hash==="#texts")&&$(location.hash.slice(1));if(t)t.scrollIntoView();else window.scrollTo(0,0);});
 /* ---------- boot ---------- */
-function renderAll(){$("previewNote").hidden=S.live;renderWidget();updateResults();renderAfter();}
+function paintSwitches(){var f=S.show3;$("resPart").hidden=!f.results;$("whoPart").hidden=!f.who;$("resSection").hidden=!f.results&&!f.who;
+  document.body.classList.toggle("noresults",!f.results);}
+function loadSwitches(){if(!S.live)return;sb.rpc("page_switches").then(function(r){if(r.error||!r.data)return;S.show3=r.data;renderAll();},function(){});}
+function renderAll(){$("previewNote").hidden=S.live;paintSwitches();renderWidget();updateResults();renderAfter();}
 function loadBoard(){return sb.rpc("board").then(function(r){if(!r.error&&r.data){S.remote=r.data;renderAll();}else if(!S.remote.total)setTimeout(loadBoard,3000);});}
 buildForm();buildResults();showUni(null,false);route();paintShow();loadMap();
 if(!S.live){S.rows=sample();renderAll();}
 else{
-  renderAll();loadBoard();setInterval(function(){loadBoard();refreshReach();},30000);
+  renderAll();loadBoard();loadSwitches();setInterval(function(){loadBoard();refreshReach();loadSwitches();},30000);
   sb.rpc("majors_for",{p_dom:""}).then(function(r){if(!r.error&&r.data&&r.data.length)MAJ.all=r.data;});
   /* arriving from the emailed link signs the visitor in and confirms them; otherwise a saved edit token brings their entry back */
   /* the emailed link points at this site (?token_hash=...&type=email) rather than at Supabase, so mail filters see one domain;

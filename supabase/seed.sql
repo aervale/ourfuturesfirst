@@ -80,3 +80,10 @@ where c.ref_by <> '' and (g = 1 or random() < .45);
 insert into events (at, kind, ref, src)
 select s.created_at + random() * interval '2 days', 'open', s.ref, (array['','','text','whatsapp','email'])[1 + floor(random() * 5)::int]
 from signups s, generate_series(1, 3) g where random() < .12;
+
+-- Page switches (local test mode): the admin page flips them without signing in.
+create function public.dev_admin_set_switch(p_name text, p_shown boolean) returns jsonb language sql security definer set search_path = public as $$
+  update page_switches set shown = p_shown, changed_at = now(), changed_by = 'local test mode' where name = p_name;
+  select page_switches();
+$$;
+grant execute on function public.dev_admin_set_switch(text, boolean) to anon, authenticated;
