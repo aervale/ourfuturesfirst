@@ -10,7 +10,7 @@
    What it shares: only the three numbers below, never names, addresses or message text.
    Anyone with the URL can see those numbers. */
 
-var SKIP = /no-?reply|notifications?@|mailer-daemon|@resend\.|@supabase\.|@cloudflare|@google\.com|@accounts\.google/i;
+var SKIP = /no-?reply|notifications?@|notify@|mailer-daemon|@resend\.|@supabase\.|@cloudflare|@google\.com|@accounts\.google|@x\.com|@twitter\.com|instagram|facebookmail|@github\.com/i;
 
 function doGet() {
   var me = Session.getActiveUser().getEmail().toLowerCase();

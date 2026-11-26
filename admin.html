@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Nunito+Sans:wght@400..700&display=swap" rel="stylesheet">
-<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=gold">
 <script>try{if(localStorage.getItem("off-theme")==="light")document.documentElement.setAttribute("data-theme","light")}catch(e){}</script>
 <style>
 :root{
@@ -109,7 +109,12 @@ input:focus{outline:0;background:var(--field-on)}
 .facts div>span:last-child{text-align:right}
 .up{color:var(--good)}.down{color:var(--accent-ink)}
 /* service status strip */
-.svc{display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center;margin:0 0 18px;font-size:.8125rem;color:var(--mute)}
+.svcs{display:grid;gap:10px;margin:22px 0 6px;padding:14px 0 14px 18px;border-left:2px solid var(--line2)}
+.svc{display:grid;grid-template-columns:96px minmax(0,1fr);gap:4px 0;align-items:baseline;margin:0;font-size:.8125rem;line-height:1.4;color:var(--mute)}
+.svc>.lab{margin:0}
+.svc>.it{display:flex;flex-wrap:wrap;gap:6px 26px;align-items:center}
+.svc>.it>span:empty{display:none}
+@media (max-width:640px){.svc{grid-template-columns:minmax(0,1fr)}}
 .svc a{display:inline-flex;align-items:center;gap:7px;color:inherit;text-decoration:none}
 .svc a:hover{color:var(--ink)}
 .svc b{font-weight:600;color:var(--ink)}
@@ -204,17 +209,21 @@ td.wide{white-space:normal;min-width:320px}
     <button class="toggle" id="chConfirmed" aria-pressed="true"><i></i>Confirmed only</button>
   </div>
 
+  <div class="svcs">
   <p class="svc" id="svc" aria-live="polite">
+    <span class="lab">Services</span><span class="it">
     <a id="svcSupabase" href="https://status.supabase.com/" target="_blank" rel="noopener noreferrer"><i></i><b>Supabase</b><span>Checking</span></a>
     <a id="svcResend" href="https://resend-status.com/" target="_blank" rel="noopener noreferrer"><i></i><b>Resend</b><span>Checking</span></a>
     <span id="svcDb"></span>
-  </p>
+    <span id="svcMail"></span>
+  </span></p>
   <p class="svc">
-    <span class="lab">Messages</span>
-    <a href="https://mail.google.com/" target="_blank" rel="noopener noreferrer"><b>Gmail</b><span id="msgGmail">Not connected yet</span></a>
+    <span class="lab">Messages</span><span class="it">
+    <a href="https://mail.google.com/" target="_blank" rel="noopener noreferrer"><b>Gmail</b><span id="msgGmail">Loading</span></a>
     <a href="https://x.com/messages" target="_blank" rel="noopener noreferrer"><b>X</b><span>Open inbox</span></a>
     <a href="https://www.instagram.com/direct/inbox/" target="_blank" rel="noopener noreferrer"><b>Instagram</b><span>Open inbox</span></a>
-  </p>
+  </span></p>
+  </div>
   <p class="sum" id="sum"></p>
   <div class="card switches">
     <p class="lab">Shown on the public page</p>
@@ -515,13 +524,25 @@ function signedInAt(session){try{var p=JSON.parse(atob(session.access_token.spli
 /* Supabase and Resend publish their own status; each link opens the full status page */
 /* Gmail counts come from a small Google Apps Script running as the project's Gmail account (tools/gmail-count.gs).
    Paste its Web app URL here, the one ending in /exec. X and Instagram do not offer message counts for free, so they are links. */
-var GMAIL_COUNT="";
-function gmail(){if(!GMAIL_COUNT)return;var el=$("msgGmail");
+var GMAIL_COUNT="https://script.google.com/macros/s/AKfycbxrgMAs1X2hgs4d7lMr9Lz7CCfRWFg9kW0N2vznq2V4eUqqwkapJx-Z2OFZ0OD2p9YmTA/exec";
+function gmail(){var el=$("msgGmail");if(!GMAIL_COUNT){el.textContent="Not connected yet";return;}
   fetch(GMAIL_COUNT,{cache:"no-store"}).then(function(r){return r.json();}).then(function(j){
     el.textContent=j.people+(j.people===1?" person":" people")+" have written · "+j.week+" this week · "+j.unread+" unread";},
   function(){el.textContent="Count did not load";});}
 function dbTime(ms){$("svcDb").textContent=ms<0?"Our database: not answering":"Our database answered in "+Math.round(ms)+" ms";}
-function services(){gmail();
+/* the most recent email: seconds from the request to Resend accepting it (see supabase/migrations/*_mail_timing.sql) */
+function mailTiming(){var el=$("svcMail");if(C.dev){el.textContent="";return;}
+  sb.rpc("admin_mail_check").then(function(o){
+    if(o.error){el.textContent="";return;}
+    if(o.data==null){el.textContent="Email send time: needs a Resend read key";return;}
+    var id=o.data,tries=0;
+    (function look(){sb.rpc("admin_mail_result",{p_id:id}).then(function(x){var d=x.data||{};
+      if(d.state==="waiting"&&++tries<8){setTimeout(look,1000);return;}
+      if(d.state!=="ok"){el.textContent=d.state==="none"?"No emails sent yet":"Email send time did not load";return;}
+      var ago=Math.round((Date.now()-new Date(d.sent_at))/60000),when=ago<1?"just now":ago<60?ago+" min ago":ago<1440?Math.round(ago/60)+" h ago":Math.round(ago/1440)+" d ago";
+      el.textContent="Last email ("+when+")"+(d.seconds!=null?": sent "+d.seconds+" s after the "+(d.kind==="invite"?"invitation":"request"):"")+(d.last_event?" · "+d.last_event:"");
+      el.title=d.subject||"";});})();});}
+function services(){gmail();mailTiming();
   [["svcSupabase","https://status.supabase.com/api/v2/status.json"],["svcResend","https://resend-status.com/api/v2/status.json"]].forEach(function(p){
     var el=$(p[0]),dot=el.querySelector("i"),txt=el.querySelector("span");
     fetch(p[1],{cache:"no-store"}).then(function(r){return r.json();}).then(function(j){var s=j.status||{},k=s.indicator;
