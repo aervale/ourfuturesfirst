@@ -909,14 +909,16 @@ function tween(el,to){
 function grow(f,w){if(CALM){f.style.width=w;return;}setTimeout(function(){f.style.width=w;},30);}
 /* clicking a university opens the people list filtered to it */
 function showPeopleOf(name){S.panel="people";$("inSearch").value=name;renderWidget();}
+function tipText(name,pct,n){return name+": "+pct+"% ("+num(n)+(n===1?" person)":" people)");}
 function uniRow(g,me,top){
   var li=mk("li",me?"me":null),nm=mk("span","nm",g.name),down=S.submitted&&g.key?(S.chain[g.key]||0):0,plus=(me&&S.submitted?1:0)+down;li.appendChild(nm);li.appendChild(mk("span","n",num(g.n)));
   if(plus){var b=mk("span","plus","+"+num(plus));
     b.setAttribute("data-tip",(me?"You"+(down?", and "+num(down)+(down===1?" person":" people")+" here who signed up":" count here. Others who sign up")+" through your link, or through the links of people you brought in"+(down?".":", will add to this.")
       :num(down)+(down===1?" person":" people")+" here signed up through your link, or through the links of people you brought in.")+" Share your link to grow it.");
+    b.title="";
     if(me&&S.fresh){b.classList.add("new");li.classList.add("new");}
     nm.appendChild(b);}
-  li.tabIndex=0;li.setAttribute("role","button");li.setAttribute("aria-label","Show people from "+g.name);lights(li,g.name);
+  li.tabIndex=0;li.setAttribute("role","button");li.title="Show people from "+g.name;lights(li,g.name);
   li.addEventListener("click",function(){showPeopleOf(g.name);});
   li.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();showPeopleOf(g.name);}});
   var tr=mk("div","track"),f=mk("div","fill");grow(f,(top?Math.max(g.n?2:0,Math.round(g.n/top*100)):0)+"%");tr.appendChild(f);li.appendChild(tr);return li;
@@ -996,9 +998,9 @@ function pie(el,pairs){clear(el);pairs=pairs.filter(function(p){return p[1]>0;})
       ring=mk("div","ring");
   svg.setAttribute("viewBox","-1 -1 2 2");svg.setAttribute("class","pie");svg.setAttribute("role","img");
   svg.setAttribute("aria-label",pairs.map(function(p){return p[0]+" "+Math.round(p[1]/tot*100)+"%";}).join(", "));
-  pairs.forEach(function(p,i){var f=p[1]/tot,sl=document.createElementNS(NS,"circle"),li=mk("li"),sw=mk("i");
+  pairs.forEach(function(p,i){var f=p[1]/tot,sl=document.createElementNS(NS,"circle"),li=mk("li"),sw=mk("i"),tt=document.createElementNS(NS,"title");
     var col=/^(Other|Not given)/.test(p[0])?"var(--c-other)":PIE[i%PIE.length];sl.setAttribute("r",RAD);sl.style.stroke=col;sl.setAttribute("stroke-dasharray",Math.max(.001,f*C-gap).toFixed(4)+" "+C.toFixed(4));sl.setAttribute("stroke-dashoffset",(-at*C).toFixed(4));
-    svg.appendChild(sl);at+=f;
+    tt.textContent=tipText(p[0],Math.round(f*100),p[1]);sl.appendChild(tt);li.title=tt.textContent;svg.appendChild(sl);at+=f;
     sw.style.background=col;li.appendChild(sw);li.appendChild(mk("span","nm",p[0]));li.appendChild(mk("b",null,Math.round(f*100)+"%"));lg.appendChild(li);
     sl.addEventListener("mouseenter",function(){li.classList.add("hot");});sl.addEventListener("mouseleave",function(){li.classList.remove("hot");});});
   ring.appendChild(svg);el.appendChild(ring);el.appendChild(lg);}
@@ -1057,6 +1059,7 @@ function updateResults(){
       row.li.classList.toggle("mine",S.answers[q.id]===o);desc.push(o+" "+pct+"%");
       var ob=optBtns[q.id][o];ob.lastChild.textContent=pct+"%";ob.style.setProperty("--p",pct+"%");ob.parentNode.parentNode.classList.toggle("answered",!!S.answers[q.id]);
       row.pc.textContent=pct+"%";row.sg.hidden=!n;row.sg.style.flexGrow=n;row.sg.style.flexBasis="0";row.sg.textContent=f>=.09?pct+"%":"";
+      row.sg.title=row.li.title=tipText(o,pct,n);
     });
     g.setAttribute("aria-label",q.q+" "+(tot?desc.join(", "):"No answers yet."));
   });
