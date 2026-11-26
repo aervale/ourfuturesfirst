@@ -184,8 +184,10 @@ textarea{display:block;min-height:150px;resize:none}
 .opt:disabled{opacity:.65;cursor:default}
 #showWrap{display:grid;gap:8px}
 #showWrap [hidden]{display:none}
-.resend{display:flex;gap:14px;align-items:baseline;margin:10px 0 0}
-.resend .hint{margin:0}
+.resend{display:flex;flex-wrap:wrap;gap:6px 22px;align-items:baseline;margin:10px 0 0}
+#resendMsg{margin-top:6px}
+#resendMsg:empty{display:none}
+.link:disabled,.link:disabled:hover{color:var(--faint);cursor:default}
 .signed{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;margin:24px 0 0;padding-top:6px;font-size:.875rem;color:var(--mute)}
 #after{border-color:var(--accent)}
 /* the confirmation card: its accent line draws downward, then each piece settles into focus in turn */
@@ -522,7 +524,10 @@ footer{padding:22px 0 36px}
         <p class="lab" id="afterLab"></p>
         <h2 id="afterHead"></h2>
         <p class="muted" id="afterSub"></p>
-        <p class="resend" id="resendRow" hidden><button type="button" class="link" id="btnResend">Send it again</button><span class="hint" id="resendMsg" role="status"></span></p>
+        <div id="resendRow" hidden>
+          <p class="resend"><button type="button" class="link" id="btnResend">Send it again</button><button type="button" class="link" id="btnWrong">Wrong address?</button></p>
+          <p class="hint" id="resendMsg" role="status"></p>
+        </div>
         <div id="afterHelp">
           <div class="wait" id="waitNote">
             <p>The email can take up to two minutes to arrive. While you wait, send your link to a few friends.</p>
@@ -1129,7 +1134,7 @@ function renderAfter(){
   $("afterHead").textContent=S.verified?"You're in.":"Check your email.";
   $("afterSub").textContent=S.verified?"You're counted"+(u?" for "+u.name:"")+"."
     :S.live?"We sent a link to "+S.email+". Open it within 24 hours and you're counted.":"Preview mode: no email is sent.";
-  $("afterHelp").hidden=!S.token;$("resendRow").hidden=S.verified||!S.live;$("waitNote").hidden=S.verified||!S.live;
+  $("afterHelp").hidden=!S.token;$("resendRow").hidden=S.verified||!S.live;$("waitNote").hidden=S.verified||!S.live;paintResend();
   var url=shareUrl(),via=function(c){return e(msg+shareUrl(c));},msg="Students are writing an open letter on regulating AI development and asking what should be in it. It takes two minutes: ",e=encodeURIComponent;
   $("myLink").value=url.replace(/^https?:\/\//,"");
   var ml=$("mineLine"),d=S.invited||0,t=S.downstream||0;clear(ml);ml.hidden=!S.verified;
@@ -1154,9 +1159,26 @@ function fold(el,open){
 function toTop(){setTimeout(function(){$("formPop").parentNode.parentNode.scrollIntoView({block:"start",behavior:CALM?"auto":"smooth"});},60);}
 $("btnEdit").addEventListener("click",function(){S.editing=true;$("err").textContent="";renderAfter();toTop();});
 $("btnCancel").addEventListener("click",function(){S.editing=false;renderAfter();toTop();});
-$("btnResend").addEventListener("click",function(){var m=$("resendMsg");m.textContent="Sending";
-  sendLink(S.email).then(function(o){
-    m.textContent=o.error?"Wait a minute, then try again.":"Sent. Check your spam folder too.";});});
+/* the confirmation email again: not until a minute after the last one, and it says plainly what happened */
+var COOL=60,resendT=null,REMOVE_ASK="Remove your sign-up? This deletes your answers and can't be undone.";
+function paintResend(){
+  var b=$("btnResend"),m=$("resendMsg"),left=S.sentAt?Math.ceil(COOL-(Date.now()-S.sentAt)/1000):0;clearTimeout(resendT);
+  if(S.sending){b.disabled=true;b.textContent="Sending";return;}
+  b.disabled=left>0;b.textContent=left>0?"Send it again in "+Math.floor(left/60)+":"+(left%60<10?"0":"")+left%60:"Send it again";
+  if(left>0)resendT=setTimeout(paintResend,1000);
+  else if(S.sentAt&&!m.textContent)m.textContent="Not there yet? Look in your spam and Promotions folders, then send it again.";
+}
+$("btnResend").addEventListener("click",function(){var m=$("resendMsg");if(S.sending)return;
+  function done(err){S.sending=false;
+    if(err)m.textContent=/rate|security|too many|429/i.test(err)?"Too many emails to this address for now. Try again in a few minutes.":"That didn't send. Check your connection and try again.";
+    else{S.sentAt=Date.now();m.textContent="Sent again to "+S.email+" at "+new Date().toLocaleTimeString([],{hour:"numeric",minute:"2-digit"})+". It can take up to two minutes.";
+      var w=$("waitNote").querySelector(".waitbar");w.parentNode.replaceChild(w.cloneNode(),w);}
+    paintResend();}
+  S.sending=true;m.textContent="";paintResend();
+  sendLink(S.email).then(function(o){done(o.error?(o.error.message||"")+" "+(o.error.status||"")+" x":"");},function(){done("x");});});
+/* a mistyped address can't be changed, so the way out is to remove the sign-up and fill the form in again */
+$("btnWrong").addEventListener("click",function(){var r=$("removeRow");r.firstChild.textContent="Typed the wrong address? Remove this sign-up, then fill in the form again with the right one.";
+  r.hidden=false;r.scrollIntoView({block:"center",behavior:CALM?"auto":"smooth"});});
 /* each person's link carries their code, so we can tell them how many people it brought in */
 /* links sent through a share button also say which button (s=), so the admin page can tell which ones get opened */
 function shareUrl(via){return location.href.split(/[?#]/)[0]+(S.ref?"?r="+S.ref+(via?"&s="+via:""):"");}
@@ -1177,7 +1199,7 @@ function captcha(){
   });
 }
 function sendLink(email){return captcha().then(function(t){return sb.auth.signInWithOtp({email:email,options:{emailRedirectTo:location.href.split(/[?#]/)[0],captchaToken:t}});});}
-$("btnRemove").addEventListener("click",function(){$("removeRow").hidden=false;});
+$("btnRemove").addEventListener("click",function(){$("removeRow").firstChild.textContent=REMOVE_ASK;$("removeRow").hidden=false;});
 $("btnRemoveNo").addEventListener("click",function(){$("removeRow").hidden=true;});
 $("btnRemoveYes").addEventListener("click",function(){
   function gone(){try{localStorage.removeItem("off_token");}catch(x){}location.href=location.href.split(/[?#]/)[0];}
@@ -1253,7 +1275,7 @@ $("form").addEventListener("submit",function(e){
   save(row).then(function(u){
     S.mine={dom:u.dom,name:u.name};S.email=email;S.token=u.token||null;S.ref=u.ref||"";S.submitted=true;S.panel="unis";idle();
     /* for a few seconds the new +1 beside their university is the loudest thing on the page, and its dot lights on the map */
-    S.fresh=true;setTimeout(function(){S.fresh=false;},7000);
+    S.fresh=true;setTimeout(function(){S.fresh=false;},7000);S.sentAt=Date.now();$("resendMsg").textContent="";
     setTimeout(function(){if(DOTS[u.name]){DOTS[u.name](true);setTimeout(function(){DOTS[u.name](false);},2600);}},500);
     try{if(S.live&&S.token)localStorage.setItem("off_token",S.token);}catch(x){}
     renderAll();toTop();if(S.live)loadBoard();
