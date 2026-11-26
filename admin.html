@@ -90,6 +90,8 @@ input:focus{outline:0;background:var(--field-on)}
 .swrow{display:flex;flex-wrap:wrap;gap:6px 34px;margin-top:8px}
 #swMsg{margin:6px 0 0;font-size:.875rem}
 #swMsg:empty{display:none}
+#pvMsg{margin:6px 0 0;font-size:.875rem}
+#lnkPreview{align-self:center;color:var(--ink);text-underline-offset:3px}
 .toggle[aria-pressed="true"] i::after{left:17px}
 
 /* summary */
@@ -199,6 +201,12 @@ td.wide{white-space:normal;min-width:320px}
       <button class="toggle" id="swWho" aria-pressed="false" disabled><i></i>Who has signed up</button>
     </div>
     <p class="mute" id="swMsg" role="status"></p>
+    <p class="lab" style="margin-top:18px">Only in this browser</p>
+    <div class="swrow">
+      <button class="toggle" id="swPreview" aria-pressed="false"><i></i>Preview with sample data</button>
+      <a class="lab" id="lnkPreview" href="./" target="_blank" rel="noopener" hidden>Open the public page</a>
+    </div>
+    <p class="mute" id="pvMsg">Shows the public page with about 1,300 made-up people at 80 universities, and an example of a link that has spread. Visitors never see it.</p>
   </div>
   <div class="card facts" id="facts"></div>
 
@@ -503,6 +511,9 @@ function start(session){
       sb.rpc(C.dev?"dev_admin_set_switch":"admin_set_switch",{p_name:k,p_shown:on}).then(function(r){b.disabled=false;
         if(r.error||!r.data){$("swMsg").textContent=/not_admin/.test((r.error||{}).message||"")?"Your sign-in has expired. Reload and ask for a new link.":"That didn't save. Try again.";return;}
         paintSw(r.data);$("swMsg").textContent=(on?"Switched on. ":"Switched off. ")+"The public page picks it up within half a minute.";});});});
+    /* preview: a flag in this browser that the public page reads */
+    var pv=$("swPreview");function paintPv(){var on=false;try{on=localStorage.getItem("off_preview")==="1";}catch(x){}pv.setAttribute("aria-pressed",String(on));$("lnkPreview").hidden=!on;}
+    pv.addEventListener("click",function(){try{if(pv.getAttribute("aria-pressed")==="true")localStorage.removeItem("off_preview");else localStorage.setItem("off_preview","1");}catch(x){}paintPv();});paintPv();
     /* sharing counts load separately, so the page still opens if they are missing */
     sb.rpc(C.dev?"dev_admin_events":"admin_events").then(function(e){if(e.error||!e.data)return;EV=e.data;EV.ok=true;render();});
   });
