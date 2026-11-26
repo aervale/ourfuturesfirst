@@ -64,7 +64,7 @@ a{color:inherit}
 /* header */
 .top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px)}
 .top .wrap{display:flex;align-items:center;justify-content:space-between;height:46px}
-.brand{display:flex;align-items:center;gap:5px;font-family:var(--sans);font-weight:600;font-size:.8125rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);white-space:nowrap}
+.brand{display:flex;align-items:center;gap:5px;font-family:var(--sans);font-weight:600;font-size:.8125rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);white-space:nowrap}
 .brand .star{width:30px;height:30px;flex:none}
 .tabs{display:flex;gap:28px;align-self:stretch}
 .tabs a{display:flex;align-items:center;text-decoration:none;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .2s,border-color .2s}
@@ -329,8 +329,10 @@ textarea{display:block;min-height:150px;resize:none}
 #mapDots .mk{transform-box:fill-box;transform-origin:center;transition:transform .25s var(--ease)}
 #mapDots .area{fill:var(--star)}
 #mapDots .u:hover .mk,#mapDots .u.on .mk{transform:scale(1.45)}
-#mapDots .u.pop{transform-box:fill-box;transform-origin:center;animation:arrive .55s var(--ease) backwards}
+#mapDots .u.pop{transform-box:fill-box;transform-origin:center;animation:arrive .55s var(--ease) var(--d,0ms) backwards}
+#mapDots .u.pop .area{animation:glow .5s ease-out var(--d,0ms) backwards}
 #mapDots .ping{fill:none;stroke:var(--star);stroke-width:1.2;vector-effect:non-scaling-stroke;pointer-events:none;transform-box:fill-box;transform-origin:center;animation:ping 1.8s ease-out both}
+@keyframes glow{from,30%{fill:#FFFFFF}to{fill:var(--star)}}
 @keyframes arrive{from{opacity:0;transform:scale(.15) rotate(-90deg)}60%{opacity:1}to{opacity:1;transform:none}}
 @keyframes ping{from{transform:scale(1);opacity:.7}to{transform:scale(3);opacity:0}}
 #mapTip{position:absolute;transform:translate(-50%,-100%);margin-top:-10px;padding:5px 9px;border:1px solid var(--line2);border-radius:var(--r);background:var(--bg);font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;pointer-events:none}
@@ -950,10 +952,14 @@ function loadMajors(dom){
 })();
 
 /* ---------- board ---------- */
+/* while the map's stars are landing, the people count climbs with them (see renderDemo) */
+var holdPeople=false;
 function tween(el,to){
+  var held=function(){return holdPeople&&el.id==="cPeople";};
+  if(held()){el.dataset.v=to;return;}
   var from=+el.dataset.v||0;el.dataset.v=to;
   if(CALM||from===to){el.textContent=num(to);return;}
-  var t0=null;requestAnimationFrame(function f(t){if(t0===null)t0=t;var k=Math.min(1,(t-t0)/700);k=1-Math.pow(1-k,3);
+  var t0=null;requestAnimationFrame(function f(t){if(held())return;if(t0===null)t0=t;var k=Math.min(1,(t-t0)/700);k=1-Math.pow(1-k,3);
     el.textContent=num(Math.round(from+(to-from)*k));if(k<1&&+el.dataset.v===to)requestAnimationFrame(f);});
 }
 function grow(f,w){if(CALM){f.style.width=w;return;}setTimeout(function(){f.style.width=w;},30);}
@@ -1069,10 +1075,9 @@ function renderDemo(B){
   var topM=D.major.slice(0,5),restM=B.total-sum(topM);
   pie($("dMajor"),topM.concat(restM>0?[["Other or not given",restM]]:[]));
   var g=$("mapDots"),tip=$("mapTip"),top=B.unis.length?B.unis[0].n:1,on=null;clear(g);tip.hidden=true;
-  /* the first time there is data, each university's dot appears as the university counter ticks past it */
-  var play=!popped&&B.unis.length>0&&!CALM,gap=play?Math.min(90,3200/B.unis.length):0,cu=$("cUnis");if(B.unis.length)popped=true;
+  /* the first time there is data, each university's star lands as both counters tick past it */
+  var play=!popped&&B.unis.length>0&&!CALM,gap=play?Math.min(90,3200/B.unis.length):0,cu=$("cUnis"),cp=$("cPeople");if(B.unis.length)popped=true;
   cu.textContent=play?"0":num(B.unis.length);DOTS={};
-  if(play)B.unis.forEach(function(u,i){setTimeout(function(){if(demoKey===key)cu.textContent=num(i+1);},Math.round(500+i*gap));});
   function svg(tag,cls,u,rad){var c=document.createElementNS(NS,tag);if(cls)c.setAttribute("class",cls);if(u){c.setAttribute("cx",u.x);c.setAttribute("cy",u.y);c.setAttribute("r",rad);}return c;}
   function show(u,el){if(on)on.classList.remove("on");on=el;if(!u){tip.hidden=true;return;}el.classList.add("on");
     clear(tip);tip.appendChild(document.createTextNode(u.name));tip.appendChild(mk("b",null,num(u.n)));
@@ -1087,10 +1092,14 @@ function renderDemo(B){
   var order=B.unis.map(function(u,i){return i;});
   for(var j=order.length-1;j>0;j--){var r=Math.floor(Math.random()*(j+1)),t=order[j];order[j]=order[r];order[r]=t;}
   var rank={};order.forEach(function(ix,k){rank[ix]=k;});
+  if(play){holdPeople=true;cp.textContent="0";var seen=0;
+    order.forEach(function(ix,k){seen+=B.unis[ix].n;var people=seen,last=k===order.length-1;
+      setTimeout(function(){if(demoKey!==key){if(holdPeople){holdPeople=false;cp.textContent=num(+cp.dataset.v||0);}return;}cu.textContent=num(k+1);cp.textContent=num(people);
+        if(last){holdPeople=false;var to=+cp.dataset.v||people;cp.dataset.v=people;tween(cp,to);}},Math.round(500+k*gap));});}
   /* one star per university, largest first so smaller ones stay on top and can be pointed at */
   var live=[];
   B.unis.filter(function(u){return u.x!=null;}).forEach(function(u,i){var el=svg("g"),rad=(5+17*Math.sqrt(u.n/top)).toFixed(1);
-    el.setAttribute("class",play?"u pop":"u");if(play)el.style.animationDelay=Math.round(500+rank[B.unis.indexOf(u)]*gap)+"ms";
+    el.setAttribute("class",play?"u pop":"u");if(play)el.style.setProperty("--d",Math.round(500+rank[B.unis.indexOf(u)]*gap)+"ms");
     DOTS[u.name]=function(lit){show(lit?u:null,el);if(lit){g.appendChild(el);ripple(u,rad);}};
     el.appendChild(star(u,rad));if(u.day>0)live.push([u,rad]);
     el.addEventListener("mouseenter",function(){show(u,el);});el.addEventListener("mouseleave",function(){show(null);});
