@@ -185,6 +185,7 @@ td.wide{white-space:normal;min-width:320px}
   </div>
 
   <p class="sum" id="sum"></p>
+  <div class="card facts" id="facts"></div>
 
   <div class="card chart">
     <div class="top"><div class="pick"><div class="dd" id="ddPlot"></div><div class="tabs" role="tablist"><button role="tab" id="tabTotal" aria-selected="true">Total</button><button role="tab" id="tabDay" aria-selected="false">Per day</button></div></div><span class="lab" id="plotNote"></span></div>
@@ -378,6 +379,11 @@ function render(){
   /* headline */
   var s=$("sum"),nUni=count(rows,function(r){return r.dom;}).length;clear(s);s.appendChild(mk("b",null,num(rows.length)));
   s.appendChild(document.createTextNode(" "+(F.confirmed?"confirmed ":"")+(rows.length===1&&!F.role?"sign-up":who)+(F.uni?" at "+uni:" at "+plural(nUni,"university","universities"))));
+  /* two things that need an eye kept on them */
+  var fs=$("facts"),held=rows.filter(function(r){return r.name_hidden;}).length;clear(fs);
+  function fact(l,v){var d=mk("div");d.appendChild(mk("span","lab",l));d.appendChild(mk("span",null,v));fs.appendChild(d);}
+  fact("Awaiting confirmation",num(scope({all:true}).filter(function(r){return !r.verified_at;}).length)+(F.confirmed?", not counted above":""));
+  fact("Names held back",held?plural(held,"name","names")+" to review below":"None");
   /* the chart follows the filters above, unless a university is picked on the chart itself */
   SER=series(F.plotUni?scope({noUni:true}).filter(function(r){return r.dom===F.plotUni;}):rows);if(paintPlot)paintPlot();
   $("plotNote").textContent="Hover for any day";plot();
