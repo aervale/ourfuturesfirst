@@ -88,8 +88,10 @@ input:focus{outline:0;background:var(--field-on)}
 .toggle:disabled{opacity:.5;cursor:default}
 .switches{margin-bottom:26px}
 .swrow{display:flex;flex-wrap:wrap;gap:6px 34px;margin-top:8px}
-#swMsg{margin:6px 0 0;font-size:.875rem}
-#swMsg:empty{display:none}
+.swsave{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:14px 0 0}
+#swMsg{font-size:.875rem}
+.toggle.changed{color:var(--accent-ink)}
+.btn:disabled,.btn:disabled:hover{background:var(--field);border-color:transparent;color:var(--faint);cursor:default}
 #pvMsg{margin:6px 0 0;font-size:.875rem}
 #lnkPreview{align-self:center;color:var(--ink);text-underline-offset:3px}
 .toggle[aria-pressed="true"] i::after{left:17px}
@@ -199,8 +201,9 @@ td.wide{white-space:normal;min-width:320px}
       <button class="toggle" id="swTicker" aria-pressed="false" disabled><i></i>Scrolling list of universities</button>
       <button class="toggle" id="swResults" aria-pressed="false" disabled><i></i>Poll results</button>
       <button class="toggle" id="swWho" aria-pressed="false" disabled><i></i>Who has signed up</button>
+      <button class="toggle" id="swSharing" aria-pressed="false" disabled><i></i>Sharing: personal link, share buttons, reach</button>
     </div>
-    <p class="mute" id="swMsg" role="status"></p>
+    <p class="swsave"><button class="btn main" id="btnSwSave" disabled>Save</button><button class="btn" id="btnSwUndo" hidden>Discard changes</button><span class="mute" id="swMsg" role="status"></span></p>
     <p class="lab" style="margin-top:18px">Only in this browser</p>
     <div class="swrow">
       <button class="toggle" id="swPreview" aria-pressed="false"><i></i>Preview with sample data</button>
@@ -504,13 +507,20 @@ function start(session){
       return [["",F.uni?nm[F.uni]+" (as filtered above)":"All universities",null]].concat(c.map(function(p){return [p[0],nm[p[0]],p[1]];}));},function(){return F.plotUni;},function(v){F.plotUni=v;},true);
     paintUni();paintRole();render();
     /* the three parts of the public page that are switched on from here; a change shows there within half a minute */
-    var SW={ticker:$("swTicker"),results:$("swResults"),who:$("swWho")};
-    function paintSw(f){Object.keys(SW).forEach(function(k){SW[k].disabled=false;SW[k].setAttribute("aria-pressed",String(!!f[k]));});}
-    sb.rpc("page_switches").then(function(r){if(r.error||!r.data){$("swMsg").textContent="Not available yet: the database change for these switches has not been applied.";return;}paintSw(r.data);});
-    Object.keys(SW).forEach(function(k){SW[k].addEventListener("click",function(){var b=SW[k],on=b.getAttribute("aria-pressed")!=="true";b.disabled=true;$("swMsg").textContent="";
-      sb.rpc(C.dev?"dev_admin_set_switch":"admin_set_switch",{p_name:k,p_shown:on}).then(function(r){b.disabled=false;
-        if(r.error||!r.data){$("swMsg").textContent=/not_admin/.test((r.error||{}).message||"")?"Your sign-in has expired. Reload and ask for a new link.":"That didn't save. Try again.";return;}
-        paintSw(r.data);$("swMsg").textContent=(on?"Switched on. ":"Switched off. ")+"The public page picks it up within half a minute.";});});});
+    /* the switches are a draft until Save is pressed. The draft is kept in this browser so the preview can show it. */
+    var SW={ticker:$("swTicker"),results:$("swResults"),who:$("swWho"),sharing:$("swSharing")},SAVED=null,DRAFT=null,msg=$("swMsg");
+    function dirty(){return Object.keys(SW).filter(function(k){return !!DRAFT[k]!==!!SAVED[k];});}
+    function paintSw(){var ch=dirty();Object.keys(SW).forEach(function(k){SW[k].disabled=false;SW[k].setAttribute("aria-pressed",String(!!DRAFT[k]));SW[k].classList.toggle("changed",ch.indexOf(k)>-1);});
+      $("btnSwSave").disabled=!ch.length;$("btnSwUndo").hidden=!ch.length;try{localStorage.setItem("off_draft",JSON.stringify(DRAFT));}catch(x){}
+      if(ch.length)msg.textContent="Not saved yet. The preview shows these changes; visitors don't see them until you save.";}
+    function took(f){SAVED={};DRAFT={};Object.keys(SW).forEach(function(k){SAVED[k]=DRAFT[k]=k in f?!!f[k]:k==="sharing";});paintSw();}
+    sb.rpc("page_switches").then(function(r){if(r.error||!r.data){msg.textContent="Not available yet: the database change for these switches has not been applied.";return;}took(r.data);});
+    Object.keys(SW).forEach(function(k){SW[k].addEventListener("click",function(){DRAFT[k]=!DRAFT[k];msg.textContent="";paintSw();});});
+    $("btnSwUndo").addEventListener("click",function(){took(SAVED);msg.textContent="Changes discarded.";});
+    $("btnSwSave").addEventListener("click",function(){var ch=dirty(),last=null;if(!ch.length)return;$("btnSwSave").disabled=true;msg.textContent="Saving";
+      ch.reduce(function(p,k){return p.then(function(){return sb.rpc(C.dev?"dev_admin_set_switch":"admin_set_switch",{p_name:k,p_shown:!!DRAFT[k]}).then(function(r){if(r.error||!r.data)throw r.error||{};last=r.data;});});},Promise.resolve())
+      .then(function(){took(last);msg.textContent="Saved. The public page picks it up within half a minute.";},
+        function(e){paintSw();msg.textContent=/not_admin/.test((e&&e.message)||"")?"Your sign-in has expired. Reload and ask for a new link.":"That didn't save. Try again.";});});
     /* preview: a flag in this browser that the public page reads */
     var pv=$("swPreview");function paintPv(){var on=false;try{on=localStorage.getItem("off_preview")==="1";}catch(x){}pv.setAttribute("aria-pressed",String(on));$("lnkPreview").hidden=!on;}
     pv.addEventListener("click",function(){try{if(pv.getAttribute("aria-pressed")==="true")localStorage.removeItem("off_preview");else localStorage.setItem("off_preview","1");}catch(x){}paintPv();});paintPv();

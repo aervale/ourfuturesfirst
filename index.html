@@ -318,6 +318,8 @@ textarea{display:block;min-height:150px;resize:none}
 /* with the poll results switched off, the answers in the form show no percentages either */
 .noresults .slide.answered .opt::before{width:0}
 .noresults .opct{display:none}
+/* with sharing switched off, the card has no personal link, share buttons, reach sky or invitation option */
+.nosharing #reach,.nosharing .mylink,.nosharing #spreadNote,.nosharing .sharebit{display:none}
 
 .hero{position:relative}
 #usMap{display:block;width:100%;height:auto;overflow:visible;margin-bottom:34px}
@@ -587,7 +589,7 @@ footer{padding:22px 0 36px}
         </div>
         <div id="afterHelp">
           <div class="wait" id="waitNote">
-            <p>The email can take up to two minutes to arrive. While you wait, send your link to a few friends.</p>
+            <p>The email can take up to two minutes to arrive.<span class="sharebit"> While you wait, send your link to a few friends.</span></p>
             <i class="waitbar" aria-hidden="true"></i>
           </div>
           <p class="muted" id="spreadNote"></p>
@@ -786,8 +788,10 @@ var CFG=window.OFF_CONFIG||{};
 var PREVIEW=false;try{PREVIEW=localStorage.getItem("off_preview")==="1"&&!/[?&]token_hash=/.test(location.search);}catch(x){}
 var sb=!PREVIEW&&CFG.url&&window.supabase?window.supabase.createClient(CFG.url,CFG.key):null;
 var EMPTY={total:0,named:0,unis:[],people:[],answers:{}};
-/* show3: the three parts an admin switches on. Without a backend (preview mode) everything shows. */
-var S={show3:sb?{}:{ticker:true,results:true,who:true},live:!!sb,rows:[],remote:EMPTY,answers:{},spread:{},show:true,info:true,mine:null,panel:"people",slide:0,email:"",verified:false,submitted:false,editing:false,token:null,chain:{},saving:false,role:"",year:""};
+/* show3: the parts an admin switches on or off. Without a backend everything shows; in the admin preview the page follows the
+   switches as they stand on the admin page in this browser, including changes that have not been saved yet. */
+function draftSwitches(){var d=null;try{if(PREVIEW)d=JSON.parse(localStorage.getItem("off_draft"));}catch(x){}return d||{ticker:true,results:true,who:true,sharing:true};}
+var S={show3:sb?{}:draftSwitches(),live:!!sb,rows:[],remote:EMPTY,answers:{},spread:{},show:true,info:true,mine:null,panel:"people",slide:0,email:"",verified:false,submitted:false,editing:false,token:null,chain:{},saving:false,role:"",year:""};
 
 /* sample rows so the page can be reviewed without a backend; never used when connected */
 function sample(){
@@ -846,6 +850,7 @@ function buildForm(){
       /* organizing needs a phone number: until there is one, the choice waits and is not saved */
       var wait=s.id==="lead"&&!was&&!leadPhone();if(wait)$("inPhone2").focus();
       patch({spread:spreadList()}).then(function(){if(!wait)flash(b);},function(){set(was);renderLead();$("copyMsg").textContent=FAIL.save;});});
+    if(s.id==="email"){b.classList.add("sharebit");$(s.pop).classList.add("sharebit");}
     sp.appendChild(b);sp.appendChild($(s.pop));spreadBtns[s.id]=b;});
   renderNav();
 }
@@ -1423,7 +1428,7 @@ function route(){
 window.addEventListener("hashchange",function(){route();var t=(ANCH[location.hash]||location.hash==="#texts")&&$(location.hash.slice(1));if(t)t.scrollIntoView();else window.scrollTo(0,0);});
 /* ---------- boot ---------- */
 function paintSwitches(){var f=S.show3;$("resPart").hidden=!f.results;$("whoPart").hidden=!f.who;$("resSection").hidden=!f.results&&!f.who;
-  document.body.classList.toggle("noresults",!f.results);}
+  document.body.classList.toggle("noresults",!f.results);document.body.classList.toggle("nosharing",f.sharing===false);}
 function loadSwitches(){if(!S.live)return;sb.rpc("page_switches").then(function(r){if(r.error||!r.data)return;S.show3=r.data;renderAll();},function(){});}
 function renderAll(){$("previewNote").hidden=S.live;paintSwitches();renderWidget();updateResults();renderAfter();}
 function loadBoard(){return sb.rpc("board").then(function(r){if(!r.error&&r.data){S.remote=r.data;renderAll();}else if(!S.remote.total)setTimeout(loadBoard,3000);});}
@@ -1432,6 +1437,7 @@ if(PREVIEW){
   var pn=$("previewNote"),off=mk("button","link","Turn off preview");off.type="button";clear(pn);pn.appendChild(mk("b",null,"Preview."));
   pn.appendChild(document.createTextNode(" Sample data that only this browser sees. Nothing here is real or saved."));pn.appendChild(off);
   off.addEventListener("click",function(){try{localStorage.removeItem("off_preview");}catch(x){}location.reload();});
+  window.addEventListener("storage",function(e){if(e.key==="off_draft"){S.show3=draftSwitches();renderAll();}});
   fetch("assets/sample-board.json").then(function(r){return r.json();}).then(function(b){
     S.sample=b;
     /* an example sign-up whose link has spread, so the confirmation card and its sky can be looked at */
