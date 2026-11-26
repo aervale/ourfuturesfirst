@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<!-- This page may only load its own files, the database client, the spam check and the fonts, and may only send data to the database.
+     If anything hostile ever ran here, it could not ship the sign-ups to another server. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://challenges.cloudflare.com; connect-src https://pexnchjiphwyftvhykih.supabase.co http://127.0.0.1:54421 https://challenges.cloudflare.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; frame-src https://challenges.cloudflare.com; base-uri 'none'; form-action 'none'">
 <title>Admin, Our Futures First</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -207,7 +211,8 @@ td.wide{white-space:normal;min-width:320px}
   <p>&nbsp;</p>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<!-- integrity: the browser refuses this file if it is ever not byte-for-byte the version checked here -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" integrity="sha384-0w2KAL2YHP6wKOkUDzkCDGgVvfmHnj02DHeQ6XcHOgTfFsGyonKOpShMH1x6nk9o" crossorigin="anonymous"></script>
 <script src="config.js"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 <script>
@@ -436,7 +441,12 @@ function csv(){
   var a=mk("a");a.href=URL.createObjectURL(new Blob([out.join("\n")],{type:"text/csv"}));a.download="sign-ups-"+new Date().toISOString().slice(0,10)+".csv";a.click();
 }
 
+/* the database only accepts a sign-in made by emailed link within the last 12 hours; say so here instead of failing oddly */
+var MAXAGE=12*3600;
+function signedInAt(session){try{var p=JSON.parse(atob(session.access_token.split(".")[1].replace(/-/g,"+").replace(/_/g,"/"))),t=0;
+  (p.amr||[]).forEach(function(m){if(m.timestamp>t)t=m.timestamp;});return t;}catch(x){return 0;}}
 function start(session){
+  if(!C.dev&&Date.now()/1000-signedInAt(session)>MAXAGE){sb.auth.signOut().then(function(){$("signin").hidden=false;$("msg").textContent="Your sign-in has expired. Ask for a new link.";});return;}
   $("who").textContent=session.user.email;$("btnOut").hidden=false;
   sb.rpc(C.dev?"dev_admin_rows":"admin_rows").then(function(o){
     if(o.error){$("signin").hidden=false;$("msg").textContent=/not_admin/.test(o.error.message)?session.user.email+" is not on the admin list.":"Could not load. Try again.";return;}
@@ -464,8 +474,8 @@ $("btnIn").addEventListener("click",function(){var e=$("inEmail").value.trim();i
   var key=(window.OFF_CONFIG||{}).turnstile;
   (key&&window.turnstile?new Promise(function(res){var box=document.body.appendChild(document.createElement("div"));
     turnstile.render(box,{sitekey:key,theme:"dark",appearance:"interaction-only",callback:res,"error-callback":function(){res();}});}):Promise.resolve())
-  .then(function(t){return sb.auth.signInWithOtp({email:e,options:{emailRedirectTo:location.href.split(/[?#]/)[0],captchaToken:t}});}).then(function(o){
-    $("msg").textContent=o.error?"Could not send. Wait a minute and try again.":"Check your email for the link.";});});
+  .then(function(t){try{localStorage.setItem("off_admin","1");}catch(x){}return sb.auth.signInWithOtp({email:e,options:{emailRedirectTo:location.href.split(/[?#]/)[0],captchaToken:t}});}).then(function(o){
+    $("msg").textContent=o.error?"Could not send. Wait a minute and try again.":"Check your email for the link. Open it in this browser, press Confirm, and you'll be brought back here.";});});
 /* local test mode (config.js: dev) opens the dashboard without signing in; it only works against the local database */
 if(C.dev){start({user:{email:"Local test mode"}});$("btnOut").hidden=true;}
 else sb.auth.getSession().then(function(r){if(r.data&&r.data.session)start(r.data.session);else $("signin").hidden=false;});
