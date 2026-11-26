@@ -8,12 +8,19 @@
 <title>Our Futures First</title>
 <meta name="description" content="Students are writing an open letter on regulating AI development and asking what belongs in it. Open to anyone at a U.S. university.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Our Futures First">
+<meta property="og:title" content="Students are writing an open letter on AI. Help decide what's in it.">
+<meta property="og:site_name" content="Our Futures First">
 <meta property="og:description" content="Students are writing an open letter on regulating AI development and asking what belongs in it. Open to anyone at a U.S. university.">
 <meta property="og:image" content="https://ourfuturesfirst.org/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Our Futures First star, a red compass star on black.">
 <meta property="og:url" content="https://ourfuturesfirst.org/">
 <link rel="canonical" href="https://ourfuturesfirst.org/">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Students are writing an open letter on AI. Help decide what's in it.">
+<meta name="twitter:description" content="Students are writing an open letter on regulating AI development and asking what belongs in it.">
+<meta name="twitter:image" content="https://ourfuturesfirst.org/og.png">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -224,14 +231,21 @@ textarea{display:block;min-height:150px;resize:none}
 .bars li.me .nm,.bars li.me .n{color:var(--ink);font-weight:700}
 .bars li.me .fill{background:var(--accent)}
 .bars li.gap{margin-top:8px}
-.bars .plus{position:relative;margin-left:8px;padding:1px 6px;border-radius:4px;background:var(--tint);color:var(--ink);font-family:var(--mono);font-size:12px;font-weight:600;cursor:help}
+.bars .plus{position:relative;display:inline-block;margin-left:8px;padding:1px 6px;border-radius:4px;background:var(--tint);color:var(--ink);font-family:var(--mono);font-size:12px;font-weight:600;cursor:help}
 .bars .plus::after{content:attr(data-tip);position:absolute;left:0;top:calc(100% + 8px);z-index:3;width:max-content;max-width:250px;padding:8px 10px;background:var(--pop);border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);color:var(--ink);font-family:var(--sans);font-size:.8125rem;font-weight:400;line-height:1.4;white-space:normal;opacity:0;pointer-events:none;transition:opacity .15s}
 .bars .plus:hover::after{opacity:1}
+.bars li.new{animation:rowin 2.2s ease-out both}
+.bars .plus.new{background:var(--accent);color:var(--on-accent);animation:plusin .75s cubic-bezier(.2,1.7,.35,1) .25s both,plusring 1.5s ease-out 1s 3}
+.bars .plus.new::after{animation:tipshow 6s ease 1s both}
+@keyframes rowin{0%{background:color-mix(in srgb,var(--accent) 55%,transparent)}100%{background:var(--tint)}}
+@keyframes plusin{0%{transform:scale(0) rotate(-14deg);opacity:0}100%{transform:none;opacity:1}}
+@keyframes plusring{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 75%,transparent)}100%{box-shadow:0 0 0 16px transparent}}
+@keyframes tipshow{0%{opacity:0}8%,86%{opacity:1}100%{opacity:0}}
 
 /* results */
 .results{padding:32px 0 56px}
 .results h2{font-size:clamp(1.5rem,2.6vw,2.1rem)}
-.results h2 .count{color:var(--mute);font-family:var(--head);font-weight:var(--hw);letter-spacing:0;margin-left:2px}
+.results h2 .count{margin-left:.35em;color:var(--mute);font-family:var(--head);font-style:italic;font-weight:400;font-size:.8em;letter-spacing:0;font-variant-numeric:lining-nums}
 .rgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0 36px;margin-top:28px}
 .rcard{grid-column:span 2;grid-row:span 3;display:grid;grid-template-rows:subgrid;margin-bottom:34px}
 .rcard .legend{align-self:start}
@@ -239,15 +253,21 @@ textarea{display:block;min-height:150px;resize:none}
 .rcard h3{font-family:var(--head);font-weight:var(--hw);font-size:1.3rem;line-height:1.25;letter-spacing:0;margin:0}
 .sbar{display:flex;gap:2px;height:22px;margin-top:12px}
 /* numbers sit in a 22px line; the small nudge down offsets Noto Sans putting its digits above the middle of the line */
-.sbar div{min-width:3px;display:block;text-align:center;white-space:nowrap;text-overflow:clip;overflow:hidden;font-family:var(--sans);font-size:.75rem;line-height:22px;padding-top:var(--nudge,0px);font-weight:600;font-variant-numeric:lining-nums tabular-nums;transition:flex-grow .6s var(--ease),filter .2s;cursor:default}
+.sbar div{min-width:3px;display:block;text-align:center;white-space:nowrap;text-overflow:clip;overflow:hidden;font-family:var(--sans);font-size:.75rem;line-height:22px;padding-top:var(--nudge,0px);font-weight:600;font-variant-numeric:lining-nums tabular-nums;transition:flex-grow .6s var(--ease),opacity .2s,margin .2s var(--ease),padding .2s var(--ease);cursor:default}
 .sbar div:first-child{border-radius:3px 0 0 3px}.sbar div:last-child{border-radius:0 3px 3px 0}
-.sbar div:hover{filter:brightness(1.12)}
+/* pointing at a share (or its key) lifts it a little and fades the rest */
+.sbar:has(div.on) div:not(.on){opacity:.6}
+.sbar div.on{margin-block:-2px;padding-top:calc(2px + var(--nudge,0px));border-radius:2px;z-index:1}
 .sbar.none{background:var(--inset);border-radius:3px}
 .legend{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:3px 12px}
 .legend li{display:flex;align-items:baseline;gap:5px;font-size:.6875rem;white-space:nowrap;color:var(--ink);transition:opacity .2s}
 .legend i{flex:none;width:7px;height:7px;align-self:center}
 .legend b{font-family:var(--sans);font-weight:600;font-size:.8125rem;font-variant-numeric:lining-nums tabular-nums}
-.legend:has(li.hot) li:not(.hot){opacity:.4}
+.legend li{cursor:default}
+.legend i{transition:transform .2s var(--ease)}
+.legend:has(li.hot) li:not(.hot){opacity:.6}
+.legend li.hot .nm{font-weight:600}
+.legend li.hot i{transform:scale(1.25)}
 .legend li.mine .nm{font-weight:600}
 .legend li.mine .nm::after{content:" (you)";font-weight:400;color:var(--mute)}
 .where{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 36px;margin-top:22px;align-items:stretch}
@@ -282,7 +302,10 @@ textarea{display:block;min-height:150px;resize:none}
 .linkrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
 .linkrow .btn{padding:0 18px}
 #myLink{font-family:var(--mono);font-size:.875rem;color:var(--ink)}
-.myline{margin:18px 0 0;color:var(--mute)}
+.mylink{margin:18px 0 22px}
+.mylink .lab{display:block;margin-bottom:6px}
+.mylink .hint:empty{display:none}
+.myline{margin:10px 0 0;color:var(--mute)}
 .myline b{font-family:var(--sans);font-weight:600;font-size:1.125rem;font-variant-numeric:tabular-nums;color:var(--ink)}
 #spreadNote{margin-top:10px}
 #afterHelp .pop .leadbox{margin-top:8px}
@@ -437,7 +460,7 @@ footer{padding:22px 0 36px}
           <div class="two">
             <div class="field combo"><span class="lab" id="roleLab">I am <span class="req">*</span></span><button type="button" class="sel" id="selRole" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="roleLab selRole"></button><ul class="menu" role="listbox" aria-labelledby="roleLab" hidden></ul></div>
             <div class="field" id="titleField" hidden><label class="lab" for="inTitle">Title</label><input type="text" id="inTitle" maxlength="80" autocomplete="organization-title" placeholder="Professor of Physics"></div>
-            <div class="field combo" id="yearField"><span class="lab" id="yearLab">Year</span><button type="button" class="sel" id="selYear" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="yearLab selYear" disabled></button><ul class="menu" role="listbox" aria-labelledby="yearLab" hidden></ul></div>
+            <div class="field combo" id="yearField"><span class="lab" id="yearLab">Year</span><button type="button" class="sel" id="selYear" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="yearLab selYear"></button><ul class="menu" role="listbox" aria-labelledby="yearLab" hidden></ul></div>
           </div>
           <div id="showWrap"><button type="button" class="opt pick" id="pkShow" aria-pressed="true"><span class="key"></span><span id="showText">Show my first name and last initial on the public list</span></button>
             <button type="button" class="opt pick" id="pkInfo" aria-pressed="true"><span class="key"></span><span id="infoText"></span></button></div>
@@ -461,6 +484,12 @@ footer{padding:22px 0 36px}
         <p class="muted" id="afterSub"></p>
         <p class="resend" id="resendRow" hidden><button type="button" class="link" id="btnResend">Send it again</button><span class="hint" id="resendMsg" role="status"></span></p>
         <div id="afterHelp">
+          <div class="mylink">
+            <p class="lab">Your personal link</p>
+            <div class="linkrow"><input type="text" id="myLink" readonly aria-label="Your personal link"><button class="btn" type="button" id="btnCopy">Copy</button></div>
+            <p class="hint" id="copyMsg" role="status"></p>
+            <p class="myline" id="mineLine" hidden></p>
+          </div>
           <p class="lab sub3">Can you help it reach your campus?</p>
           <div class="opts" id="spread"></div>
           <div class="pop" id="leadPop"><div><div class="leadbox">
@@ -471,10 +500,6 @@ footer{padding:22px 0 36px}
             <p class="hint bad" id="leadHint" role="status"></p>
           </div></div></div>
           <div class="pop" id="sharePop"><div><div class="leadbox">
-            <p class="lab">Your personal link</p>
-            <div class="linkrow"><input type="text" id="myLink" readonly aria-label="Your personal link"><button class="btn" type="button" id="btnCopy">Copy</button></div>
-            <p class="hint" id="askText"></p>
-            <p class="hint" id="copyMsg" role="status"></p>
             <label class="lab" for="inInvites">Email it to friends</label>
             <div class="linkrow"><input type="text" id="inInvites" autocomplete="off" placeholder="friend@university.edu, another@university.edu"><button class="btn ghost" type="button" id="btnInvite">Send</button></div>
             <p class="hint" id="inviteMsg" role="status"></p>
@@ -486,7 +511,6 @@ footer{padding:22px 0 36px}
               <button class="btn ghost" type="button" id="shInsta"><svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg><span>Instagram</span></button>
             </div>
           </div></div></div>
-          <p class="myline" id="mineLine" hidden></p>
           <p class="muted" id="spreadNote"></p>
         </div>
         <p class="signed" id="afterMine"><span id="mineText"></span><span class="acts"><button type="button" class="link" id="btnEdit">Edit my answers</button><button type="button" class="link" id="btnRemove">Remove me</button></span></p>
@@ -689,7 +713,7 @@ function buildForm(){
     var os=mk("div","opts");optBtns[q.id]={};
     q.o.forEach(function(o,oi){var b=mk("button","opt");b.type="button";b.setAttribute("aria-pressed","false");
       b.appendChild(mk("span","key","ABCD".charAt(oi)));b.appendChild(mk("span",null,o));b.appendChild(mk("span","opct"));optBtns[q.id][o]=b;
-      b.addEventListener("click",function(){if(busy)return;pick(q,o);setTimeout(function(){go(step(qi,1));},CALM?0:340);});
+      b.addEventListener("click",function(){if(busy)return;pick(q,o);setTimeout(function(){go(step(qi,1));},CALM?0:600);});
       os.appendChild(b);});
     sl.appendChild(os);add(sl);
   });
@@ -890,8 +914,9 @@ function uniRow(g,me,top){
   if(plus){var b=mk("span","plus","+"+num(plus));
     b.setAttribute("data-tip",(me?"You"+(down?", and "+num(down)+(down===1?" person":" people")+" here who signed up":" count here. Others who sign up")+" through your link, or through the links of people you brought in"+(down?".":", will add to this.")
       :num(down)+(down===1?" person":" people")+" here signed up through your link, or through the links of people you brought in.")+" Share your link to grow it.");
+    if(me&&S.fresh){b.classList.add("new");li.classList.add("new");}
     nm.appendChild(b);}
-  li.tabIndex=0;li.setAttribute("role","button");li.title="Show people from "+g.name;lights(li,g.name);
+  li.tabIndex=0;li.setAttribute("role","button");li.setAttribute("aria-label","Show people from "+g.name);lights(li,g.name);
   li.addEventListener("click",function(){showPeopleOf(g.name);});
   li.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();showPeopleOf(g.name);}});
   var tr=mk("div","track"),f=mk("div","fill");grow(f,(top?Math.max(g.n?2:0,Math.round(g.n/top*100)):0)+"%");tr.appendChild(f);li.appendChild(tr);return li;
@@ -956,7 +981,8 @@ function buildResults(){
     var bar=mk("div","sbar"),lg=mk("ul","legend");bar.setAttribute("role","img");R[q.id]={bar:bar,rows:{}};
     q.o.forEach(function(o,i){var li=mk("li"),sw=mk("i"),pc=mk("b"),sg=mk("div");sw.style.background=PIE[i];li.appendChild(sw);li.appendChild(mk("span","nm",o));li.appendChild(pc);lg.appendChild(li);
       sg.style.background=PIE[i];sg.style.color=INK_ON[i];bar.appendChild(sg);
-      sg.addEventListener("mouseenter",function(){li.classList.add("hot");});sg.addEventListener("mouseleave",function(){li.classList.remove("hot");});
+      [sg,li].forEach(function(el){el.addEventListener("mouseenter",function(){li.classList.add("hot");sg.classList.add("on");});
+        el.addEventListener("mouseleave",function(){li.classList.remove("hot");sg.classList.remove("on");});});
       R[q.id].rows[o]={li:li,pc:pc,sg:sg};});
     card.appendChild(bar);card.appendChild(lg);grid.appendChild(card);
   });
@@ -970,9 +996,9 @@ function pie(el,pairs){clear(el);pairs=pairs.filter(function(p){return p[1]>0;})
       ring=mk("div","ring");
   svg.setAttribute("viewBox","-1 -1 2 2");svg.setAttribute("class","pie");svg.setAttribute("role","img");
   svg.setAttribute("aria-label",pairs.map(function(p){return p[0]+" "+Math.round(p[1]/tot*100)+"%";}).join(", "));
-  pairs.forEach(function(p,i){var f=p[1]/tot,sl=document.createElementNS(NS,"circle"),li=mk("li"),sw=mk("i"),tt=document.createElementNS(NS,"title");
+  pairs.forEach(function(p,i){var f=p[1]/tot,sl=document.createElementNS(NS,"circle"),li=mk("li"),sw=mk("i");
     var col=/^(Other|Not given)/.test(p[0])?"var(--c-other)":PIE[i%PIE.length];sl.setAttribute("r",RAD);sl.style.stroke=col;sl.setAttribute("stroke-dasharray",Math.max(.001,f*C-gap).toFixed(4)+" "+C.toFixed(4));sl.setAttribute("stroke-dashoffset",(-at*C).toFixed(4));
-    tt.textContent=p[0]+": "+Math.round(f*100)+"% ("+num(p[1])+")";sl.appendChild(tt);svg.appendChild(sl);at+=f;
+    svg.appendChild(sl);at+=f;
     sw.style.background=col;li.appendChild(sw);li.appendChild(mk("span","nm",p[0]));li.appendChild(mk("b",null,Math.round(f*100)+"%"));lg.appendChild(li);
     sl.addEventListener("mouseenter",function(){li.classList.add("hot");});sl.addEventListener("mouseleave",function(){li.classList.remove("hot");});});
   ring.appendChild(svg);el.appendChild(ring);el.appendChild(lg);}
@@ -1022,7 +1048,7 @@ var MAP_LAND="M780,466L787,486L795,500L805,511L806,514L805,517L807,522L822,549L8
 function loadMap(){[["land",MAP_LAND],["edge",MAP_EDGE]].forEach(function(a){var p=document.createElementNS(NS,"path");p.setAttribute("class",a[0]);p.setAttribute("d",a[1]);$("mapLand").appendChild(p);});}
 function updateResults(){
   var B=board();renderDemo(B);
-  $("resCount").textContent=B.total?"("+num(B.total)+(B.total===1?" person)":" people)"):"";
+  $("resCount").textContent=B.total?num(B.total)+(B.total===1?" person":" people"):"";
   Q.forEach(function(q){
     var c=B.answers[q.id]||{},tot=0,x=R[q.id],g=x.bar,desc=[];
     q.o.forEach(function(o){tot+=c[o]||0;});g.classList.toggle("none",!tot);
@@ -1031,7 +1057,6 @@ function updateResults(){
       row.li.classList.toggle("mine",S.answers[q.id]===o);desc.push(o+" "+pct+"%");
       var ob=optBtns[q.id][o];ob.lastChild.textContent=pct+"%";ob.style.setProperty("--p",pct+"%");ob.parentNode.parentNode.classList.toggle("answered",!!S.answers[q.id]);
       row.pc.textContent=pct+"%";row.sg.hidden=!n;row.sg.style.flexGrow=n;row.sg.style.flexBasis="0";row.sg.textContent=f>=.09?pct+"%":"";
-      row.sg.title=o+": "+pct+"% ("+num(n)+(n===1?" person)":" people)");
     });
     g.setAttribute("aria-label",q.q+" "+(tot?desc.join(", "):"No answers yet."));
   });
@@ -1052,7 +1077,6 @@ function renderAfter(){
   $("afterHelp").hidden=!S.token;$("resendRow").hidden=S.verified||!S.live;
   var url=shareUrl(),msg="Students are writing an open letter on regulating AI development and asking what should be in it. It takes two minutes: ",e=encodeURIComponent;
   $("myLink").value=url.replace(/^https?:\/\//,"");
-  $("askText").textContent="This link is yours alone. Everyone who signs up through it, and everyone who then signs up through theirs, is counted for you.";
   var ml=$("mineLine"),d=S.invited||0,t=S.downstream||0;clear(ml);ml.hidden=!S.verified;
   ml.appendChild(mk("b",null,num(d)));ml.appendChild(document.createTextNode(d===1?" person joined from your link, ":" people joined from your link, "));
   ml.appendChild(mk("b",null,num(t)));ml.appendChild(document.createTextNode(" downstream in all."));
@@ -1154,6 +1178,9 @@ $("form").addEventListener("submit",function(e){
   row.email=email;
   save(row).then(function(u){
     S.mine={dom:u.dom,name:u.name};S.email=email;S.token=u.token||null;S.ref=u.ref||"";S.submitted=true;S.panel="unis";idle();
+    /* for a few seconds the new +1 beside their university is the loudest thing on the page, and its dot lights on the map */
+    S.fresh=true;setTimeout(function(){S.fresh=false;},7000);
+    setTimeout(function(){if(DOTS[u.name]){DOTS[u.name](true);setTimeout(function(){DOTS[u.name](false);},2600);}},500);
     try{if(S.live&&S.token)localStorage.setItem("off_token",S.token);}catch(x){}
     renderAll();toTop();if(S.live)loadBoard();
   },function(x){idle();fail(FAIL[x]||FAIL.save,x==="not_university"?$("inEmail"):null);});
