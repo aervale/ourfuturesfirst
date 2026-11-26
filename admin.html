@@ -92,8 +92,7 @@ input:focus{outline:0;background:var(--field-on)}
 #swMsg{font-size:.875rem}
 .toggle.changed{color:var(--accent-ink)}
 .btn:disabled,.btn:disabled:hover{background:var(--field);border-color:transparent;color:var(--faint);cursor:default}
-#pvMsg{margin:6px 0 0;font-size:.875rem}
-#lnkPreview{align-self:center;color:var(--ink);text-underline-offset:3px}
+#lnkPreview{color:var(--ink);text-underline-offset:3px}
 .toggle[aria-pressed="true"] i::after{left:17px}
 
 /* summary */
@@ -204,12 +203,7 @@ td.wide{white-space:normal;min-width:320px}
       <button class="toggle" id="swSharing" aria-pressed="false" disabled><i></i>Sharing: personal link, share buttons, reach</button>
     </div>
     <p class="swsave"><button class="btn main" id="btnSwSave" disabled>Save</button><button class="btn" id="btnSwUndo" hidden>Discard changes</button><span class="mute" id="swMsg" role="status"></span></p>
-    <p class="lab" style="margin-top:18px">Only in this browser</p>
-    <div class="swrow">
-      <button class="toggle" id="swPreview" aria-pressed="false"><i></i>Preview with sample data</button>
-      <a class="lab" id="lnkPreview" href="./" target="_blank" rel="noopener" hidden>Open the public page</a>
-    </div>
-    <p class="mute" id="pvMsg">Shows the public page with about 1,300 made-up people at 80 universities, and an example of a link that has spread. Visitors never see it.</p>
+    <p style="margin:16px 0 0"><a class="lab" id="lnkPreview" href="./" target="_blank" rel="noopener">Preview in this browser</a></p>
   </div>
   <div class="card facts" id="facts"></div>
 
@@ -521,9 +515,8 @@ function start(session){
       ch.reduce(function(p,k){return p.then(function(){return sb.rpc(C.dev?"dev_admin_set_switch":"admin_set_switch",{p_name:k,p_shown:!!DRAFT[k]}).then(function(r){if(r.error||!r.data)throw r.error||{};last=r.data;});});},Promise.resolve())
       .then(function(){took(last);msg.textContent="Saved. The public page picks it up within half a minute.";},
         function(e){paintSw();msg.textContent=/not_admin/.test((e&&e.message)||"")?"Your sign-in has expired. Reload and ask for a new link.":"That didn't save. Try again.";});});
-    /* preview: a flag in this browser that the public page reads */
-    var pv=$("swPreview");function paintPv(){var on=false;try{on=localStorage.getItem("off_preview")==="1";}catch(x){}pv.setAttribute("aria-pressed",String(on));$("lnkPreview").hidden=!on;}
-    pv.addEventListener("click",function(){try{if(pv.getAttribute("aria-pressed")==="true")localStorage.removeItem("off_preview");else localStorage.setItem("off_preview","1");}catch(x){}paintPv();});paintPv();
+    /* preview: sets a flag in this browser that the public page reads, then opens that page. It is switched off from the banner there. */
+    $("lnkPreview").addEventListener("click",function(){try{localStorage.setItem("off_preview","1");}catch(x){}});
     /* sharing counts load separately, so the page still opens if they are missing */
     sb.rpc(C.dev?"dev_admin_events":"admin_events").then(function(e){if(e.error||!e.data)return;EV=e.data;EV.ok=true;render();});
   });
