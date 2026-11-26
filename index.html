@@ -319,6 +319,14 @@ textarea{display:block;min-height:150px;resize:none}
 .noresults .slide.answered .opt::before{width:0}
 .noresults .opct{display:none}
 /* with sharing switched off, the card has no personal link, share buttons, reach sky or invitation option */
+/* the names and universities panel, switched off: grey placeholder rows and one line saying so */
+.listoff{display:none;position:relative}
+.nolist #widget>.seg,.nolist #pPeople,.nolist #pUnis{display:none}
+.nolist .listoff{display:block}
+.nolist #widget,.nolist #widget:hover{border-left-color:var(--line)}
+.ghost{display:grid;gap:16px;opacity:.55}
+.ghost i{display:block;height:14px;border-radius:4px;background:var(--inset)}
+.listoff p{position:absolute;left:0;right:0;top:112px;margin:0 auto;max-width:300px;padding:0 12px;text-align:center;color:var(--mute);font-size:.9375rem}
 /* a page that is switched off loses its tab and the links that lead to it; with both off there are no tabs at all */
 .noletter #tabDraft,.noletter a[href="#draft"],.noabout #tabAbout,.noabout .hint a[href="#organizers"],.noabout #viewDraft a[href="#why-wait"],.noletter.noabout .tabs{display:none}
 .nosharing #reach,.nosharing .mylink,.nosharing #spreadNote,.nosharing .sharebit{display:none}
@@ -640,6 +648,11 @@ footer{padding:22px 0 36px}
         <p class="hint" id="anonNote"></p>
       </div>
       <div id="pUnis" hidden><ol class="bars" id="uniList"></ol></div>
+      <!-- shown in place of the lists while an admin has them switched off -->
+      <div class="listoff" id="listOff" aria-live="polite">
+        <div class="ghost" aria-hidden="true"><i style="width:100%;height:38px"></i><i style="width:62%"></i><i style="width:78%"></i><i style="width:54%"></i><i style="width:70%"></i><i style="width:46%"></i><i style="width:66%"></i><i style="width:58%"></i></div>
+        <p>The list of names and universities isn't shown at the moment.</p>
+      </div>
     </aside>
   </div>
 
@@ -792,7 +805,7 @@ var sb=!PREVIEW&&CFG.url&&window.supabase?window.supabase.createClient(CFG.url,C
 var EMPTY={total:0,named:0,unis:[],people:[],answers:{}};
 /* show3: the parts an admin switches on or off. Without a backend everything shows; in the admin preview the page follows the
    switches as they stand on the admin page in this browser, including changes that have not been saved yet. */
-function draftSwitches(){var d=null;try{if(PREVIEW)d=JSON.parse(localStorage.getItem("off_draft"));}catch(x){}return d||{ticker:true,results:true,who:true,sharing:true,letter:true,about:true};}
+function draftSwitches(){var d=null;try{if(PREVIEW)d=JSON.parse(localStorage.getItem("off_draft"));}catch(x){}return d||{ticker:true,results:true,who:true,sharing:true,letter:true,about:true,list:true};}
 var S={show3:sb?{}:draftSwitches(),live:!!sb,rows:[],remote:EMPTY,answers:{},spread:{},show:true,info:true,mine:null,panel:"people",slide:0,email:"",verified:false,submitted:false,editing:false,token:null,chain:{},saving:false,role:"",year:""};
 
 /* sample rows so the page can be reviewed without a backend; never used when connected */
@@ -1436,7 +1449,7 @@ window.addEventListener("hashchange",function(){route();var t=(ANCH[location.has
 /* ---------- boot ---------- */
 function paintSwitches(){var f=S.show3;$("resPart").hidden=!f.results;$("whoPart").hidden=!f.who;$("resSection").hidden=!f.results&&!f.who;
   document.body.classList.toggle("noresults",!f.results);document.body.classList.toggle("nosharing",f.sharing===false);
-  document.body.classList.toggle("noletter",f.letter===false);document.body.classList.toggle("noabout",f.about===false);route();}
+  document.body.classList.toggle("nolist",f.list===false);document.body.classList.toggle("noletter",f.letter===false);document.body.classList.toggle("noabout",f.about===false);route();}
 function loadSwitches(){if(!S.live)return;sb.rpc("page_switches").then(function(r){if(r.error||!r.data)return;S.show3=r.data;renderAll();},function(){});}
 function renderAll(){$("previewNote").hidden=S.live;paintSwitches();renderWidget();updateResults();renderAfter();}
 function loadBoard(){return sb.rpc("board").then(function(r){if(!r.error&&r.data){S.remote=r.data;renderAll();}else if(!S.remote.total)setTimeout(loadBoard,3000);});}
