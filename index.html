@@ -1195,7 +1195,8 @@ function updateResults(){
 /* ---------- after Count me in: confirmation, help checkboxes, sharing ---------- */
 function renderAfter(){
   var on=S.submitted,b=$("btnSubmit");
-  $("inEmail").readOnly=on;if(!S.saving)b.textContent=on?"Save changes":"Count me in";
+  /* a real sign-up cannot change its address; the admin preview can, so the email checks can be tried out */
+  $("inEmail").readOnly=on&&!PREVIEW;if(!S.saving)b.textContent=on?"Save changes":"Count me in";
   $("btnCancel").hidden=!S.editing;fold($("formPop"),!on||S.editing);
   if(!on||S.editing){$("pop").classList.remove("open");return;}
   $("afterMine").hidden=!S.token;$("mineText").textContent="Signed up as "+S.email;
@@ -1381,6 +1382,8 @@ $("form").addEventListener("submit",function(e){
   if(!MAIL.test(email)){fail("Enter your university email.",$("inEmail"));return;}
   if(!S.role){fail("Tell us your role at your university.",$("selRole"));return;}
   if(miss>-1){go(miss);fail("Answer every question first.",$("pollCard"));return;}
+  /* in the admin preview the address can be changed on an existing sign-up, and is checked the way a new one would be */
+  if(PREVIEW&&S.submitted){var pu=uniFromEmail(email);if(!pu){fail(NOTUS,$("inEmail"));return;}S.email=email;S.mine=pu;}
   S.saving=true;updateBtn();$("err").textContent="";
   function idle(){S.saving=false;updateBtn();}
   if(S.submitted){
@@ -1442,7 +1445,9 @@ if(PREVIEW){
     S.sample=b;
     /* an example sign-up whose link has spread, so the confirmation card and its sky can be looked at */
     var chain={},n=[14,9,7,5,4,3,2,1,1];b.unis.slice(0,9).forEach(function(u,i){chain[u.key]=n[i];});
-    applyEntry({email:"you@"+b.unis[0].key,dom:b.unis[0].key,uni:b.unis[0].name,name:"Sample Student",verified:true,token:"local",ref:"preview1",role:ROLES[0],year:"Junior",invited:7,downstream:46,chain:chain,answers:{}});
+    applyEntry({email:"you@"+b.unis[0].key,dom:b.unis[0].key,uni:b.unis[0].name,name:"Sample Student",verified:true,token:"local",ref:"preview1",role:ROLES[0],year:"Junior",invited:7,downstream:46,chain:chain,
+      /* every question answered, so the form can be edited and saved again */
+      answers:Q.reduce(function(m,q,i){m[q.id]=q.o[i%q.o.length];return m;},{})});
   },function(){S.rows=sample();renderAll();});
 }
 else if(!S.live){S.rows=sample();renderAll();}
