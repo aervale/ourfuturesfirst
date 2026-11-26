@@ -71,8 +71,8 @@ var KEY="ofp-design-v3";
 /* The default look while working locally: navy with a gold accent in dark mode, paper with the same gold in light mode.
    The switch in the bottom left flips between them; Reset in the panel goes back to whichever one is on. */
 var THEMES={
-  dark:{bg:"#0A1224",card:"#152447",ink:"#E9ECF2",accent:"#D3993C",onAccent:"#141416"},
-  light:{bg:"#FBFAF6",card:"#F2F0E8",ink:"#17171A",accent:"#D3993C",onAccent:"#141416"}
+  dark:{bg:"#0C0C0E",card:"#111113",ink:"#ECEAE0",accent:"#A22C29",onAccent:"#ECEAE0"},
+  light:{bg:"#FFFFFF",card:"#F4F4F2",ink:"#141416",accent:"#A22C29",onAccent:"#FFFFFF"}
 };
 var THEME_NAMES={dark:"Navy and gold (dark)",light:"Paper and gold (light)"};
 var DEF_BODY=SITE.body;

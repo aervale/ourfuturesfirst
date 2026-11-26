@@ -10,14 +10,14 @@
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Nunito+Sans:wght@400..700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <style>
-:root{--bg:#0A1224;--card:#152447;--pop:#1D2943;--inset:rgba(233,236,242,.035);--line:rgba(233,236,242,.08);--line2:rgba(233,236,242,.16);--ink:#E9ECF2;--mute:rgba(233,236,242,.62);
-  --accent:#D3993C;--accent-ink:#D3993C;--on-accent:#141416;--tint:rgba(211,153,60,.24);--r:6px;
+:root{--bg:#0C0C0E;--card:#111113;--pop:#1B1B20;--inset:rgba(236,234,224,.035);--line:rgba(236,234,224,.08);--line2:rgba(236,234,224,.16);--ink:#ECEAE0;--mute:rgba(236,234,224,.62);
+  --accent:#A22C29;--accent-ink:#D9544D;--on-accent:#ECEAE0;--tint:rgba(162,44,41,.24);--r:6px;
   --head:"EB Garamond",Garamond,Georgia,"Times New Roman",serif;--sans:"Nunito Sans",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"Nunito Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   color-scheme:dark}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
 .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
-header{position:sticky;top:0;z-index:6;background:rgba(10,18,36,.86);backdrop-filter:blur(10px);margin-bottom:20px}
+header{position:sticky;top:0;z-index:6;background:rgba(12,12,14,.86);backdrop-filter:blur(10px);margin-bottom:20px}
 header .wrap{height:52px}
 .brand{display:flex;align-items:center;gap:5px;font-family:var(--sans);font-weight:600;font-size:.8125rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);white-space:nowrap;text-decoration:none}
 .brand .star{width:30px;height:30px;flex:none}
@@ -51,7 +51,7 @@ input:focus{outline:0;border-color:var(--accent)}
 .menu{position:absolute;z-index:5;top:100%;left:0;margin-top:4px;min-width:100%;width:max-content;max-width:380px;max-height:360px;overflow:auto;background:var(--pop);border:1px solid var(--line2);border-radius:var(--r);padding:4px}
 .menu input{max-width:none;margin-bottom:4px}
 .menu button{display:flex;justify-content:space-between;gap:20px;width:100%;border:0;background:none;border-radius:4px;padding:7px 10px;text-align:left;cursor:pointer}
-.menu button:hover,.menu button.on{background:rgba(233,236,242,.07)}
+.menu button:hover,.menu button.on{background:rgba(236,234,224,.07)}
 .menu button[aria-selected="true"]{color:var(--accent-ink)}
 .menu button span:last-child{font-family:var(--mono);font-size:12px;color:var(--mute)}
 .toggle{display:flex;align-items:center;gap:10px;background:none;border:0;padding:6px 0;cursor:pointer}
@@ -89,7 +89,7 @@ input:focus{outline:0;border-color:var(--accent)}
 
 /* bars: slim, white for sign-ups, red for campus organizers */
 .row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 10px;padding:6px 8px;margin:0 -8px;border-radius:4px;font-size:.9rem;transition:background .15s}
-.row:hover{background:rgba(233,236,242,.045)}
+.row:hover{background:rgba(236,234,224,.045)}
 .row span:nth-child(2){font-family:var(--mono);font-size:12px;color:var(--mute)}
 .row i{grid-column:1/-1;height:4px;border-radius:2px;background:var(--line)}
 .row i u{display:block;height:100%;border-radius:2px;background:var(--ink);transition:width .5s cubic-bezier(.2,.7,.2,1)}
@@ -97,7 +97,7 @@ input:focus{outline:0;border-color:var(--accent)}
 .legend i{display:inline-block;width:14px;height:4px;border-radius:2px;margin-right:8px;vertical-align:middle;background:var(--ink)}
 .legend i.o{background:var(--accent)}
 .urow{display:grid;grid-template-columns:minmax(120px,220px) minmax(0,1fr) 52px 112px 100px;gap:16px;align-items:center;width:100%;border:0;background:none;border-radius:4px;padding:7px 8px;margin:0 -8px;width:calc(100% + 16px);text-align:left;font-size:.9rem;cursor:pointer;transition:background .15s}
-.urow:hover{background:rgba(233,236,242,.05)}
+.urow:hover{background:rgba(236,234,224,.05)}
 .urow[aria-pressed="true"]{background:var(--tint)}
 .urow .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .urow .tr{height:4px;border-radius:2px;background:var(--line);overflow:hidden}
@@ -113,7 +113,7 @@ input:focus{outline:0;border-color:var(--accent)}
 table{border-collapse:collapse;width:100%;font-size:.875rem}
 th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
 th{position:sticky;top:0;background:var(--pop)}
-tr:hover td{background:rgba(233,236,242,.03)}
+tr:hover td{background:rgba(236,234,224,.03)}
 td.wide{white-space:normal;min-width:320px}
 .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
 #signin{max-width:420px;margin:12vh auto 0}
@@ -320,7 +320,7 @@ function plot(){
   pts+="L"+x1.toFixed(1)+","+Y(CUR(SER.now)).toFixed(1);
   sv("path",{"class":"ar",d:pts+"L"+x1.toFixed(1)+","+Y(0)+"L"+x0+","+Y(0)+"Z"});sv("path",{"class":"ln",d:pts,pathLength:1});
   sv("line",{id:"cross",y1:T,y2:H-B,stroke:"currentColor","stroke-opacity":.4,visibility:"hidden"});
-  sv("circle",{id:"dot",r:5,fill:"#D3993C",stroke:"#152447","stroke-width":2.5,visibility:"hidden"});
+  sv("circle",{id:"dot",r:5,fill:"#D9544D",stroke:"#111113","stroke-width":2.5,visibility:"hidden"});
 }
 function hover(e){
   if(!SER||!CUR)return;var pt=e.touches?e.touches[0]:e,p=$("plot"),b=p.getBoundingClientRect(),tip=$("tip"),
