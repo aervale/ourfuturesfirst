@@ -360,9 +360,9 @@ s3_secret_key = "env(S3_SECRET_KEY)"
 
 # Verification email sent when a student submits the interest form.
 [auth.email.template.magic_link]
-subject = "Confirm your university email"
+subject = "Your answers for the student open letter on AI"
 content_path = "./supabase/templates/confirm.html"
 
 [auth.email.template.confirmation]
-subject = "Confirm your university email"
+subject = "Your answers for the student open letter on AI"
 content_path = "./supabase/templates/confirm.html"
