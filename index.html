@@ -271,16 +271,9 @@ textarea{display:block;min-height:150px;resize:none}
 .bars li.me .nm,.bars li.me .n{color:var(--ink);font-weight:700}
 .bars li.me .fill{background:var(--accent)}
 .bars li.gap{margin-top:8px}
-.bars .plus{position:relative;display:inline-block;margin-left:8px;padding:1px 6px;border-radius:4px;background:var(--tint);color:var(--ink);font-family:var(--mono);font-size:12px;font-weight:600;cursor:help}
-.bars .plus::after{content:attr(data-tip);position:absolute;left:0;top:calc(100% + 8px);z-index:3;width:max-content;max-width:250px;padding:8px 10px;background:var(--pop);border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);color:var(--ink);font-family:var(--sans);font-size:.8125rem;font-weight:400;line-height:1.4;white-space:normal;opacity:0;pointer-events:none;transition:opacity .15s}
-.bars .plus:hover::after{opacity:1}
 .bars li.new{animation:rowin 2.2s ease-out both}
-.bars .plus.new{background:var(--accent);color:var(--on-accent);animation:plusin .75s cubic-bezier(.2,1.7,.35,1) .25s both,plusring 1.5s ease-out 1s 3}
-.bars .plus.new::after{animation:tipshow 6s ease 1s both}
 @keyframes rowin{0%{background:color-mix(in srgb,var(--accent) 55%,transparent)}100%{background:var(--tint)}}
-@keyframes plusin{0%{transform:scale(0) rotate(-14deg);opacity:0}100%{transform:none;opacity:1}}
-@keyframes plusring{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 75%,transparent)}100%{box-shadow:0 0 0 16px transparent}}
-@keyframes tipshow{0%{opacity:0}8%,86%{opacity:1}100%{opacity:0}}
+
 
 /* results */
 .results{padding:32px 0 56px}
@@ -345,11 +338,34 @@ textarea{display:block;min-height:150px;resize:none}
 .linkrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
 .linkrow .btn{padding:0 18px}
 #myLink{font-family:var(--mono);font-size:.875rem;color:var(--ink)}
+/* your reach: you are the star in the middle; people who join from your link light up around you, and the people
+   they bring in light up further out */
+.reach{margin:22px 0 4px}
+.reachrow{display:grid;grid-template-columns:132px minmax(0,1fr);gap:22px;align-items:center;margin-top:10px}
+#sky{display:block;width:132px;height:132px;overflow:visible}
+#sky .orbit{fill:none;stroke:var(--line2);stroke-width:.6;stroke-dasharray:1.5 4}
+#sky .ray{stroke:var(--star);stroke-width:.5;opacity:.28}
+#sky .me{fill:var(--accent)}
+#sky .st{fill:var(--star);transform-box:fill-box;transform-origin:center;animation:twinkle 4.5s ease-in-out infinite}
+#sky .st.far{opacity:.75}
+#sky .st.born{animation:born 1.1s var(--ease) both,twinkle 4.5s ease-in-out 1.1s infinite}
+@keyframes twinkle{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes born{0%{transform:scale(0) rotate(-90deg);opacity:0}60%{transform:scale(1.9) rotate(10deg);opacity:1}100%{transform:none}}
+.reachnums{display:grid;gap:14px}
+.reach .stat{padding-left:14px}
+.reach .stat b{font-size:clamp(2rem,3.2vw,2.7rem)}
+.reach .stat .lab{margin-top:6px}
+.reach .stat b.up{animation:numup .9s var(--ease)}
+@keyframes numup{0%{color:var(--star);transform:translateY(-4px)}100%{transform:none}}
+.reachline{margin-top:14px;color:var(--ink)}
+.reachline b{font-weight:600}
+.reachunis{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:4px 16px;color:var(--mute);font-size:.875rem}
+.reachunis:empty{display:none}
+.reachunis b{margin-left:5px;color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+@media (max-width:400px){.reachrow{grid-template-columns:104px minmax(0,1fr);gap:16px}#sky{width:104px;height:104px}}
 .mylink{margin:16px 0 22px}
 .mylink .lab{display:block;margin-bottom:6px}
 .mylink .hint:empty{display:none}
-.myline{margin:10px 0 0;color:var(--mute)}
-.myline b{font-family:var(--sans);font-weight:600;font-size:1.125rem;font-variant-numeric:tabular-nums;color:var(--ink)}
 #afterHelp .pop .leadbox{margin-top:8px}
 .foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:10px 22px}
 .foot .by{margin-left:auto}
@@ -535,6 +551,18 @@ footer{padding:22px 0 36px}
             <p>The email can take up to two minutes to arrive. While you wait, send your link to a few friends.</p>
             <i class="waitbar" aria-hidden="true"></i>
           </div>
+          <div class="reach" id="reach">
+            <p class="lab">Your reach</p>
+            <div class="reachrow">
+              <svg id="sky" viewBox="0 0 160 160" role="img"></svg>
+              <div class="reachnums">
+                <div class="stat"><b id="rDirect">0</b><span class="lab">Joined from your link</span></div>
+                <div class="stat"><b id="rDown">0</b><span class="lab">In your whole chain</span></div>
+              </div>
+            </div>
+            <p class="reachline" id="reachLine"></p>
+            <ul class="reachunis" id="reachUnis"></ul>
+          </div>
           <p class="muted" id="spreadNote"></p>
           <div class="mylink">
             <p class="lab">Your personal link</p>
@@ -547,7 +575,6 @@ footer{padding:22px 0 36px}
             <button class="btn ghost" type="button" id="shInsta"><svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg><span>Instagram</span></button>
           </div>
             <p class="hint" id="copyMsg" role="status"></p>
-            <p class="myline" id="mineLine" hidden></p>
           </div>
           <p class="lab sub3">Can you help it reach your campus?</p>
           <div class="opts" id="spread"></div>
@@ -967,13 +994,8 @@ function grow(f,w){if(CALM){f.style.width=w;return;}setTimeout(function(){f.styl
 function showPeopleOf(name){S.panel="people";$("inSearch").value=name;renderWidget();}
 function tipText(name,pct,n){return name+": "+pct+"% ("+num(n)+(n===1?" person)":" people)");}
 function uniRow(g,me,top){
-  var li=mk("li",me?"me":null),nm=mk("span","nm",g.name),down=S.submitted&&g.key?(S.chain[g.key]||0):0,plus=(me&&S.submitted?1:0)+down;li.appendChild(nm);li.appendChild(mk("span","n",num(g.n)));
-  if(plus){var b=mk("span","plus","+"+num(plus));
-    b.setAttribute("data-tip",(me?"You"+(down?", and "+num(down)+(down===1?" person":" people")+" here who signed up":" count here. Others who sign up")+" through your link, or through the links of people you brought in"+(down?".":", will add to this.")
-      :num(down)+(down===1?" person":" people")+" here signed up through your link, or through the links of people you brought in.")+" Share your link to grow it.");
-    b.title="";
-    if(me&&S.fresh){b.classList.add("new");li.classList.add("new");}
-    nm.appendChild(b);}
+  var li=mk("li",me?"me":null),nm=mk("span","nm",g.name);li.appendChild(nm);li.appendChild(mk("span","n",num(g.n)));
+  if(me&&S.fresh)li.classList.add("new");
   li.tabIndex=0;li.setAttribute("role","button");li.title="Show people from "+g.name;lights(li,g.name);
   li.addEventListener("click",function(){showPeopleOf(g.name);});
   li.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();showPeopleOf(g.name);}});
@@ -1010,16 +1032,13 @@ function renderWidget(){
   $("anonNote").textContent=anon>0?"Plus "+num(anon)+(anon===1?" person who":" people who")+" kept their name private.":"";
 
   /* rebuild the ranking only when it changes, so the bars don't replay on every keystroke */
-  var mine=S.mine?S.mine.dom:null,key=mine+"|"+S.submitted+JSON.stringify(S.chain)+"|"+B.unis.map(function(x){return x.key+x.n;}).join(",");
+  var mine=S.mine?S.mine.dom:null,key=mine+"|"+S.submitted+"|"+S.fresh+"|"+B.unis.map(function(x){return x.key+x.n;}).join(",");
   if(key===uniKey)return;uniKey=key;
   var ul=$("uniList"),idx=-1;clear(ul);
   B.unis.forEach(function(x,i){if(x.key===mine)idx=i;});
   var top=B.unis.length?B.unis[0].n:0,inTop=!mine||(idx>-1&&idx<12);
   B.unis.slice(0,inTop?12:11).forEach(function(x){ul.appendChild(uniRow(x,x.key===mine,top));});
   if(!inTop){var row=uniRow(idx>-1?B.unis[idx]:{name:S.mine.name,n:0},true,top);if(B.unis.length)row.classList.add("gap");ul.appendChild(row);}
-  /* universities further down the list still appear when your link has reached them */
-  var cut=inTop?12:11,more=B.unis.filter(function(x,i){return i>=cut&&x.key!==mine&&S.submitted&&S.chain[x.key];}).slice(0,6);
-  more.forEach(function(x,i){var r=uniRow(x,false,top);if(i===0&&inTop)r.classList.add("gap");ul.appendChild(r);});
   if(!B.unis.length&&inTop)ul.appendChild(mk("li","empty","No universities yet."));
 }
 $("segPeople").addEventListener("click",function(){S.panel="people";renderWidget();});
@@ -1146,9 +1165,7 @@ function renderAfter(){
   $("afterHelp").hidden=!S.token;$("resendRow").hidden=S.verified||!S.live;$("waitNote").hidden=S.verified||!S.live;paintResend();
   var url=shareUrl(),via=function(c){return e(msg+shareUrl(c));},msg="Students are writing an open letter on regulating AI development and asking what should be in it. It takes two minutes: ",e=encodeURIComponent;
   $("myLink").value=url.replace(/^https?:\/\//,"");
-  var ml=$("mineLine"),d=S.invited||0,t=S.downstream||0;clear(ml);ml.hidden=!S.verified;
-  ml.appendChild(mk("b",null,num(d)));ml.appendChild(document.createTextNode(d===1?" person joined from your link, ":" people joined from your link, "));
-  ml.appendChild(mk("b",null,num(t)));ml.appendChild(document.createTextNode(" downstream in all."));
+  paintReach();
   $("spreadNote").textContent="The most helpful thing you can do is get this to other people at "+(u?u.name:"your university")+": your dorm, your classes and your clubs.";
   $("shMore").hidden=!navigator.share;
   $("removeRow").hidden=true;
@@ -1159,6 +1176,41 @@ function renderAfter(){
   if(!$("pop").classList.contains("open"))[].forEach.call(document.querySelectorAll("#after>:not(#afterHelp),#afterHelp>*:not(.mylink),.mylink>*:not(.share),#shareRow>*"),function(el,i){if(el.parentNode.id!=="shareRow")el.classList.add("rise");el.style.setProperty("--d",(160+i*85)+"ms");});
   $("pop").classList.add("open");
 }
+/* ---------- your reach: the two numbers, the sky of stars, and where the chain has got to ---------- */
+var REACH={d:-1,t:-1,n:-1},STEPS=[1,3,5,10,25,50,100,250,500,1000,2500,5000];
+function starPath(x,y,r){var k=r*.3;return "M"+x+" "+(y-r)+"L"+(x+k)+" "+(y-k)+"L"+(x+r)+" "+y+"L"+(x+k)+" "+(y+k)+"L"+x+" "+(y+r)+"L"+(x-k)+" "+(y+k)+"L"+(x-r)+" "+y+"L"+(x-k)+" "+(y-k)+"Z";}
+function countTo(el,from,to){if(CALM||from<0||from===to){el.textContent=num(to);return;}
+  var t0=performance.now();el.classList.remove("up");void el.offsetWidth;el.classList.add("up");
+  (function tick(now){var k=Math.min(1,(now-t0)/900),e=1-Math.pow(1-k,3);el.textContent=num(Math.round(from+(to-from)*e));if(k<1)requestAnimationFrame(tick);})(t0);}
+function paintReach(){
+  var d=S.invited||0,t=Math.max(S.downstream||0,d),far=t-d,grew=REACH.t>-1&&t>REACH.t,sky=$("sky"),NSV="http://www.w3.org/2000/svg";
+  var known=(S.remote.unis||[]).length;if(d===REACH.d&&t===REACH.t&&known===REACH.n&&sky.firstChild)return;
+  function el(tag,cls,at){var n=document.createElementNS(NSV,tag);if(cls)n.setAttribute("class",cls);for(var k in at)n.setAttribute(k,at[k]);sky.appendChild(n);return n;}
+  clear(sky);sky.setAttribute("aria-label",num(d)+(d===1?" person":" people")+" joined from your link, "+num(t)+" in your whole chain");
+  el("circle","orbit",{cx:80,cy:80,r:38});el("circle","orbit",{cx:80,cy:80,r:66});
+  /* up to 14 stars on the inner ring and 46 beyond it; past that the numbers carry it */
+  var nd=Math.min(d,14),nf=Math.min(far,46),i,a,x,y,st,was=REACH.t>-1?Math.min(REACH.d,14):nd,wasF=REACH.t>-1?Math.min(REACH.t-REACH.d,46):nf;
+  for(i=0;i<nd;i++){a=-Math.PI/2+i*2*Math.PI/Math.max(nd,3);x=80+38*Math.cos(a);y=80+38*Math.sin(a);
+    el("line","ray",{x1:80,y1:80,x2:x.toFixed(1),y2:y.toFixed(1)});
+    st=el("path","st"+(i>=was?" born":""),{d:starPath(+x.toFixed(1),+y.toFixed(1),6.5)});st.style.animationDelay=(i>=was?(i-was)*120:-(i*700%4500))+"ms";}
+  for(i=0;i<nf;i++){a=i*2.39996+.6;var rr=58+(i*7%3)*8;x=80+rr*Math.cos(a);y=80+rr*Math.sin(a);
+    st=el("path","st far"+(i>=wasF?" born":""),{d:starPath(+x.toFixed(1),+y.toFixed(1),3.4)});st.style.animationDelay=(i>=wasF?(i-wasF)*90:-(i*530%4500))+"ms";}
+  el("path","me",{d:starPath(80,80,11)});
+  countTo($("rDirect"),REACH.d,d);countTo($("rDown"),REACH.t,t);
+  var line=$("reachLine"),ul=$("reachUnis"),nm={},doms=Object.keys(S.chain||{}).sort(function(p,q){return S.chain[q]-S.chain[p];}),next=0;clear(line);clear(ul);
+  STEPS.some(function(v){if(v>t){next=v;return true;}});
+  if(!t)line.textContent="You are the star in the middle. The first person who joins from your link lights the next one.";
+  else{line.appendChild(document.createTextNode("Your chain has reached "));line.appendChild(mk("b",null,doms.length===1?"1 university":num(doms.length)+" universities"));
+    line.appendChild(document.createTextNode(next?". "+(next-t===1?"One more person":num(next-t)+" more people")+" and it reaches "+num(next)+".":"."));}
+  (S.remote.unis||[]).forEach(function(u){nm[u.key]=u.name;});
+  doms.slice(0,6).forEach(function(k){var li=mk("li",null,nm[k]||k);li.appendChild(mk("b",null,num(S.chain[k])));ul.appendChild(li);});
+  if(doms.length>6)ul.appendChild(mk("li",null,"and "+num(doms.length-6)+" more"));
+  if(grew)sparkle($("rDown"));
+  REACH.d=d;REACH.t=t;REACH.n=known;
+}
+/* the numbers refresh on their own while the page is open, so a new star can appear as you watch */
+function refreshReach(){if(!S.live||!S.token||!S.submitted||document.hidden)return;
+  sb.rpc("get_interest",{p_token:S.token}).then(function(r){var c=r.data;if(r.error||!c)return;S.invited=c.invited||0;S.downstream=c.downstream||0;S.chain=c.chain||{};paintReach();},function(){});}
 /* the form folds away once submitted; Edit my answers brings it back */
 function fold(el,open){
   if(el.classList.contains("open")===open)return;
@@ -1324,7 +1376,7 @@ function loadBoard(){return sb.rpc("board").then(function(r){if(!r.error&&r.data
 buildForm();buildResults();showUni(null,false);route();paintShow();loadMap();
 if(!S.live){S.rows=sample();renderAll();}
 else{
-  renderAll();loadBoard();setInterval(loadBoard,30000);
+  renderAll();loadBoard();setInterval(function(){loadBoard();refreshReach();},30000);
   sb.rpc("majors_for",{p_dom:""}).then(function(r){if(!r.error&&r.data&&r.data.length)MAJ.all=r.data;});
   /* arriving from the emailed link signs the visitor in and confirms them; otherwise a saved edit token brings their entry back */
   /* the emailed link points at this site (?token_hash=...&type=email) rather than at Supabase, so mail filters see one domain;
