@@ -408,6 +408,8 @@ footer{padding:22px 0 36px}
 .seg button{padding-top:9.4px;padding-bottom:8.6px}
 .sbar{--nudge:.23px}
 @media (max-width:520px){.seg button{padding-top:13.4px;padding-bottom:12.6px}}
+.confirmbox{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;margin:20px 0 4px;padding:16px 20px;border-left:2px solid var(--accent);background:var(--inset)}
+.confirmbox p{margin:0}
 .themebtn{position:fixed;left:16px;bottom:16px;z-index:20;width:38px;height:38px;border-radius:50%;border:1px solid var(--line2);background:var(--card);color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0;box-shadow:0 4px 14px rgba(0,0,0,.18);transition:border-color .2s}
 .themebtn:hover{border-color:var(--accent)}.themebtn svg{width:17px;height:17px}
 @media (max-width:520px){.themebtn{width:34px;height:34px;left:12px;bottom:12px}}
@@ -443,6 +445,7 @@ footer{padding:22px 0 36px}
     </div>
     <div class="ticker" id="ticker" aria-hidden="true" hidden><div id="tickerRow"></div></div>
   </section>
+  <div class="wrap" id="confirmBox" hidden><div class="confirmbox"><p>Press the button to confirm your university email and count your answers.</p><button type="button" class="btn" id="btnConfirm">Confirm my email</button></div></div>
   <div class="wrap"><p class="note" id="previewNote" hidden><b>Preview mode.</b> No backend is connected: the people and numbers are sample data, and entries are not saved.</p></div>
 
   <div class="wrap cols">
@@ -1228,7 +1231,19 @@ else{
   /* the emailed link points at this site (?token_hash=...&type=email) rather than at Supabase, so mail filters see one domain;
      trade the token for a session here, then take it out of the address bar */
   var qs=new URLSearchParams(location.search),th=qs.get("token_hash"),
-      verified=th?sb.auth.verifyOtp({token_hash:th,type:qs.get("type")||"email"}).catch(function(){return null;}):Promise.resolve(null);
+      ty=qs.get("type")||"email",
+      /* mail scanners (Microsoft's especially) open every link in an email before the person does; if opening the page
+         were enough, the scanner would use up the one-time link. So the visitor presses a button first. */
+      verified=th?new Promise(function(done){
+        var box=$("confirmBox"),b=$("btnConfirm");box.hidden=false;
+        b.addEventListener("click",function(){b.disabled=true;b.textContent="Confirming";
+          sb.auth.verifyOtp({token_hash:th,type:ty}).then(function(r){
+            box.hidden=true;
+            if(r.error){$("err").textContent="That link has expired or was already used. Enter your email below and we'll send a new one.";}
+            done();
+          },function(){box.hidden=true;done();});
+        },{once:true});
+      }):Promise.resolve(null);
   if(th){qs.delete("token_hash");qs.delete("type");try{history.replaceState(null,"",location.pathname+(qs.toString()?"?"+qs:"")+location.hash);}catch(x){}}
   verified.then(function(){return sb.auth.getSession();}).then(function(r){
     if(r.data&&r.data.session)return sb.rpc("confirm_signup").then(function(m){return m.data;});
