@@ -98,7 +98,8 @@ input:focus{outline:0;background:var(--field-on)}
 
 /* chart */
 .chart{position:relative;margin-top:36px}
-.chart .top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+.chart .top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px 12px;margin-bottom:10px}
+.chart .pick{display:flex;flex-wrap:wrap;align-items:center;gap:10px 24px}
 .tabs{display:flex;gap:28px}
 .tabs button{background:none;border:0;border-bottom:2px solid transparent;padding:6px 0;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);cursor:pointer;transition:color .2s,border-color .2s}
 .tabs button:hover{color:var(--ink)}
@@ -184,10 +185,9 @@ td.wide{white-space:normal;min-width:320px}
   </div>
 
   <p class="sum" id="sum"></p>
-  <div class="card facts" id="facts"></div>
 
   <div class="card chart">
-    <div class="top"><div class="tabs" role="tablist"><button role="tab" id="tabTotal" aria-selected="true">Total</button><button role="tab" id="tabDay" aria-selected="false">Per day</button></div><span class="lab" id="plotNote"></span></div>
+    <div class="top"><div class="pick"><div class="dd" id="ddPlot"></div><div class="tabs" role="tablist"><button role="tab" id="tabTotal" aria-selected="true">Total</button><button role="tab" id="tabDay" aria-selected="false">Per day</button></div></div><span class="lab" id="plotNote"></span></div>
     <svg id="plot" role="img" aria-label="Sign-ups over time"></svg>
     <div id="tip" hidden></div>
   </div>
@@ -250,7 +250,7 @@ function clear(e){while(e.firstChild)e.removeChild(e.firstChild);}
 var C=window.OFF_CONFIG||{};
 if(!C.url){$("signin").hidden=false;$("msg").textContent="No backend is configured.";return;}
 var sb=window.supabase.createClient(C.url,C.key);
-var EV={events:[],invites:[],ok:false},ROWS=[],F={uni:"",role:"",confirmed:true,mode:"total",allUnis:false};
+var EV={events:[],invites:[],ok:false},ROWS=[],F={uni:"",plotUni:"",role:"",confirmed:true,mode:"total",allUnis:false};
 var ROLES=["an undergraduate","a graduate student","a postdoc","faculty","staff"],YEARS=["Freshman","Sophomore","Junior","Senior"];
 var RLAB={"an undergraduate":"Undergraduates","a graduate student":"Graduate students","a postdoc":"Postdocs","faculty":"Faculty","staff":"Staff"};
 var QS={feel:"How do you feel about where AI is headed?",plans:"Has AI changed your plans?",job:"When can AI do an entry-level job in your field?",
@@ -303,7 +303,7 @@ function dropdown(box,items,get,set,search){
   document.addEventListener("click",function(e){if(!box.contains(e.target))open(false);});
   return paint;
 }
-var paintUni,paintRole;
+var paintUni,paintRole,paintPlot;
 function setUni(dom){F.uni=F.uni===dom?"":dom;paintUni();render();}
 
 /* ---------- sign-ups over time: a smooth curve, read off continuously under the pointer ---------- */
@@ -371,26 +371,15 @@ function unhover(){$("tip").hidden=true;["cross","dot"].forEach(function(id){var
 var rz;window.addEventListener("resize",function(){clearTimeout(rz);rz=setTimeout(function(){if(!$("dash").hidden)plot();},150);});
 
 /* ---------- everything on the page ---------- */
-function fact(label,value){var d=mk("div");d.appendChild(mk("span","lab",label));var v=mk("span");if(value&&value.nodeType)v.appendChild(value);else v.textContent=value;d.appendChild(v);$("facts").appendChild(d);}
 function render(){
   var rows=scope(),org=rows.filter(isLead),now=Date.now(),who=F.role?RLAB[F.role].toLowerCase():"sign-ups",uni=uniName();
   $("chConfirmed").setAttribute("aria-pressed",String(F.confirmed));
 
-  /* headline and highlights */
+  /* headline */
   var s=$("sum"),nUni=count(rows,function(r){return r.dom;}).length;clear(s);s.appendChild(mk("b",null,num(rows.length)));
   s.appendChild(document.createTextNode(" "+(F.confirmed?"confirmed ":"")+(rows.length===1&&!F.role?"sign-up":who)+(F.uni?" at "+uni:" at "+plural(nUni,"university","universities"))));
-  clear($("facts"));SER=series(rows);
-  var w1=rows.filter(function(r){return Date.parse(r.created_at)>now-7*DAY;}),w0=rows.filter(function(r){var t=Date.parse(r.created_at);return t<=now-7*DAY&&t>now-14*DAY;}).length,
-      chg=w0?Math.round((w1.length-w0)/w0*100):null,wk=mk("span",null,num(w1.length));
-  if(chg!==null){wk.appendChild(document.createTextNode(", "));wk.appendChild(mk("span",chg<0?"down":"up",(chg<0?"down ":"up ")+Math.abs(chg)+"%"));wk.appendChild(document.createTextNode(" on the week before"));}
-  fact("Past 7 days",wk);
-  if(SER){var big=SER.days.reduce(function(a,d){return d.n>a.n?d:a;});fact("Biggest day",fmtDay(big.t)+", "+plural(big.n,"sign-up","sign-ups"));
-    fact("Average per day",num(Math.round(rows.length/SER.days.length))+" over "+plural(SER.days.length,"day","days"));}
-  if(!F.uni){var fast=count(w1,function(r){return r.uni;}).slice(0,3);if(fast.length)fact("Growing fastest this week",fast.map(function(p){return p[0]+" +"+num(p[1]);}).join(", "));}
-  var viaLink=rows.filter(function(r){return r.ref_by;}).length;if(rows.length)fact("Joined through a share link",num(viaLink)+", "+Math.round(viaLink/rows.length*100)+"% of sign-ups");
-  fact("Awaiting confirmation",num(scope({all:true}).filter(function(r){return !r.verified_at;}).length)+(F.confirmed?", not counted above":""));
-  fact("Campus organizers",org.length?num(org.length)+(F.uni?"":" at "+plural(count(org,function(r){return r.dom;}).length,"university","universities")):"None yet");
-  var held=rows.filter(function(r){return r.name_hidden;}).length;if(held)fact("Names held back",plural(held,"name","names")+" to review below");
+  /* the chart follows the filters above, unless a university is picked on the chart itself */
+  SER=series(F.plotUni?scope({noUni:true}).filter(function(r){return r.dom===F.plotUni;}):rows);if(paintPlot)paintPlot();
   $("plotNote").textContent="Hover for any day";plot();
 
   /* universities: ignores the university filter, so the list stays put while one is selected */
@@ -481,6 +470,9 @@ function start(session){
       return [["","All universities",null]].concat(c.map(function(p){return [p[0],nm[p[0]],p[1]];}));},function(){return F.uni;},function(v){F.uni=v;},true);
     paintRole=dropdown($("ddRole"),function(){var c={};scope({noUni:false}).forEach(function(r){c[r.role]=(c[r.role]||0)+1;});
       return [["","All roles",null]].concat(ROLES.map(function(r){return [r,RLAB[r],F.role&&F.role!==r?null:c[r]||0];}));},function(){return F.role;},function(v){F.role=v;});
+    /* any university's progress, charted on its own without filtering the rest of the page */
+    paintPlot=dropdown($("ddPlot"),function(){var c=count(scope({noUni:true}),function(r){return r.dom;}),nm={};ROWS.forEach(function(r){nm[r.dom]=r.uni;});
+      return [["",F.uni?nm[F.uni]+" (as filtered above)":"All universities",null]].concat(c.map(function(p){return [p[0],nm[p[0]],p[1]];}));},function(){return F.plotUni;},function(v){F.plotUni=v;},true);
     paintUni();paintRole();render();
     /* sharing counts load separately, so the page still opens if they are missing */
     sb.rpc(C.dev?"dev_admin_events":"admin_events").then(function(e){if(e.error||!e.data)return;EV=e.data;EV.ok=true;render();});
