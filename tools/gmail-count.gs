@@ -10,11 +10,13 @@
    What it shares: only the three numbers below, never names, addresses or message text.
    Anyone with the URL can see those numbers. */
 
-var SKIP = /no-?reply|notifications?@|notify@|mailer-daemon|@resend\.|@supabase\.|@cloudflare|@google\.com|@accounts\.google|@x\.com|@twitter\.com|instagram|facebookmail|@github\.com/i;
+// automatic senders: the services the project uses (any of their subdomains too) and the usual robot addresses
+var SKIP = /(^|[@.])(resend|supabase|cloudflare|google|googlemail|x|twitter|instagram|facebookmail|meta|github|vercel|stripe)\.com$|^(no-?reply|noreply-[^@]*|notifications?|notify|mailer-daemon|welcome|support|team|news|hello|billing|invoice[^@]*)@/i;
 
 function doGet() {
   var me = Session.getActiveUser().getEmail().toLowerCase();
-  var threads = GmailApp.search('in:inbox -from:me', 0, 500);
+  // Gmail's own sorting keeps newsletters, receipts and account notices out of Primary
+  var threads = GmailApp.search('in:inbox -from:me -category:updates -category:promotions -category:social -category:forums', 0, 500);
   var people = {}, week = {}, cutoff = Date.now() - 7 * 864e5;
   GmailApp.getMessagesForThreads(threads).forEach(function (msgs) {
     msgs.forEach(function (m) {
