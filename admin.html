@@ -100,8 +100,6 @@ input:focus{outline:0;background:var(--field-on)}
 .toggle[aria-pressed="true"] i::after{left:17px}
 
 /* summary */
-.sum{font-family:var(--head);font-weight:400;font-size:clamp(2.1rem,3.8vw,3rem);line-height:1.1;margin:26px 0 16px}
-.sum b{color:var(--accent);font-weight:500}
 .lab{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
 .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(440px,100%),1fr));gap:0 48px}
 .facts div{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:9px 0}
@@ -122,7 +120,7 @@ input:focus{outline:0;background:var(--field-on)}
 .svc i.ok{background:var(--good)}.svc i.warn{background:#E0A43A}.svc i.bad{background:var(--accent-ink)}
 
 /* chart */
-.chart{position:relative;margin-top:36px}
+.chart{position:relative;margin-top:18px}
 .chart .top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px 12px;margin-bottom:10px}
 .chart .pick{display:flex;flex-wrap:wrap;align-items:center;gap:10px 24px}
 .tabs{display:flex;gap:28px}
@@ -202,13 +200,6 @@ td.wide{white-space:normal;min-width:320px}
 </div>
 
 <div class="wrap" id="dash" hidden>
-  <div class="tools">
-    <div class="dd" id="ddUni"></div>
-    <div class="dd" id="ddRole"></div>
-    <span class="grow"></span>
-    <button class="toggle" id="chConfirmed" aria-pressed="true"><i></i>Confirmed only</button>
-  </div>
-
   <div class="svcs">
   <p class="svc" id="svc" aria-live="polite">
     <span class="lab">Services</span><span class="it">
@@ -224,7 +215,6 @@ td.wide{white-space:normal;min-width:320px}
     <a href="https://www.instagram.com/direct/inbox/" target="_blank" rel="noopener noreferrer"><b>Instagram</b><span>Open inbox</span></a>
   </span></p>
   </div>
-  <p class="sum" id="sum"></p>
   <div class="card switches">
     <p class="lab">Shown on the public page</p>
     <p class="swnote">Flipping a switch changes <b>your preview</b> straight away. The <b>live site</b> changes only when you press Save.</p>
@@ -242,8 +232,15 @@ td.wide{white-space:normal;min-width:320px}
   </div>
   <div class="card facts" id="facts"></div>
 
+  <h2>Sign-ups <small id="sum"></small></h2>
+  <div class="tools">
+    <div class="dd" id="ddUni"></div>
+    <div class="dd" id="ddRole"></div>
+    <span class="grow"></span>
+    <button class="toggle" id="chConfirmed" aria-pressed="true"><i></i>Confirmed only</button>
+  </div>
   <div class="card chart">
-    <div class="top"><div class="pick"><div class="dd" id="ddPlot"></div><div class="tabs" role="tablist"><button role="tab" id="tabTotal" aria-selected="true">Total</button><button role="tab" id="tabDay" aria-selected="false">Per day</button></div></div><span class="lab" id="plotNote"></span></div>
+    <div class="top"><div class="pick"><div class="tabs" role="tablist"><button role="tab" id="tabTotal" aria-selected="true">Total</button><button role="tab" id="tabDay" aria-selected="false">Per day</button></div></div><span class="lab" id="plotNote"></span></div>
     <svg id="plot" role="img" aria-label="Sign-ups over time"></svg>
     <div id="tip" hidden></div>
   </div>
@@ -306,7 +303,7 @@ function clear(e){while(e.firstChild)e.removeChild(e.firstChild);}
 var C=window.OFF_CONFIG||{};
 if(!C.url){$("signin").hidden=false;$("msg").textContent="No backend is configured.";return;}
 var sb=window.supabase.createClient(C.url,C.key);
-var EV={events:[],invites:[],ok:false},ROWS=[],F={uni:"",plotUni:"",role:"",confirmed:true,mode:"total",allUnis:false};
+var EV={events:[],invites:[],ok:false},ROWS=[],F={uni:"",role:"",confirmed:true,mode:"total",allUnis:false};
 var ROLES=["an undergraduate","a graduate student","a postdoc","faculty","staff"],YEARS=["Freshman","Sophomore","Junior","Senior"];
 var RLAB={"an undergraduate":"Undergraduates","a graduate student":"Graduate students","a postdoc":"Postdocs","faculty":"Faculty","staff":"Staff"};
 var QS={feel:"How do you feel about where AI is headed?",plans:"Has AI changed your plans?",job:"When can AI do an entry-level job in your field?",
@@ -359,7 +356,7 @@ function dropdown(box,items,get,set,search){
   document.addEventListener("click",function(e){if(!box.contains(e.target))open(false);});
   return paint;
 }
-var paintUni,paintRole,paintPlot;
+var paintUni,paintRole;
 function setUni(dom){F.uni=F.uni===dom?"":dom;paintUni();render();}
 
 /* ---------- sign-ups over time: a smooth curve, read off continuously under the pointer ---------- */
@@ -431,16 +428,16 @@ function render(){
   var rows=scope(),org=rows.filter(isLead),now=Date.now(),who=F.role?RLAB[F.role].toLowerCase():"sign-ups",uni=uniName();
   $("chConfirmed").setAttribute("aria-pressed",String(F.confirmed));
 
-  /* headline */
-  var s=$("sum"),nUni=count(rows,function(r){return r.dom;}).length;clear(s);s.appendChild(mk("b",null,num(rows.length)));
-  s.appendChild(document.createTextNode(" "+(F.confirmed?"confirmed ":"")+(rows.length===1&&!F.role?"sign-up":who)+(F.uni?" at "+uni:" at "+plural(nUni,"university","universities"))));
+  /* the count, as a note beside the section heading */
+  var nUni=count(rows,function(r){return r.dom;}).length;
+  $("sum").textContent=num(rows.length)+" "+(F.confirmed?"confirmed":"in all")+(F.role?" "+who:"")+(F.uni?" at "+uni:" at "+plural(nUni,"university","universities"));
   /* two things that need an eye kept on them */
   var fs=$("facts"),held=rows.filter(function(r){return r.name_hidden;}).length;clear(fs);
   function fact(l,v){var d=mk("div");d.appendChild(mk("span","lab",l));d.appendChild(mk("span",null,v));fs.appendChild(d);}
-  fact("Awaiting confirmation",num(scope({all:true}).filter(function(r){return !r.verified_at;}).length)+(F.confirmed?", not counted above":""));
+  fact("Awaiting confirmation",num(scope({all:true}).filter(function(r){return !r.verified_at;}).length)+(F.confirmed?", not counted in the totals":""));
   fact("Names held back",held?plural(held,"name","names")+" to review below":"None");
-  /* the chart follows the filters above, unless a university is picked on the chart itself */
-  SER=series(F.plotUni?scope({noUni:true}).filter(function(r){return r.dom===F.plotUni;}):rows);if(paintPlot)paintPlot();
+  /* the chart follows the filters just above it */
+  SER=series(rows);
   $("plotNote").textContent="Hover for any day";plot();
 
   /* universities: ignores the university filter, so the list stays put while one is selected */
@@ -565,9 +562,6 @@ function start(session){
       return [["","All universities",null]].concat(c.map(function(p){return [p[0],nm[p[0]],p[1]];}));},function(){return F.uni;},function(v){F.uni=v;},true);
     paintRole=dropdown($("ddRole"),function(){var c={};scope({noUni:false}).forEach(function(r){c[r.role]=(c[r.role]||0)+1;});
       return [["","All roles",null]].concat(ROLES.map(function(r){return [r,RLAB[r],F.role&&F.role!==r?null:c[r]||0];}));},function(){return F.role;},function(v){F.role=v;});
-    /* any university's progress, charted on its own without filtering the rest of the page */
-    paintPlot=dropdown($("ddPlot"),function(){var c=count(scope({noUni:true}),function(r){return r.dom;}),nm={};ROWS.forEach(function(r){nm[r.dom]=r.uni;});
-      return [["",F.uni?nm[F.uni]+" (as filtered above)":"All universities",null]].concat(c.map(function(p){return [p[0],nm[p[0]],p[1]];}));},function(){return F.plotUni;},function(v){F.plotUni=v;},true);
     paintUni();paintRole();render();services(true);setInterval(function(){if(!document.hidden)services();},120000);
     /* the three parts of the public page that are switched on from here; a change shows there within half a minute */
     /* the switches are a draft until Save is pressed. The draft is kept in this browser so the preview can show it. */
