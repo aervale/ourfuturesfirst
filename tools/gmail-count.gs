@@ -17,19 +17,22 @@ function doGet() {
   var me = Session.getActiveUser().getEmail().toLowerCase();
   // Gmail's own sorting keeps newsletters, receipts and account notices out of Primary
   var threads = GmailApp.search('in:inbox -from:me -category:updates -category:promotions -category:social -category:forums', 0, 500);
-  var people = {}, week = {}, cutoff = Date.now() - 7 * 864e5;
-  GmailApp.getMessagesForThreads(threads).forEach(function (msgs) {
+  var people = {}, week = {}, unread = 0, cutoff = Date.now() - 7 * 864e5;
+  GmailApp.getMessagesForThreads(threads).forEach(function (msgs, t) {
+    var real = false;
     msgs.forEach(function (m) {
       var from = (m.getFrom().match(/<([^>]+)>/) || [, m.getFrom()])[1].trim().toLowerCase();
       if (!from || from === me || SKIP.test(from)) return;
+      real = true;
       people[from] = true;
       if (m.getDate().getTime() > cutoff) week[from] = true;
     });
+    if (real && threads[t].isUnread()) unread++;
   });
   var out = {
     people: Object.keys(people).length,      // different people who have written in
     week: Object.keys(week).length,          // of those, how many wrote in the past 7 days
-    unread: GmailApp.getInboxUnreadCount(),  // unread conversations in the inbox
+    unread: unread,                          // unread conversations from those people
     at: new Date().toISOString()
   };
   return ContentService.createTextOutput(JSON.stringify(out)).setMimeType(ContentService.MimeType.JSON);
