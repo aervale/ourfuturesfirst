@@ -435,7 +435,7 @@ footer{padding:22px 0 36px}
   .foot .by{margin-left:0;flex-basis:100%;margin-top:6px}
   /* phones: a smaller headline and map so the form starts sooner */
   .banner h1{font-size:2rem;line-height:1.05}
-  #usMap{margin-bottom:20px}
+  #usMap{margin-bottom:20px;max-width:86%}
   /* contact list: narrower labels, and long addresses may wrap instead of running off the screen */
   .contact li{grid-template-columns:112px minmax(0,1fr);gap:8px;font-size:1rem}
   .contact a{overflow-wrap:anywhere}
@@ -469,6 +469,15 @@ footer{padding:22px 0 36px}
 .confirmbox p{margin:0}
 .themebtn{position:fixed;left:16px;bottom:16px;z-index:20;width:38px;height:38px;border-radius:50%;border:1px solid var(--line2);background:var(--card);color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0;box-shadow:0 4px 14px rgba(0,0,0,.18);transition:border-color .2s}
 .themebtn:hover{border-color:var(--accent)}.themebtn svg{width:17px;height:17px}
+/* phones: a small pill that takes people straight to the form, gone once the form is on screen */
+.signcue{display:none}
+@media (max-width:520px){
+  .signcue{display:flex;align-items:center;gap:7px;position:fixed;left:50%;bottom:16px;z-index:19;transform:translate(-50%,0);padding:8px 16px 9px;border:0;border-radius:999px;background:var(--accent);color:#FFFFFF;font-family:var(--head);font-size:1.0625rem;line-height:1;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:opacity .3s,transform .3s var(--ease);animation:cuein .5s var(--ease) 1.2s backwards}
+  .signcue svg{width:11px;height:11px;animation:nudge 1.6s ease-in-out 2s infinite}
+  .signcue.gone{opacity:0;transform:translate(-50%,14px);pointer-events:none}
+}
+@keyframes cuein{from{opacity:0;transform:translate(-50%,14px)}}
+@keyframes nudge{0%,100%{transform:none}50%{transform:translateY(2px)}}
 @media (max-width:520px){.themebtn{width:34px;height:34px;left:12px;bottom:12px}}
 </style>
 </head>
@@ -500,6 +509,7 @@ footer{padding:22px 0 36px}
         </div>
       </div>
     </div>
+    <button type="button" class="signcue" id="signCue">Sign below<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1v9M2 6.5 6 10.5 10 6.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <div class="ticker" id="ticker" aria-hidden="true" hidden><div id="tickerRow"></div></div>
   </section>
   <div class="wrap" id="confirmBox" hidden><div class="confirmbox"><p>Press the button to confirm your university email and count your answers.</p><button type="button" class="btn" id="btnConfirm">Confirm my email</button></div></div>
@@ -1217,6 +1227,12 @@ function fold(el,open){
   clearTimeout(el._t);el.classList.remove("settled");void el.offsetWidth;el.classList.toggle("open",open);
   if(open)el._t=setTimeout(function(){el.classList.add("settled");},650);
 }
+/* the phone-only "Sign below" pill scrolls to the form and hides once the form is on screen */
+(function(){var cue=$("signCue"),form=$("formPop").parentNode.parentNode;
+  document.body.appendChild(cue); /* fixed position needs to sit outside the animated sections */
+  cue.addEventListener("click",function(){form.scrollIntoView({block:"start",behavior:CALM?"auto":"smooth"});});
+  function check(){var r=form.getBoundingClientRect();cue.classList.toggle("gone",r.top<innerHeight*.5);}
+  addEventListener("scroll",check,{passive:true});addEventListener("resize",check);check();})();
 function toTop(){setTimeout(function(){$("formPop").parentNode.parentNode.scrollIntoView({block:"start",behavior:CALM?"auto":"smooth"});},60);}
 $("btnEdit").addEventListener("click",function(){S.editing=true;$("err").textContent="";renderAfter();toTop();});
 $("btnCancel").addEventListener("click",function(){S.editing=false;renderAfter();toTop();});
