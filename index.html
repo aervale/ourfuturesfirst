@@ -183,6 +183,9 @@ textarea{display:block;min-height:150px;resize:none}
 .actions .wide{flex:1;width:auto}
 .actions [hidden]{display:none}
 .opt:disabled{opacity:.65;cursor:default}
+.opt.full,.opt.full:hover{opacity:.45;background:var(--inset);color:var(--mute)}
+#leadFull{margin:2px 0 6px;padding-left:2px}
+#leadFull a{color:var(--ink)}
 #showWrap{display:grid;gap:8px}
 #showWrap [hidden]{display:none}
 .resend{display:flex;flex-wrap:wrap;gap:6px 22px;align-items:baseline;margin:10px 0 0}
@@ -891,7 +894,8 @@ function buildForm(){
       var wait=s.id==="lead"&&!was&&!leadPhone();if(wait)$("inPhone2").focus();
       patch({spread:spreadList()}).then(function(){if(!wait)flash(b);},function(){set(was);renderLead();$("copyMsg").textContent=FAIL.save;});});
     if(s.id==="email"){b.classList.add("sharebit");$(s.pop).classList.add("sharebit");}
-    sp.appendChild(b);sp.appendChild($(s.pop));spreadBtns[s.id]=b;});
+    sp.appendChild(b);sp.appendChild($(s.pop));spreadBtns[s.id]=b;
+    if(s.id==="lead"){var full=mk("p","hint");full.id="leadFull";full.hidden=true;sp.appendChild(full);}});
   renderNav();
 }
 function renderNav(){
@@ -910,9 +914,19 @@ function step(i,dir){do{i+=dir;}while(i>=0&&i<slides.length&&!asked(i));return i
 function updateBtn(){var b=$("btnSubmit"),was=b.disabled;b.disabled=S.saving||!ready();if(was&&!b.disabled&&!S.saving&&!S.submitted)flash(b);}
 /* volunteering as a campus organizer asks for a phone number and consent to texts */
 function leadPhone(){var v=$("inPhone2").value.trim();return !!v&&phoneOk(v);}
+/* each university takes a set number of campus organizers. When it is full the option stays in view, greyed out, with
+   the reason and who to write to. Someone who is already an organizer is not affected. */
+var ROOM={dom:"",cap:0,count:0};
+function loadRoom(){var d=S.mine&&S.mine.dom;if(!S.live||!d||!S.token)return;
+  sb.rpc("organizer_room",{p_dom:d}).then(function(r){if(r.error||!r.data)return;ROOM={dom:d,cap:r.data.cap,count:r.data.count};renderLead();},function(){});}
+function leadFull(){return !S.spread.lead&&!!S.mine&&ROOM.dom===S.mine.dom&&ROOM.count>=ROOM.cap;}
 function renderLead(){
   paintShow();
-  var on=!!S.spread.lead;
+  var on=!!S.spread.lead,full=leadFull(),note=$("leadFull"),b=spreadBtns.lead;
+  if(b){b.disabled=full;b.classList.toggle("full",full);}
+  if(note){note.hidden=!full;if(full){clear(note);
+    note.appendChild(document.createTextNode((S.mine.name||"Your university")+" already has "+(ROOM.cap===1?"its one campus organizer":"its "+num(ROOM.cap)+" campus organizers")+", which is as many as we take at one university for now. If you'd still like to help there, write to "));
+    var a=mk("a",null,"contact@ourfuturesfirst.org");a.href="mailto:contact@ourfuturesfirst.org?subject="+encodeURIComponent("Helping at "+(S.mine.name||"my university"));note.appendChild(a);note.appendChild(document.createTextNode("."));}}
   $("leadPop").classList.toggle("open",on);$("sharePop").classList.toggle("open",!!S.spread.email);
   $("leadHint").textContent=on&&!leadPhone()?"Organizers need a phone number. You're listed as an organizer once we have it.":"";
 }
@@ -1431,7 +1445,9 @@ function shortName(n){return n.trim().replace(/^(\S+)\s+(?:.*\s)?(\S)\S*$/,"$1 $
 /* later changes, made with the edit token */
 function patch(p){
   if(!S.live){if(S.local&&p.answers){S.local.a=p.answers;S.local.name=p.show_name?shortName(p.name):"";}return Promise.resolve();}
-  return sb.rpc("update_interest",{p_token:S.token,p:p}).then(function(r){if(r.error)throw "save";return loadBoard();});
+  return sb.rpc("update_interest",{p_token:S.token,p:p}).then(function(r){if(r.error)throw "save";
+    if(r.data&&r.data.spread&&p.spread&&S.spread.lead&&r.data.spread.indexOf("lead")<0&&leadPhone()){S.spread.lead=false;spreadBtns.lead.setAttribute("aria-pressed","false");loadRoom();}
+    return loadBoard();});
 }
 function fail(msg,el){$("err").textContent=msg;if(el){el.scrollIntoView({block:"center",behavior:CALM?"auto":"smooth"});if(el.focus)el.focus({preventScroll:true});}}
 $("form").addEventListener("submit",function(e){
@@ -1453,7 +1469,7 @@ $("form").addEventListener("submit",function(e){
   }
   row.email=email;
   save(row).then(function(u){
-    S.mine={dom:u.dom,name:u.name};S.email=email;S.token=u.token||null;S.ref=u.ref||"";S.submitted=true;S.panel="unis";idle();
+    S.mine={dom:u.dom,name:u.name};S.email=email;S.token=u.token||null;S.ref=u.ref||"";S.submitted=true;S.panel="unis";idle();loadRoom();
     /* for a few seconds the new +1 beside their university is the loudest thing on the page, and its dot lights on the map */
     S.fresh=true;setTimeout(function(){S.fresh=false;},7000);S.sentAt=Date.now();$("resendMsg").textContent="";
     setTimeout(function(){if(DOTS[u.name]){DOTS[u.name](true);setTimeout(function(){DOTS[u.name](false);},2600);}},500);
@@ -1471,7 +1487,7 @@ function applyEntry(c){
   S.spread={};(c.spread||[]).forEach(function(k){S.spread[k]=true;});
   Object.keys(spreadBtns).forEach(function(k){spreadBtns[k].setAttribute("aria-pressed",String(!!S.spread[k]));});
   try{if(!PREVIEW)localStorage.setItem("off_token",c.token);}catch(x){}
-  showUni({dom:c.dom,name:c.uni},true);renderLead();renderNav();renderAll();
+  showUni({dom:c.dom,name:c.uni},true);renderLead();renderNav();renderAll();loadRoom();
 }
 
 /* ---------- tabs ---------- */
@@ -1516,7 +1532,7 @@ if(PREVIEW){
 }
 else if(!S.live){S.rows=sample();renderAll();}
 else{
-  renderAll();loadBoard();loadSwitches();setInterval(function(){loadBoard();refreshReach();loadSwitches();},30000);
+  renderAll();loadBoard();loadSwitches();setInterval(function(){loadBoard();refreshReach();loadSwitches();loadRoom();},30000);
   sb.rpc("majors_for",{p_dom:""}).then(function(r){if(!r.error&&r.data&&r.data.length)MAJ.all=r.data;});
   /* arriving from the emailed link signs the visitor in and confirms them; otherwise a saved edit token brings their entry back */
   /* the emailed link points at this site (?token_hash=...&type=email) rather than at Supabase, so mail filters see one domain;

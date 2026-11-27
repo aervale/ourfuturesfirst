@@ -90,6 +90,14 @@ input:focus{outline:0;background:var(--field-on)}
 .swrow{display:flex;flex-wrap:wrap;gap:6px 34px;margin-top:8px}
 .swsave{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:14px 0 0}
 #swMsg{font-size:.875rem}
+.caps{margin-top:6px}
+.capline{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:0 0 6px}
+.caps input[type=number]{width:84px;padding:7px 10px}
+.caprow{display:grid;grid-template-columns:minmax(0,260px) 84px auto;gap:14px;align-items:center;padding:5px 0;font-size:.9rem}
+.caprow .st{font-family:var(--mono);font-size:12px;color:var(--mute)}
+.caprow .st.full{color:var(--accent-ink)}
+.caps select{font:inherit;color:var(--ink);background:var(--field);border:0;border-radius:var(--r);padding:8px 10px;max-width:100%;margin-top:6px}
+#capMsg{font-size:.875rem}
 #swMsg.unsaved{color:var(--accent-ink);font-weight:600}
 .swsave .btn{padding:6px 14px}
 .swnote{margin:6px 0 12px;color:var(--mute);font-size:.875rem}
@@ -279,8 +287,14 @@ td.wide{white-space:normal;min-width:320px}
   <div class="tools" style="margin-bottom:10px"><button class="toggle" id="chSugOpen" aria-pressed="true"><i></i>Hide the ones marked done</button></div>
   <div class="scroll"><table id="tSug"></table></div>
 
-  <h2>Campus organizers</h2>
-  <div class="scroll"><table id="tOrg"></table></div>
+  <h2>Campus organizers <small id="orgNote"></small></h2>
+  <p class="mute">Each university takes a set number of organizers. Once it is full, the option on the sign-up page is greyed out there and people are asked to write to us. Existing organizers are never removed by a limit; use Remove for that.</p>
+  <div class="card caps">
+    <p class="capline"><label class="lab" for="capAll">Organizers per university</label><input type="number" id="capAll" min="0" max="1000" inputmode="numeric"><span class="mute" id="capMsg" role="status"></span></p>
+    <div id="capList"></div>
+    <p class="capline"><select id="capAdd" aria-label="Set a different number for a university"></select></p>
+  </div>
+  <div class="scroll" style="margin-top:22px"><table id="tOrg"></table></div>
 
   <h2>Names held back from the public list</h2>
   <p class="mute">Names caught by the automatic screen, or hidden by an admin. The person is still counted; only the name is hidden.</p>
@@ -308,7 +322,7 @@ function clear(e){while(e.firstChild)e.removeChild(e.firstChild);}
 var C=window.OFF_CONFIG||{};
 if(!C.url){$("signin").hidden=false;$("msg").textContent="No backend is configured.";return;}
 var sb=window.supabase.createClient(C.url,C.key);
-var SUGS=null,SUGOPEN=true,EV={events:[],invites:[],ok:false},ROWS=[],F={uni:"",role:"",confirmed:true,mode:"total",allUnis:false};
+var CAPS=null,SUGS=null,SUGOPEN=true,EV={events:[],invites:[],ok:false},ROWS=[],F={uni:"",role:"",confirmed:true,mode:"total",allUnis:false};
 var ROLES=["an undergraduate","a graduate student","a postdoc","faculty","staff"],YEARS=["Freshman","Sophomore","Junior","Senior"];
 var RLAB={"an undergraduate":"Undergraduates","a graduate student":"Graduate students","a postdoc":"Postdocs","faculty":"Faculty","staff":"Staff"};
 var QS={feel:"How do you feel about where AI is headed?",plans:"Has AI changed your plans?",job:"When can AI do an entry-level job in your field?",
@@ -501,7 +515,8 @@ function render(){
   $("refNote").textContent=rows.length?num(viaAll)+" of "+num(rows.length)+" joined through someone's link ("+Math.round(viaAll/rows.length*100)+"%), from "+plural(bring,"person's link","people's links"):"";
   table($("tRef"),["Name","University","Opens","Direct","Downstream","Buttons","Organizer","Email"],refs.slice(0,50),function(x){return [x.r.name,x.r.uni,num(x.opens),num(x.direct),num(x.down),num(x.press),isLead(x.r)?"Yes":"",x.r.email];});
 
-  table($("tOrg"),["Name","University","Email","Phone","Confirmed","Signed up"],org,function(r){return [r.name,r.uni,r.email,r.phone,r.verified_at?"Yes":"No",day(r.created_at)];});
+  table($("tOrg"),["Name","University","Email","Phone","Confirmed","Signed up",""],org,function(r){return [r.name,r.uni,r.email,r.phone,r.verified_at?"Yes":"No",day(r.created_at),removeBtn(r)];});
+  renderCaps();
   table($("tHidden"),["Name","University","Email","Confirmed",""],rows.filter(function(r){return r.name_hidden;}),function(r){return [r.name,r.uni,r.email,r.verified_at?"Yes":"No",hideBtn(r)];});
   table($("tConcern"),["Answer","University","Role"],rows.filter(function(r){return r.concern;}),function(r){var s=mk("span",null,r.concern);s.wide=true;return [s,r.uni,r.role];});
 
@@ -555,6 +570,35 @@ function services(){gmail();mailTiming();
   if(C.dev)return;var t0=performance.now();
   sb.rpc("admin_events").then(function(o){dbTime(o.error?-1:performance.now()-t0);});
 }
+/* campus organizers: take the status away from one person, and set how many each university takes */
+function removeBtn(r){var b=mk("button","btn small","Remove"),armed=false,t;
+  b.addEventListener("click",function(){
+    if(!armed){armed=true;b.textContent="Confirm remove";t=setTimeout(function(){armed=false;b.textContent="Remove";},4000);return;}
+    clearTimeout(t);b.disabled=true;sb.rpc(C.dev?"dev_admin_remove_organizer":"admin_remove_organizer",{p_id:r.id}).then(function(o){
+      if(!o.error)r.spread=r.spread.filter(function(k){return k!=="lead";});render();});});
+  return b;}
+function capOf(dom){return CAPS&&dom in CAPS?CAPS[dom]:CAPS?CAPS["*"]:5;}
+function saveCap(dom,val){var m=$("capMsg");m.textContent="Saving";
+  sb.rpc(C.dev?"dev_admin_set_cap":"admin_set_cap",{p_dom:dom,p_cap:val}).then(function(o){
+    if(o.error||!o.data){m.textContent=/not_admin/.test((o.error||{}).message||"")?"Your sign-in has expired. Reload and ask for a new link.":"That didn't save. Try again.";return;}
+    CAPS=o.data;m.textContent="Saved.";renderCaps();});}
+function renderCaps(){
+  var list=$("capList"),add=$("capAdd"),all=$("capAll"),note=$("orgNote");
+  if(!CAPS){all.disabled=true;add.hidden=true;clear(list);$("capMsg").textContent="Limits aren't available yet: the database change has not been applied.";return;}
+  all.disabled=false;if(document.activeElement!==all)all.value=CAPS["*"];if(/^Limits aren't/.test($("capMsg").textContent))$("capMsg").textContent="";
+  var n={},nm={};ROWS.forEach(function(r){nm[r.dom]=r.uni;if(isLead(r))n[r.dom]=(n[r.dom]||0)+1;});
+  /* listed: universities that are full or one short of it, and any with a number of their own. The rest are in the menu below. */
+  var doms=Object.keys(nm).filter(function(d){return d in CAPS||(n[d]||0)>=capOf(d)-1&&n[d];}).sort(function(a,b){return (n[b]||0)-(n[a]||0)||nm[a].localeCompare(nm[b]);});
+  var full=Object.keys(nm).filter(function(d){return (n[d]||0)>=capOf(d);}).length,tot=Object.keys(n).reduce(function(a,d){return a+n[d];},0);
+  note.textContent=num(tot)+" at "+plural(Object.keys(n).length,"university","universities")+", "+num(full)+" full";
+  clear(list);doms.forEach(function(d){var row=mk("div","caprow"),inp=mk("input"),c=n[d]||0,cap=capOf(d),st=mk("span","st"+(c>=cap?" full":""),num(c)+" of "+num(cap)+(c>=cap?", full":""));
+    inp.type="number";inp.min=0;inp.max=1000;inp.placeholder=String(CAPS["*"]);inp.value=d in CAPS?CAPS[d]:"";inp.setAttribute("aria-label","Limit for "+nm[d]);inp.title="Leave empty to use the overall number";
+    inp.addEventListener("change",function(){var v=inp.value.trim();if(v!==""&&!/^\d{1,4}$/.test(v)){inp.value=d in CAPS?CAPS[d]:"";return;}saveCap(d,v===""?null:+v);});
+    row.appendChild(mk("span",null,nm[d]));row.appendChild(inp);row.appendChild(st);list.appendChild(row);});
+  /* any other university can be given its own number too */
+  clear(add);add.hidden=false;var o0=mk("option",null,"Set a different number for another university");o0.value="";add.appendChild(o0);
+  Object.keys(nm).filter(function(d){return doms.indexOf(d)<0;}).sort(function(a,b){return nm[a].localeCompare(nm[b]);}).forEach(function(d){var o=mk("option",null,nm[d]+(n[d]?" ("+plural(n[d],"organizer","organizers")+")":""));o.value=d;add.appendChild(o);});
+}
 /* suggestions left on the Letter page */
 function fmtWhen(t){var d=new Date(t);return d.toLocaleDateString("en-US",{month:"short",day:"numeric"})+", "+d.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});}
 function renderSug(){
@@ -600,6 +644,9 @@ function start(session){
         function(e){paintSw();msg.textContent=/not_admin/.test((e&&e.message)||"")?"Your sign-in has expired. Reload and ask for a new link.":"That didn't save. Try again.";});});
     /* preview: sets a flag in this browser that the public page reads, then opens that page. It is switched off from the banner there. */
     $("lnkPreview").addEventListener("click",function(){try{localStorage.setItem("off_preview","1");}catch(x){}});
+    sb.rpc(C.dev?"dev_admin_caps":"admin_caps").then(function(o){CAPS=o.error?null:o.data;renderCaps();},function(){CAPS=null;renderCaps();});
+    $("capAll").addEventListener("change",function(){var v=this.value.trim();if(!/^\d{1,4}$/.test(v)){this.value=CAPS?CAPS["*"]:5;return;}saveCap("*",+v);});
+    $("capAdd").addEventListener("change",function(){var d=this.value;if(d)saveCap(d,capOf(d));});
     loadSug();$("chSugOpen").addEventListener("click",function(){SUGOPEN=!SUGOPEN;renderSug();});
     /* sharing counts load separately, so the page still opens if they are missing */
     sb.rpc(C.dev?"dev_admin_events":"admin_events").then(function(e){if(e.error||!e.data)return;EV=e.data;EV.ok=true;render();});

@@ -104,3 +104,19 @@ insert into suggestions (at, body, signup_id, done) values
   (now() - interval '26 hours', '"Enterprise of thought" appears twice in two sentences. Vary it.', (select id from signups where verified_at is not null order by created_at offset 40 limit 1), false),
   (now() - interval '5 hours',  'Add something about jobs. That is what people on my floor actually talk about.', null, false),
   (now() - interval '40 minutes','Shorter. It should fit on a phone screen without scrolling.', (select id from signups where verified_at is not null order by created_at offset 200 limit 1), false);
+
+-- Organizer limits (local test mode): the admin page works them without signing in.
+create function public.dev_admin_remove_organizer(p_id uuid) returns void language sql security definer set search_path = public as $$
+  update signups set spread = array_remove(spread, 'lead') where id = p_id;
+$$;
+create function public.dev_admin_caps() returns jsonb language sql stable security definer set search_path = public as $$
+  select coalesce(jsonb_object_agg(dom, cap), '{}'::jsonb) from organizer_caps;
+$$;
+create function public.dev_admin_set_cap(p_dom text, p_cap int) returns jsonb language plpgsql security definer set search_path = public as $$
+begin
+  if p_cap is null then delete from organizer_caps where dom = p_dom and dom <> '*';
+  else insert into organizer_caps (dom, cap, changed_by) values (p_dom, p_cap, 'local test mode')
+       on conflict (dom) do update set cap = excluded.cap, changed_at = now(); end if;
+  return (select coalesce(jsonb_object_agg(dom, cap), '{}'::jsonb) from organizer_caps);
+end $$;
+grant execute on function public.dev_admin_remove_organizer(uuid), public.dev_admin_caps(), public.dev_admin_set_cap(text, int) to anon, authenticated;
