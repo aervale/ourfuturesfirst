@@ -274,6 +274,11 @@ td.wide{white-space:normal;min-width:320px}
   <p class="mute">Opens is how many times the link was opened. Direct is people who joined from that person's own link. Downstream adds everyone who then joined through those people's links, and so on. Buttons is how many times that person pressed Copy or a share button.</p>
   <div class="scroll"><table id="tRef"></table></div>
 
+  <h2>Letter suggestions <small id="sugNote"></small></h2>
+  <p class="mute">Left on the Letter page. Anonymous ones carry no name; the rest were sent by confirmed sign-ups who chose to add theirs. Never shown publicly.</p>
+  <div class="tools" style="margin-bottom:10px"><button class="toggle" id="chSugOpen" aria-pressed="true"><i></i>Hide the ones marked done</button></div>
+  <div class="scroll"><table id="tSug"></table></div>
+
   <h2>Campus organizers</h2>
   <div class="scroll"><table id="tOrg"></table></div>
 
@@ -303,7 +308,7 @@ function clear(e){while(e.firstChild)e.removeChild(e.firstChild);}
 var C=window.OFF_CONFIG||{};
 if(!C.url){$("signin").hidden=false;$("msg").textContent="No backend is configured.";return;}
 var sb=window.supabase.createClient(C.url,C.key);
-var EV={events:[],invites:[],ok:false},ROWS=[],F={uni:"",role:"",confirmed:true,mode:"total",allUnis:false};
+var SUGS=null,SUGOPEN=true,EV={events:[],invites:[],ok:false},ROWS=[],F={uni:"",role:"",confirmed:true,mode:"total",allUnis:false};
 var ROLES=["an undergraduate","a graduate student","a postdoc","faculty","staff"],YEARS=["Freshman","Sophomore","Junior","Senior"];
 var RLAB={"an undergraduate":"Undergraduates","a graduate student":"Graduate students","a postdoc":"Postdocs","faculty":"Faculty","staff":"Staff"};
 var QS={feel:"How do you feel about where AI is headed?",plans:"Has AI changed your plans?",job:"When can AI do an entry-level job in your field?",
@@ -550,6 +555,21 @@ function services(){gmail();mailTiming();
   if(C.dev)return;var t0=performance.now();
   sb.rpc("admin_events").then(function(o){dbTime(o.error?-1:performance.now()-t0);});
 }
+/* suggestions left on the Letter page */
+function fmtWhen(t){var d=new Date(t);return d.toLocaleDateString("en-US",{month:"short",day:"numeric"})+", "+d.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});}
+function renderSug(){
+  var note=$("sugNote"),t=$("tSug");$("chSugOpen").setAttribute("aria-pressed",String(SUGOPEN));
+  if(!SUGS){note.textContent="Not available yet: the database change for suggestions has not been applied.";clear(t);return;}
+  var open=SUGS.filter(function(g){return !g.done;}).length,named=SUGS.filter(function(g){return g.email;}).length;
+  note.textContent=SUGS.length?num(SUGS.length)+" in all, "+num(open)+" to look at, "+num(named)+" with a name":"None yet";
+  table(t,["Received","Suggestion","From","University",""],SUGS.filter(function(g){return !SUGOPEN||!g.done;}),function(g){
+    var body=mk("span",null,g.body);body.wide=true;
+    var b=mk("button","btn small",g.done?"Reopen":"Mark done");
+    b.addEventListener("click",function(){b.disabled=true;sb.rpc(C.dev?"dev_admin_set_suggestion_done":"admin_set_suggestion_done",{p_id:g.id,p_done:!g.done}).then(function(o){if(!o.error)g.done=!g.done;renderSug();});});
+    var who=g.email?mk("a",null,g.name||g.email):mk("span","mute","Anonymous");if(g.email){who.href="mailto:"+g.email;who.title=g.email;}
+    return [fmtWhen(g.at),body,who,g.email?g.uni:"",b];});
+}
+function loadSug(){sb.rpc(C.dev?"dev_admin_suggestions":"admin_suggestions").then(function(o){SUGS=o.error?null:o.data||[];renderSug();},function(){SUGS=null;renderSug();});}
 function start(session){
   if(!C.dev&&Date.now()/1000-signedInAt(session)>MAXAGE){sb.auth.signOut().then(function(){$("signin").hidden=false;$("msg").textContent="Your sign-in has expired. Ask for a new link.";});return;}
   $("who").textContent=session.user.email;$("btnOut").hidden=false;
@@ -580,6 +600,7 @@ function start(session){
         function(e){paintSw();msg.textContent=/not_admin/.test((e&&e.message)||"")?"Your sign-in has expired. Reload and ask for a new link.":"That didn't save. Try again.";});});
     /* preview: sets a flag in this browser that the public page reads, then opens that page. It is switched off from the banner there. */
     $("lnkPreview").addEventListener("click",function(){try{localStorage.setItem("off_preview","1");}catch(x){}});
+    loadSug();$("chSugOpen").addEventListener("click",function(){SUGOPEN=!SUGOPEN;renderSug();});
     /* sharing counts load separately, so the page still opens if they are missing */
     sb.rpc(C.dev?"dev_admin_events":"admin_events").then(function(e){if(e.error||!e.data)return;EV=e.data;EV.ok=true;render();});
   });

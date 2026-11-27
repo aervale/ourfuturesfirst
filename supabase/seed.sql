@@ -87,3 +87,20 @@ create function public.dev_admin_set_switch(p_name text, p_shown boolean) return
   select page_switches();
 $$;
 grant execute on function public.dev_admin_set_switch(text, boolean) to anon, authenticated;
+
+-- Letter suggestions (local test mode): read and marked without signing in, plus a few samples.
+create function public.dev_admin_suggestions() returns jsonb language sql stable security definer set search_path = public as $$
+  select coalesce(jsonb_agg(jsonb_build_object('id', g.id, 'at', g.at, 'body', g.body, 'done', g.done,
+           'name', s.name, 'uni', s.uni, 'role', s.role, 'email', s.email) order by g.at desc), '[]'::jsonb)
+  from suggestions g left join signups s on s.id = g.signup_id;
+$$;
+create function public.dev_admin_set_suggestion_done(p_id bigint, p_done boolean) returns void language sql security definer set search_path = public as $$
+  update suggestions set done = p_done where id = p_id;
+$$;
+grant execute on function public.dev_admin_suggestions(), public.dev_admin_set_suggestion_done(bigint, boolean) to anon, authenticated;
+insert into suggestions (at, body, signup_id, done) values
+  (now() - interval '3 days',  'Say "advanced AI" instead of "superintelligence" in the first mention. Half my lab would stop reading at that word.', (select id from signups where verified_at is not null order by created_at limit 1), true),
+  (now() - interval '2 days',  'The last sentence asks two different groups for one thing. Split it: one ask of the government, one of the companies.', null, false),
+  (now() - interval '26 hours', '"Enterprise of thought" appears twice in two sentences. Vary it.', (select id from signups where verified_at is not null order by created_at offset 40 limit 1), false),
+  (now() - interval '5 hours',  'Add something about jobs. That is what people on my floor actually talk about.', null, false),
+  (now() - interval '40 minutes','Shorter. It should fit on a phone screen without scrolling.', (select id from signups where verified_at is not null order by created_at offset 200 limit 1), false);
