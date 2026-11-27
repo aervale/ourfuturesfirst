@@ -41,10 +41,12 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font
 .wrap{max-width:1200px;margin:0 auto;padding:0 28px}
 header{position:sticky;top:0;z-index:6;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px)}
 /* the four sections of the dashboard */
-.atabs{position:sticky;top:46px;z-index:5;display:flex;gap:28px;overflow-x:auto;margin:0 -28px 26px;padding:0 28px;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px)}
-.atabs button{flex:none;background:none;border:0;border-bottom:2px solid transparent;padding:14px 0 12px;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);cursor:pointer;transition:color .2s,border-color .2s}
+.atabs{position:sticky;top:46px;z-index:5;display:flex;gap:34px;overflow-x:auto;margin:0 -28px 26px;padding:0 28px;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px)}
+.atabs button{flex:none;display:flex;align-items:center;gap:8px;background:none;border:0;border-bottom:2px solid transparent;padding:15px 0 13px;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);cursor:pointer;transition:color .15s}
 .atabs button:hover{color:var(--ink)}
 .atabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.atabs button:focus-visible{outline:2px solid var(--accent);outline-offset:-4px}
+.atabs b{min-width:18px;padding:1px 6px;border-radius:9px;background:var(--accent);color:var(--on-accent);font-size:10px;font-weight:700;letter-spacing:0;line-height:16px;text-align:center}
 .pane>h2:first-child{margin-top:8px}
 .pane>.svcs{margin-bottom:18px}
 .fnote{margin:-8px 0 18px;font-size:.875rem;color:var(--mute)}
@@ -229,7 +231,8 @@ td.wide{white-space:normal;min-width:320px}
   <nav class="atabs" role="tablist" aria-label="Sections">
     <button role="tab" id="atab-overview" aria-selected="true">Overview</button>
     <button role="tab" id="atab-universities" aria-selected="false">Universities</button>
-    <button role="tab" id="atab-responses" aria-selected="false">Responses</button>
+    <button role="tab" id="atab-review" aria-selected="false">To review<b id="reviewN" hidden></b></button>
+    <button role="tab" id="atab-signups" aria-selected="false">Sign-ups</button>
     <button role="tab" id="atab-settings" aria-selected="false">Settings</button>
   </nav>
   <p class="fnote" id="fnote" hidden></p>
@@ -251,7 +254,6 @@ td.wide{white-space:normal;min-width:320px}
     <a href="https://www.instagram.com/direct/inbox/" target="_blank" rel="noopener noreferrer"><b>Instagram</b><span>Open inbox</span></a>
   </span></p>
   </div>
-  <div class="card facts" id="facts"></div>
 
   <h2>Sign-ups <small id="sum"></small></h2>
   <div class="tools">
@@ -310,23 +312,26 @@ td.wide{white-space:normal;min-width:320px}
   <div class="scroll"><table id="tRef"></table></div>
   </section>
 
-  <!-- Responses: what people have written, and the full list -->
-  <section class="pane" id="pane-responses" hidden>
+  <!-- To review: things that wait for one of us to do something -->
+  <section class="pane" id="pane-review" hidden>
   <h2>Letter suggestions <small id="sugNote"></small></h2>
   <p class="mute">Left on the Letter page. Anonymous ones carry no name; the rest were sent by confirmed sign-ups who chose to add theirs. Never shown publicly.</p>
   <div class="tools" style="margin-bottom:10px"><button class="toggle" id="chSugOpen" aria-pressed="true"><i></i>Hide the ones marked done</button></div>
   <div class="scroll"><table id="tSug"></table></div>
 
-  <h2>Written answers</h2>
-  <div class="scroll"><table id="tConcern"></table></div>
-
-  <h2>Names held back from the public list</h2>
+  <h2>Names held back from the public list <small id="heldNote"></small></h2>
   <p class="mute">Names caught by the automatic screen, or hidden by an admin. The person is still counted; only the name is hidden.</p>
   <div class="scroll"><table id="tHidden"></table></div>
+  </section>
 
-  <h2>All sign-ups</h2>
+  <!-- Sign-ups: every person and what they wrote -->
+  <section class="pane" id="pane-signups" hidden>
+  <h2>All sign-ups <small id="allNote"></small></h2>
   <div class="bar"><input type="search" id="inSearch" placeholder="Search name, email or university"><button class="btn" id="btnCsv">Download CSV</button><span class="mute" id="count"></span></div>
   <div class="scroll"><table id="tAll"></table></div>
+
+  <h2>Written answers</h2>
+  <div class="scroll"><table id="tConcern"></table></div>
   </section>
 
   <!-- Settings: switches and numbers that apply to the whole site -->
@@ -371,7 +376,7 @@ function clear(e){while(e.firstChild)e.removeChild(e.firstChild);}
 var C=window.OFF_CONFIG||{};
 if(!C.url){$("signin").hidden=false;$("msg").textContent="No backend is configured.";return;}
 var sb=window.supabase.createClient(C.url,C.key);
-var TAB="overview",TABS=["overview","universities","responses","settings"],BIOS={},CAPS=null,CLOSED=[],SHOWN={},SUGS=null,SUGOPEN=true,EV={events:[],invites:[],ok:false},ROWS=[],F={uni:"",role:"",confirmed:true,mode:"total",allUnis:false};
+var TAB="overview",TABS=["overview","universities","review","signups","settings"],BIOS={},CAPS=null,CLOSED=[],SHOWN={},SUGS=null,SUGOPEN=true,EV={events:[],invites:[],ok:false},ROWS=[],F={uni:"",role:"",confirmed:true,mode:"total",allUnis:false};
 var ROLES=["an undergraduate","a graduate student","a postdoc","faculty","staff"],YEARS=["Freshman","Sophomore","Junior","Senior"];
 var RLAB={"an undergraduate":"Undergraduates","a graduate student":"Graduate students","a postdoc":"Postdocs","faculty":"Faculty","staff":"Staff"};
 var QS={feel:"How do you feel about where AI is headed?",plans:"Has AI changed your plans?",job:"When can AI do an entry-level job in your field?",
@@ -427,10 +432,13 @@ function dropdown(box,items,get,set,search){
 var paintUni,paintUni2,paintRole;
 function setUni(dom){F.uni=F.uni===dom?"":dom;render();}
 /* ---------- the four tabs ---------- */
-function showTab(t,keep){if(TABS.indexOf(t)<0)t="overview";TAB=t;
+function showTab(t,keep){if(t==="responses")t="review";if(TABS.indexOf(t)<0)t="overview";TAB=t;
   TABS.forEach(function(k){$("pane-"+k).hidden=k!==t;$("atab-"+k).setAttribute("aria-selected",String(k===t));});
   try{history.replaceState(null,"",t==="overview"?location.pathname+location.search:"#"+t);}catch(x){}
   paintFnote();if(t==="overview"&&!$("dash").hidden)plot();if(!keep)window.scrollTo(0,0);}
+/* the count on the To review tab: suggestions nobody has dealt with, and names waiting to be looked at (whatever the filters say) */
+function paintReviewN(){var n=(SUGS?SUGS.filter(function(g){return !g.done;}).length:0)+ROWS.filter(function(r){return r.name_hidden;}).length,b=$("reviewN");
+  b.hidden=!n;b.textContent=num(n);$("atab-review").setAttribute("aria-label","To review"+(n?", "+n+" waiting":""));}
 /* the filters live on Overview but narrow every tab, so the other tabs say when one is on */
 function paintFnote(){var n=$("fnote"),parts=[];if(F.uni&&TAB!=="universities")parts.push(uniName());if(F.role)parts.push(RLAB[F.role]);if(!F.confirmed)parts.push("including unconfirmed sign-ups");
   n.hidden=!parts.length||TAB==="overview"||TAB==="settings";if(n.hidden)return;clear(n);n.appendChild(document.createTextNode("Filtered to "+parts.join(", ")+"."));
@@ -508,11 +516,11 @@ function render(){
   /* the count, as a note beside the section heading */
   var nUni=count(rows,function(r){return r.dom;}).length;
   $("sum").textContent=num(rows.length)+" "+(F.confirmed?"confirmed":"in all")+(F.role?" "+who:"")+(F.uni?" at "+uni:" at "+plural(nUni,"university","universities"));
-  /* two things that need an eye kept on them */
-  var fs=$("facts"),held=rows.filter(function(r){return r.name_hidden;}).length;clear(fs);
-  function fact(l,v){var d=mk("div");d.appendChild(mk("span","lab",l));d.appendChild(mk("span",null,v));fs.appendChild(d);}
-  fact("Awaiting confirmation",num(scope({all:true}).filter(function(r){return !r.verified_at;}).length)+(F.confirmed?", not counted in the totals":""));
-  fact("Names held back",held?plural(held,"name","names")+" to review below":"None");
+  /* what used to sit on Overview now sits beside the lists it describes */
+  var heldN=rows.filter(function(r){return r.name_hidden;}).length,waiting=scope({all:true}).filter(function(r){return !r.verified_at;}).length;
+  $("heldNote").textContent=heldN?plural(heldN,"name","names")+" to look at":"none at the moment";
+  $("allNote").textContent=num(rows.length)+(F.confirmed?" confirmed":" in all")+", "+num(waiting)+" awaiting confirmation"+(F.confirmed?" and not counted":"");
+  paintReviewN();
   /* the chart follows the filters just above it */
   SER=series(rows);
   $("plotNote").textContent="Hover for any day";plot();
@@ -675,7 +683,7 @@ function renderSug(){
   var note=$("sugNote"),t=$("tSug");$("chSugOpen").setAttribute("aria-pressed",String(SUGOPEN));
   if(!SUGS){note.textContent="Not available yet: the database change for suggestions has not been applied.";clear(t);return;}
   var open=SUGS.filter(function(g){return !g.done;}).length,named=SUGS.filter(function(g){return g.email;}).length;
-  note.textContent=SUGS.length?num(SUGS.length)+" in all, "+num(open)+" to look at, "+num(named)+" with a name":"None yet";
+  paintReviewN();note.textContent=SUGS.length?num(SUGS.length)+" in all, "+num(open)+" to look at, "+num(named)+" with a name":"None yet";
   table(t,["Received","Suggestion","From","University",""],SUGS.filter(function(g){return !SUGOPEN||!g.done;}),function(g){
     var body=mk("span",null,g.body);body.wide=true;
     var b=mk("button","btn small",g.done?"Reopen":"Mark done");
