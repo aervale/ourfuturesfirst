@@ -120,3 +120,15 @@ begin
   return (select coalesce(jsonb_object_agg(dom, cap), '{}'::jsonb) from organizer_caps);
 end $$;
 grant execute on function public.dev_admin_remove_organizer(uuid), public.dev_admin_caps(), public.dev_admin_set_cap(text, int) to anon, authenticated;
+
+-- Accepting organizers or not, per university (local test mode).
+create function public.dev_admin_closed() returns jsonb language sql stable security definer set search_path = public as $$
+  select coalesce(jsonb_agg(dom), '[]'::jsonb) from organizer_closed;
+$$;
+create function public.dev_admin_set_accepting(p_dom text, p_accepting boolean) returns jsonb language plpgsql security definer set search_path = public as $$
+begin
+  if p_accepting then delete from organizer_closed where dom = p_dom;
+  else insert into organizer_closed (dom, changed_by) values (p_dom, 'local test mode') on conflict (dom) do nothing; end if;
+  return (select coalesce(jsonb_agg(dom), '[]'::jsonb) from organizer_closed);
+end $$;
+grant execute on function public.dev_admin_closed(), public.dev_admin_set_accepting(text, boolean) to anon, authenticated;

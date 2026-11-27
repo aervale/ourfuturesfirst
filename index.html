@@ -916,16 +916,18 @@ function updateBtn(){var b=$("btnSubmit"),was=b.disabled;b.disabled=S.saving||!r
 function leadPhone(){var v=$("inPhone2").value.trim();return !!v&&phoneOk(v);}
 /* each university takes a set number of campus organizers. When it is full the option stays in view, greyed out, with
    the reason and who to write to. Someone who is already an organizer is not affected. */
-var ROOM={dom:"",cap:0,count:0};
+var ROOM={dom:"",cap:0,count:0,closed:false};
 function loadRoom(){var d=S.mine&&S.mine.dom;if(!S.live||!d||!S.token)return;
-  sb.rpc("organizer_room",{p_dom:d}).then(function(r){if(r.error||!r.data)return;ROOM={dom:d,cap:r.data.cap,count:r.data.count};renderLead();},function(){});}
-function leadFull(){return !S.spread.lead&&!!S.mine&&ROOM.dom===S.mine.dom&&ROOM.count>=ROOM.cap;}
+  sb.rpc("organizer_room",{p_dom:d}).then(function(r){if(r.error||!r.data)return;ROOM={dom:d,cap:r.data.cap,count:r.data.count,closed:!!r.data.closed};renderLead();},function(){});}
+/* "closed": an admin has switched organizers off for this university. "full": it has reached its number. */
+function leadFull(){if(S.spread.lead||!S.mine||ROOM.dom!==S.mine.dom)return "";return ROOM.closed?"closed":ROOM.count>=ROOM.cap?"full":"";}
 function renderLead(){
   paintShow();
-  var on=!!S.spread.lead,full=leadFull(),note=$("leadFull"),b=spreadBtns.lead;
+  var on=!!S.spread.lead,why=leadFull(),full=!!why,note=$("leadFull"),b=spreadBtns.lead;
   if(b){b.disabled=full;b.classList.toggle("full",full);}
   if(note){note.hidden=!full;if(full){clear(note);
-    note.appendChild(document.createTextNode((S.mine.name||"Your university")+" already has "+(ROOM.cap===1?"its one campus organizer":"its "+num(ROOM.cap)+" campus organizers")+", which is as many as we take at one university for now. If you'd still like to help there, write to "));
+    note.appendChild(document.createTextNode(why==="closed"?"We aren't taking on campus organizers at "+(S.mine.name||"your university")+" at the moment. If you'd still like to help there, write to "
+      :(S.mine.name||"Your university")+" already has "+(ROOM.cap===1?"its one campus organizer":"its "+num(ROOM.cap)+" campus organizers")+", which is as many as we take at one university for now. If you'd still like to help there, write to "));
     var a=mk("a",null,"contact@ourfuturesfirst.org");a.href="mailto:contact@ourfuturesfirst.org?subject="+encodeURIComponent("Helping at "+(S.mine.name||"my university"));note.appendChild(a);note.appendChild(document.createTextNode("."));}}
   $("leadPop").classList.toggle("open",on);$("sharePop").classList.toggle("open",!!S.spread.email);
   $("leadHint").textContent=on&&!leadPhone()?"Organizers need a phone number. You're listed as an organizer once we have it.":"";
