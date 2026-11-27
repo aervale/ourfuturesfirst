@@ -697,21 +697,25 @@ footer{padding:22px 0 36px}
   <div class="wrap about">
     <h1>About</h1>
     <h2>What is this?</h2>
-    <p>This is a student-run initiative to have the opinions of those at U.S. universities represented in regulation of the development of AI through collective design and signing of an open letter. We want as many opinions as possible, to give students, professors and anyone at academic institutions a larger say in the current climate of AI development.</p>
+    <p>This is a student-run initiative to give U.S. universities a voice in how AI is governed. We're gathering opinions from academic institutions across the country to together design an open letter, then build as much support behind it as we can. Before the letter is final, we want to hear from as many people as possible to accurately represent overall opinion.</p>
     <h2 id="why-wait">Why isn't the letter out now?</h2>
-    <p>We want to move together as one and sign at the same time, to reach as many people as possible on the day it comes out, and to gather feedback beforehand. We will change the contents of the letter until launch day, and we publish the draft so you can see it change. <a href="#draft">The current wording is here.</a></p>
-    <p>Please pass this along if you believe in our mission and want more representation in our future.</p>
+    <p>We want this initiative to reach many campuses across the U.S. and to hear from as many people as possible before settling on the wording. <a href="#draft">The current wording is here.</a> We'll post any updates here on this site and follow up with everyone when the letter is ready to sign. In the meantime, we'd greatly appreciate your help with spreading the word within and between campuses.</p>
     <h2>What happens on launch day?</h2>
-    <p>Everyone on the list gets contacted at the same time to spread and sign the letter. The letter and its signatures are then published.</p>
+    <p>On launch day, everyone who signed up gets an email at the same time, and you'll be able to add your signature to the finalized letter. You can optionally attach a public comment to your signature. Anyone with a verified .edu email will be able to sign, even if they didn't previously fill out the interest form.</p>
+    <p>We anticipate many signatures from people who are hearing about this for the first time, so we'll be counting on everyone to help spread the word leading up to and especially on launch day. We currently plan launch day to be in early December, and we'll notify everyone by email the day before.</p>
     <h2>Who can take part?</h2>
     <p>Anyone with a U.S. university email: undergraduates, graduate students, postdocs, faculty and staff.</p>
     <h2>Who are we?</h2>
-    <p>This was started by a group of students at MIT and continues to be entirely student-run. We have been concerned about the development of superintelligence and feel it is time for us to speak out.</p>
+    <p>This initiative was started by a group of students at MIT and is run entirely by students. We have been concerned about the ever-accelerating development of superintelligence and feel it is time for voices at academic institutions to express our concerns.</p>
+    <h2 id="help">How can I help?</h2>
+    <p>The best thing you can do is spread the word to your friends at your own university and at others, and in the communities you're part of.</p>
+    <p>If you know student groups, faculty or staff on your campus, we'd love your help as a campus organizer. If your university has its full number of organizers and you'd still like to help organize, reach out to us at <a href="mailto:contact@ourfuturesfirst.org">contact@ourfuturesfirst.org</a>.</p>
+    <p>If you have general feedback or suggestions, feel free to contact us at <a href="mailto:contact@ourfuturesfirst.org">contact@ourfuturesfirst.org</a>.</p>
     <h2 id="organizers">What is a campus organizer?</h2>
-    <p>Someone who has offered to help with the letter at their university. A university can have several.</p>
-    <p>If you volunteer, we connect you with other groups of campus organizers at your university, which means sharing your name with them, and contact you by phone or text about next steps. A phone number is required. Organizers are listed by name on the public list and marked as organizers.</p>
+    <p>A campus organizer is anyone who has offered to help spread the word at their university. A university can have several organizers.</p>
+    <p>If you volunteer, we'll connect you with other organizers at your university. Organizers are marked publicly on <a href="#interest">the list</a>. We'll coordinate with organizers about spreading the word through university mailing lists, campus outreach, and engagements with faculty and staff.</p>
     <h2>What happens to my information?</h2>
-    <p>We use your email just to confirm your affiliation with your university and to tell you when the letter is ready. Your first name and last initial are on the public list only if you choose to show them. Poll answers are shown as totals. Your answer to “What concerns you most about AI?” isn't displayed publicly. The <a href="#privacy">privacy page</a> has the details.</p>
+    <p>We use your email just to confirm your affiliation with your university and to notify you when the letter is ready to sign. Your first name and last initial are on the public list only if you choose to show them. Poll answers are anonymously shown as totals. Your answer to “What concerns you most about AI?” won't be displayed publicly. You can find more details on our <a href="#privacy">privacy page</a>.</p>
     <h2 id="contact">Contact</h2>
     <ul class="contact" id="contactList"></ul>
   </div>
@@ -829,16 +833,20 @@ function uniFromEmail(email){
 
 /* ---------- state ---------- */
 var CFG=window.OFF_CONFIG||{};
-/* Admin preview: switched on from the admin page and kept in this browser only. The page then runs on a fixed set of sample
-   data (about 1,300 people at 80 universities) with an example sign-up, and nothing is read from or saved to the real database.
+/* Admin previews, started from the admin page and kept in this browser only. Both show the page with the admin page's
+   switches as they stand there, saved or not.
+   - sample data: a fixed set of about 1,300 made-up people at 80 universities with an example sign-up; nothing is read
+     from or saved to the real database.
+   - live data: the real sign-ups, and anything submitted is real.
    A sign-in link from an email still works as normal. */
-var PREVIEW=false;try{PREVIEW=localStorage.getItem("off_preview")==="1"&&!/[?&]token_hash=/.test(location.search);}catch(x){}
+var PV="";try{PV=localStorage.getItem("off_preview")||"";if(/[?&]token_hash=/.test(location.search))PV="";}catch(x){}
+var PREVIEW=PV==="1"||PV==="sample",PLIVE=PV==="live";
 var sb=!PREVIEW&&CFG.url&&window.supabase?window.supabase.createClient(CFG.url,CFG.key):null;
 var EMPTY={total:0,named:0,unis:[],people:[],answers:{}};
 /* show3: the parts an admin switches on or off. Without a backend everything shows; in the admin preview the page follows the
    switches as they stand on the admin page in this browser, including changes that have not been saved yet. */
-function draftSwitches(){var d=null;try{if(PREVIEW)d=JSON.parse(localStorage.getItem("off_draft"));}catch(x){}return d||{ticker:true,results:true,who:true,sharing:true,letter:true,about:true,list:true};}
-var S={show3:sb?{}:draftSwitches(),live:!!sb,rows:[],remote:EMPTY,answers:{},spread:{},show:true,info:true,mine:null,panel:"people",slide:0,email:"",verified:false,submitted:false,editing:false,token:null,chain:{},saving:false,role:"",year:""};
+function draftSwitches(){var d=null;try{if(PREVIEW||PLIVE)d=JSON.parse(localStorage.getItem("off_draft"));}catch(x){}return d||{ticker:true,results:true,who:true,sharing:true,letter:true,about:true,list:true};}
+var S={show3:sb&&!PLIVE?{}:draftSwitches(),live:!!sb,rows:[],remote:EMPTY,answers:{},spread:{},show:true,info:true,mine:null,panel:"people",slide:0,email:"",verified:false,submitted:false,editing:false,token:null,chain:{},saving:false,role:"",year:""};
 
 /* sample rows so the page can be reviewed without a backend; never used when connected */
 function sample(){
@@ -1504,7 +1512,7 @@ function applyEntry(c){
 }
 
 /* ---------- tabs ---------- */
-var ANCH={"#organizers":1,"#why-wait":1,"#why-draft":1,"#contact":1};
+var ANCH={"#organizers":1,"#why-wait":1,"#help":1,"#why-draft":1,"#contact":1};
 var CONTACT=[["Email","mailto:contact@ourfuturesfirst.org","contact@ourfuturesfirst.org","assets/mail.svg"],["Instagram","https://www.instagram.com/ourfuturesfirst/","ourfuturesfirst","assets/instagram.svg"],["X","https://x.com/ourfuturesfirst","ourfuturesfirst","assets/x.svg"]];
 CONTACT.forEach(function(c){if(!c[1])return;var li=mk("li"),a=mk("a",null,c[2]),k=mk("span","lab");
   if(c[3]){var im=document.createElement("img");im.src=c[3];im.alt="";im.width=14;im.height=14;im.onerror=function(){im.remove();};k.appendChild(im);}
@@ -1525,15 +1533,18 @@ window.addEventListener("hashchange",function(){route();var t=(ANCH[location.has
 function paintSwitches(){var f=S.show3;$("resPart").hidden=!f.results;$("whoPart").hidden=!f.who;$("resSection").hidden=!f.results&&!f.who;
   document.body.classList.toggle("noresults",!f.results);document.body.classList.toggle("nosharing",f.sharing===false);
   document.body.classList.toggle("nolist",f.list===false);document.body.classList.toggle("noletter",f.letter===false);document.body.classList.toggle("noabout",f.about===false);route();}
-function loadSwitches(){if(!S.live)return;sb.rpc("page_switches").then(function(r){if(r.error||!r.data)return;S.show3=r.data;renderAll();},function(){});}
-function renderAll(){$("previewNote").hidden=S.live;paintSwitches();paintSuggest();renderWidget();updateResults();renderAfter();}
+function loadSwitches(){if(!S.live||PLIVE)return;sb.rpc("page_switches").then(function(r){if(r.error||!r.data)return;S.show3=r.data;renderAll();},function(){});}
+function renderAll(){$("previewNote").hidden=S.live&&!PLIVE;paintSwitches();paintSuggest();renderWidget();updateResults();renderAfter();}
 function loadBoard(){return sb.rpc("board").then(function(r){if(!r.error&&r.data){S.remote=r.data;renderAll();}else if(!S.remote.total)setTimeout(loadBoard,3000);});}
 buildForm();buildResults();showUni(null,false);route();paintShow();loadMap();
-if(PREVIEW){
-  var pn=$("previewNote"),off=mk("button","link","Turn off preview");off.type="button";clear(pn);pn.appendChild(mk("b",null,"Preview."));
-  pn.appendChild(document.createTextNode(" Sample data that only this browser sees. Nothing here is real or saved."));pn.appendChild(off);
+if(PREVIEW||PLIVE){
+  var pn=$("previewNote"),off=mk("button","link","Turn off preview");off.type="button";clear(pn);pn.appendChild(mk("b",null,PLIVE?"Preview with live data.":"Preview with sample data."));
+  pn.appendChild(document.createTextNode(PLIVE?" The real sign-ups, with the admin page's switches as they stand in this browser. Anything you submit here is real."
+    :" Made-up people that only this browser sees. Nothing here is real or saved."));pn.appendChild(off);
   off.addEventListener("click",function(){try{localStorage.removeItem("off_preview");}catch(x){}location.reload();});
   window.addEventListener("storage",function(e){if(e.key==="off_draft"){S.show3=draftSwitches();renderAll();}});
+}
+if(PREVIEW){
   fetch("assets/sample-board.json").then(function(r){return r.json();}).then(function(b){
     S.sample=b;
     /* an example sign-up whose link has spread, so the confirmation card and its sky can be looked at */
