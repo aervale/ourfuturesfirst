@@ -1,0 +1,5 @@
+# Secrets for the Discord bot (bot token). Never committed.
+.env
+.env.*
+supabase/functions/.env
+.DS_Store

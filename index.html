@@ -435,6 +435,8 @@ textarea{display:block;min-height:150px;resize:none}
 #viewDraft .about .sugrow .hint{margin:0}
 #sugMsg.ok{color:var(--ink)}
 footer{padding:22px 0 36px}
+/* the Discord link, in four places; an admin can switch it off (admin page, "Public page") */
+.nodiscord .dsc{display:none!important}
 
 @media (max-width:920px){
   #usMap{max-width:560px;margin-left:auto;margin-right:auto;margin-bottom:40px}
@@ -642,6 +644,7 @@ footer{padding:22px 0 36px}
             <label class="lab" for="inBio">About you</label>
             <textarea id="inBio" maxlength="1200" placeholder="Around 100 words: who you are, what you study or work on, and why you want to help at your university."></textarea>
             <p class="hint" id="bioHint" role="status">Only the organizers of this project read this.</p>
+            <p class="hint dsc">Campus organizers work together on Discord. <a href="https://discord.gg/NqcenEuMFR" target="_blank" rel="noopener">Join the organizers' server</a> with your university email and you'll land in a chat with the others at your university.</p>
             <p class="hint bad" id="leadHint" role="status"></p>
           </div></div></div>
           <div class="pop" id="sharePop"><div><div class="leadbox">
@@ -713,7 +716,7 @@ footer{padding:22px 0 36px}
     <p>If you have general feedback or suggestions, feel free to contact us at <a href="mailto:contact@ourfuturesfirst.org">contact@ourfuturesfirst.org</a>.</p>
     <h2 id="organizers">What is a campus organizer?</h2>
     <p>A campus organizer is anyone who has offered to help spread the word at their university. A university can have several organizers.</p>
-    <p>If you volunteer, we'll connect you with other organizers at your university. Organizers are marked publicly on <a href="#interest">the list</a>. We'll coordinate with organizers about spreading the word through university mailing lists, campus outreach, and engagements with faculty and staff.</p>
+    <p>If you volunteer, we'll connect you with other organizers at your university. <span class="dsc">Organizers work together in <a href="https://discord.gg/NqcenEuMFR" target="_blank" rel="noopener">our Discord server</a>: join with your university email and you land in a chat with the others at your university. </span>Organizers are marked publicly on <a href="#interest">the list</a>. We'll coordinate with organizers about spreading the word through university mailing lists, campus outreach, and engagements with faculty and staff.</p>
     <h2>What happens to my information?</h2>
     <p>We use your email just to confirm your affiliation with your university and to notify you when the letter is ready to sign. Your first name and last initial are on the public list only if you choose to show them. Poll answers are anonymously shown as totals. Your answer to “What concerns you most about AI?” won't be displayed publicly. You can find more details on our <a href="#privacy">privacy page</a>.</p>
     <h2 id="contact">Contact</h2>
@@ -784,6 +787,7 @@ footer{padding:22px 0 36px}
 <footer><div class="wrap foot lab">
   <a href="https://www.instagram.com/ourfuturesfirst/" target="_blank" rel="noopener" aria-label="Our Futures First on Instagram"><img src="assets/instagram.svg" alt="Instagram" width="14" height="14" onerror="this.replaceWith(document.createTextNode(this.alt))"></a>
   <a href="https://x.com/ourfuturesfirst" target="_blank" rel="noopener" aria-label="Our Futures First on X"><img src="assets/x.svg" alt="X" width="14" height="14" onerror="this.replaceWith(document.createTextNode(this.alt))"></a>
+  <a class="dsc" href="https://discord.gg/NqcenEuMFR" target="_blank" rel="noopener" aria-label="Our Futures First organizers on Discord"><img src="assets/discord.svg" alt="Discord" width="14" height="14" onerror="this.replaceWith(document.createTextNode(this.alt))"></a>
   <a href="mailto:contact@ourfuturesfirst.org" aria-label="Email Our Futures First"><img src="assets/mail.svg" alt="Email" width="14" height="14" onerror="this.replaceWith(document.createTextNode(this.alt))"></a>
   <a href="#privacy">Privacy</a>
   <span class="by">Run by students at U.S. universities.</span>
@@ -845,7 +849,7 @@ var sb=!PREVIEW&&CFG.url&&window.supabase?window.supabase.createClient(CFG.url,C
 var EMPTY={total:0,named:0,unis:[],people:[],answers:{}};
 /* show3: the parts an admin switches on or off. Without a backend everything shows; in the admin preview the page follows the
    switches as they stand on the admin page in this browser, including changes that have not been saved yet. */
-function draftSwitches(){var d=null;try{if(PREVIEW||PLIVE)d=JSON.parse(localStorage.getItem("off_draft"));}catch(x){}return d||{ticker:true,results:true,who:true,sharing:true,letter:true,about:true,list:true};}
+function draftSwitches(){var d=null;try{if(PREVIEW||PLIVE)d=JSON.parse(localStorage.getItem("off_draft"));}catch(x){}return d||{ticker:true,results:true,who:true,sharing:true,letter:true,about:true,list:true,discord:true};}
 var S={show3:sb&&!PLIVE?{}:draftSwitches(),live:!!sb,rows:[],remote:EMPTY,answers:{},spread:{},show:true,info:true,mine:null,panel:"people",slide:0,email:"",verified:false,submitted:false,editing:false,token:null,chain:{},saving:false,role:"",year:""};
 
 /* sample rows so the page can be reviewed without a backend; never used when connected */
@@ -1515,8 +1519,8 @@ function applyEntry(c){
 
 /* ---------- tabs ---------- */
 var ANCH={"#organizers":1,"#why-wait":1,"#help":1,"#why-draft":1,"#contact":1};
-var CONTACT=[["Email","mailto:contact@ourfuturesfirst.org","contact@ourfuturesfirst.org","assets/mail.svg"],["Instagram","https://www.instagram.com/ourfuturesfirst/","ourfuturesfirst","assets/instagram.svg"],["X","https://x.com/ourfuturesfirst","ourfuturesfirst","assets/x.svg"]];
-CONTACT.forEach(function(c){if(!c[1])return;var li=mk("li"),a=mk("a",null,c[2]),k=mk("span","lab");
+var CONTACT=[["Email","mailto:contact@ourfuturesfirst.org","contact@ourfuturesfirst.org","assets/mail.svg"],["Instagram","https://www.instagram.com/ourfuturesfirst/","ourfuturesfirst","assets/instagram.svg"],["X","https://x.com/ourfuturesfirst","ourfuturesfirst","assets/x.svg"],["Discord","https://discord.gg/NqcenEuMFR","Organizers' server","assets/discord.svg"]];
+CONTACT.forEach(function(c){if(!c[1])return;var li=mk("li",c[0]==="Discord"?"dsc":null),a=mk("a",null,c[2]),k=mk("span","lab");
   if(c[3]){var im=document.createElement("img");im.src=c[3];im.alt="";im.width=14;im.height=14;im.onerror=function(){im.remove();};k.appendChild(im);}
   else k.appendChild(mk("span"));k.appendChild(mk("span",null,c[0]));li.appendChild(k);
   a.href=c[1];if(c[1].indexOf("mailto:")!==0){a.target="_blank";a.rel="noopener";}li.appendChild(a);$("contactList").appendChild(li);});
@@ -1534,7 +1538,8 @@ window.addEventListener("hashchange",function(){route();var t=(ANCH[location.has
 /* ---------- boot ---------- */
 function paintSwitches(){var f=S.show3;$("resPart").hidden=!f.results;$("whoPart").hidden=!f.who;$("resSection").hidden=!f.results&&!f.who;
   document.body.classList.toggle("noresults",!f.results);document.body.classList.toggle("nosharing",f.sharing===false);
-  document.body.classList.toggle("nolist",f.list===false);document.body.classList.toggle("noletter",f.letter===false);document.body.classList.toggle("noabout",f.about===false);route();}
+  document.body.classList.toggle("nolist",f.list===false);document.body.classList.toggle("noletter",f.letter===false);document.body.classList.toggle("noabout",f.about===false);
+  document.body.classList.toggle("nodiscord",f.discord===false);route();}
 function loadSwitches(){if(!S.live||PLIVE)return;sb.rpc("page_switches").then(function(r){if(r.error||!r.data)return;S.show3=r.data;renderAll();},function(){});}
 function renderAll(){$("previewNote").hidden=S.live&&!PLIVE;paintSwitches();paintSuggest();renderWidget();updateResults();renderAfter();}
 function loadBoard(){return sb.rpc("board").then(function(r){if(!r.error&&r.data){S.remote=r.data;renderAll();}else if(!S.remote.total)setTimeout(loadBoard,3000);});}

@@ -348,6 +348,7 @@ td.wide{white-space:normal;min-width:320px}
       <button class="toggle" id="swList" aria-pressed="false" disabled><i></i>Names and universities list</button>
       <button class="toggle" id="swLetter" aria-pressed="false" disabled><i></i>Letter page</button>
       <button class="toggle" id="swAbout" aria-pressed="false" disabled><i></i>About page</button>
+      <button class="toggle" id="swDiscord" aria-pressed="false" disabled><i></i>Discord link for organizers</button>
     </div>
     <p class="swsave"><button class="btn main" id="btnSwSave" disabled>Save</button><button class="btn" id="btnSwUndo" hidden>Discard changes</button><span class="mute" id="swMsg" role="status"></span></p>
     <p class="pvrow"><span class="lab">Preview in this browser</span><a class="lab" id="lnkPreviewLive" href="./" target="_blank" rel="noopener">With live data</a><a class="lab" id="lnkPreview" href="./" target="_blank" rel="noopener">With sample data</a></p>
@@ -711,12 +712,12 @@ function start(session){
     paintUni();paintRole();render();showTab(location.hash.slice(1),true);services(true);setInterval(function(){if(!document.hidden)services();},120000);
     /* the three parts of the public page that are switched on from here; a change shows there within half a minute */
     /* the switches are a draft until Save is pressed. The draft is kept in this browser so the preview can show it. */
-    var SW={ticker:$("swTicker"),results:$("swResults"),who:$("swWho"),sharing:$("swSharing"),list:$("swList"),letter:$("swLetter"),about:$("swAbout")},SAVED=null,DRAFT=null,msg=$("swMsg");
+    var SW={ticker:$("swTicker"),results:$("swResults"),who:$("swWho"),sharing:$("swSharing"),list:$("swList"),letter:$("swLetter"),about:$("swAbout"),discord:$("swDiscord")},SAVED=null,DRAFT=null,msg=$("swMsg");
     function dirty(){return Object.keys(SW).filter(function(k){return !!DRAFT[k]!==!!SAVED[k];});}
     function paintSw(){var ch=dirty();Object.keys(SW).forEach(function(k){SW[k].disabled=false;SW[k].setAttribute("aria-pressed",String(!!DRAFT[k]));SW[k].classList.toggle("changed",ch.indexOf(k)>-1);});
       $("btnSwSave").disabled=!ch.length;$("btnSwUndo").hidden=!ch.length;try{localStorage.setItem("off_draft",JSON.stringify(DRAFT));}catch(x){}
       msg.classList.toggle("unsaved",ch.length>0);if(ch.length)msg.textContent="Not saved. "+(ch.length===1?"This change is":"These "+ch.length+" changes are")+" in your preview only; the live site is unchanged.";}
-    function took(f){SAVED={};DRAFT={};Object.keys(SW).forEach(function(k){SAVED[k]=DRAFT[k]=k in f?!!f[k]:/^(sharing|letter|about|list)$/.test(k);});paintSw();}
+    function took(f){SAVED={};DRAFT={};Object.keys(SW).forEach(function(k){SAVED[k]=DRAFT[k]=k in f?!!f[k]:/^(sharing|letter|about|list|discord)$/.test(k);});paintSw();}
     sb.rpc("page_switches").then(function(r){if(r.error||!r.data){msg.textContent="Not available yet: the database change for these switches has not been applied.";return;}took(r.data);});
     Object.keys(SW).forEach(function(k){SW[k].addEventListener("click",function(){DRAFT[k]=!DRAFT[k];msg.textContent="";paintSw();});});
     $("btnSwUndo").addEventListener("click",function(){took(SAVED);msg.textContent="Changes discarded.";});
