@@ -39,7 +39,19 @@
 *::-webkit-scrollbar{display:none}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
 .wrap{max-width:1200px;margin:0 auto;padding:0 28px}
-header{position:sticky;top:0;z-index:6;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px);margin-bottom:24px}
+header{position:sticky;top:0;z-index:6;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px)}
+/* the four sections of the dashboard */
+.atabs{position:sticky;top:46px;z-index:5;display:flex;gap:28px;overflow-x:auto;margin:0 -28px 26px;padding:0 28px;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px)}
+.atabs button{flex:none;background:none;border:0;border-bottom:2px solid transparent;padding:14px 0 12px;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);cursor:pointer;transition:color .2s,border-color .2s}
+.atabs button:hover{color:var(--ink)}
+.atabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.pane>h2:first-child{margin-top:8px}
+.pane>.svcs{margin-bottom:18px}
+.fnote{margin:-8px 0 18px;font-size:.875rem;color:var(--mute)}
+.fnote button{margin-left:12px;background:none;border:0;padding:0;font:inherit;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.unipick{margin-bottom:6px}
+.unipick+h2{margin-top:30px}
+#signin{margin-top:12vh}
 header .wrap{height:46px}
 .brand{display:flex;align-items:center;gap:5px;font-family:var(--sans);font-weight:600;font-size:.8125rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);white-space:nowrap;text-decoration:none}
 .brand .star{width:30px;height:30px;flex:none}
@@ -181,6 +193,7 @@ td.wide{white-space:normal;min-width:320px}
 #signin .card{border-left-color:var(--accent)}
 #signin p{margin:10px 0}
 @media (max-width:520px){
+  .atabs{margin:0 -16px 20px;padding:0 16px;gap:20px}
   .dd>button{white-space:nowrap}
   /* phones: each fact's label sits above its value instead of squeezing beside it */
 
@@ -211,6 +224,16 @@ td.wide{white-space:normal;min-width:320px}
 </div>
 
 <div class="wrap" id="dash" hidden>
+  <nav class="atabs" role="tablist" aria-label="Sections">
+    <button role="tab" id="atab-overview" aria-selected="true">Overview</button>
+    <button role="tab" id="atab-universities" aria-selected="false">Universities</button>
+    <button role="tab" id="atab-responses" aria-selected="false">Responses</button>
+    <button role="tab" id="atab-settings" aria-selected="false">Settings</button>
+  </nav>
+  <p class="fnote" id="fnote" hidden></p>
+
+  <!-- Overview: how the project and its systems are doing -->
+  <section class="pane" id="pane-overview">
   <div class="svcs">
   <p class="svc" id="svc" aria-live="polite">
     <span class="lab">Services</span><span class="it">
@@ -226,21 +249,6 @@ td.wide{white-space:normal;min-width:320px}
     <a href="https://www.instagram.com/direct/inbox/" target="_blank" rel="noopener noreferrer"><b>Instagram</b><span>Open inbox</span></a>
   </span></p>
   </div>
-  <div class="card switches">
-    <p class="lab">Shown on the public page</p>
-    <p class="swnote">Flipping a switch changes <b>your preview</b> straight away. The <b>live site</b> changes only when you press Save.</p>
-    <div class="swrow">
-      <button class="toggle" id="swTicker" aria-pressed="false" disabled><i></i>Scrolling list of universities</button>
-      <button class="toggle" id="swResults" aria-pressed="false" disabled><i></i>Poll results</button>
-      <button class="toggle" id="swWho" aria-pressed="false" disabled><i></i>Who has signed up</button>
-      <button class="toggle" id="swSharing" aria-pressed="false" disabled><i></i>Sharing: personal link, share buttons, reach</button>
-      <button class="toggle" id="swList" aria-pressed="false" disabled><i></i>Names and universities list</button>
-      <button class="toggle" id="swLetter" aria-pressed="false" disabled><i></i>Letter page</button>
-      <button class="toggle" id="swAbout" aria-pressed="false" disabled><i></i>About page</button>
-    </div>
-    <p class="swsave"><button class="btn main" id="btnSwSave" disabled>Save</button><button class="btn" id="btnSwUndo" hidden>Discard changes</button><span class="mute" id="swMsg" role="status"></span></p>
-    <p style="margin:16px 0 0"><a class="lab" id="lnkPreview" href="./" target="_blank" rel="noopener">Preview in this browser</a></p>
-  </div>
   <div class="card facts" id="facts"></div>
 
   <h2>Sign-ups <small id="sum"></small></h2>
@@ -254,13 +262,6 @@ td.wide{white-space:normal;min-width:320px}
     <div class="top"><div class="pick"><div class="tabs" role="tablist"><button role="tab" id="tabTotal" aria-selected="true">Total</button><button role="tab" id="tabDay" aria-selected="false">Per day</button></div></div><span class="lab" id="plotNote"></span></div>
     <svg id="plot" role="img" aria-label="Sign-ups over time"></svg>
     <div id="tip" hidden></div>
-  </div>
-
-  <h2>Universities <small id="uniNote"></small></h2>
-  <div class="card">
-    <p class="legend lab"><span><i></i>Sign-ups</span><span><i class="o"></i>Campus organizers among them</span></p>
-    <div id="byUni"></div>
-    <button class="btn small more" id="btnMore" hidden></button>
   </div>
 
   <h2>Breakdown <small id="scopeNote"></small></h2>
@@ -280,35 +281,77 @@ td.wide{white-space:normal;min-width:320px}
     <div class="card"><h3>How opened links were sent</h3><div id="bySource"></div></div>
     <div class="card"><h3>Links opened per day <span class="mute" style="font-weight:400">last 14 days</span></h3><div id="byOpenDay"></div></div>
   </div>
+  </section>
 
-  <h2>Share links <small id="refNote"></small></h2>
-  <p class="mute">Opens is how many times the link was opened. Direct is people who joined from that person's own link. Downstream adds everyone who then joined through those people's links, and so on. Buttons is how many times that person pressed Copy or a share button.</p>
-  <div class="scroll"><table id="tRef"></table></div>
+  <!-- Universities: everything that is managed campus by campus -->
+  <section class="pane" id="pane-universities" hidden>
+    <div class="tools unipick"><span class="lab">University</span><div class="dd" id="ddUni2"></div><span class="mute" id="uniPick"></span></div>
 
-  <h2>Letter suggestions <small id="sugNote"></small></h2>
-  <p class="mute">Left on the Letter page. Anonymous ones carry no name; the rest were sent by confirmed sign-ups who chose to add theirs. Never shown publicly.</p>
-  <div class="tools" style="margin-bottom:10px"><button class="toggle" id="chSugOpen" aria-pressed="true"><i></i>Hide the ones marked done</button></div>
-  <div class="scroll"><table id="tSug"></table></div>
+  <h2>Universities <small id="uniNote"></small></h2>
+  <div class="card">
+    <p class="legend lab"><span><i></i>Sign-ups</span><span><i class="o"></i>Campus organizers among them</span></p>
+    <div id="byUni"></div>
+    <button class="btn small more" id="btnMore" hidden></button>
+  </div>
 
   <h2>Campus organizers <small id="orgNote"></small></h2>
   <p class="mute">Each university takes a set number of organizers, and can also be switched off by hand. When it is full or switched off, the option on the sign-up page is greyed out there and people are asked to write to us. Existing organizers are never removed by either; use Remove for that.</p>
   <div class="card caps">
-    <p class="capline"><label class="lab" for="capAll">Organizers per university</label><input type="number" id="capAll" min="0" max="1000" inputmode="numeric"><span class="mute" id="capMsg" role="status"></span></p>
+    <p class="capline"><span class="mute" id="capMsg2" role="status"></span></p>
     <div id="capList"></div>
     <p class="capline"><select id="capAdd" aria-label="Show another university"></select></p>
   </div>
   <div class="scroll" style="margin-top:22px"><table id="tOrg"></table></div>
 
-  <h2>Names held back from the public list</h2>
-  <p class="mute">Names caught by the automatic screen, or hidden by an admin. The person is still counted; only the name is hidden.</p>
-  <div class="scroll"><table id="tHidden"></table></div>
+  <h2>Share links <small id="refNote"></small></h2>
+  <p class="mute">Opens is how many times the link was opened. Direct is people who joined from that person's own link. Downstream adds everyone who then joined through those people's links, and so on. Buttons is how many times that person pressed Copy or a share button.</p>
+  <div class="scroll"><table id="tRef"></table></div>
+  </section>
+
+  <!-- Responses: what people have written, and the full list -->
+  <section class="pane" id="pane-responses" hidden>
+  <h2>Letter suggestions <small id="sugNote"></small></h2>
+  <p class="mute">Left on the Letter page. Anonymous ones carry no name; the rest were sent by confirmed sign-ups who chose to add theirs. Never shown publicly.</p>
+  <div class="tools" style="margin-bottom:10px"><button class="toggle" id="chSugOpen" aria-pressed="true"><i></i>Hide the ones marked done</button></div>
+  <div class="scroll"><table id="tSug"></table></div>
 
   <h2>Written answers</h2>
   <div class="scroll"><table id="tConcern"></table></div>
 
+  <h2>Names held back from the public list</h2>
+  <p class="mute">Names caught by the automatic screen, or hidden by an admin. The person is still counted; only the name is hidden.</p>
+  <div class="scroll"><table id="tHidden"></table></div>
+
   <h2>All sign-ups</h2>
   <div class="bar"><input type="search" id="inSearch" placeholder="Search name, email or university"><button class="btn" id="btnCsv">Download CSV</button><span class="mute" id="count"></span></div>
   <div class="scroll"><table id="tAll"></table></div>
+  </section>
+
+  <!-- Settings: switches and numbers that apply to the whole site -->
+  <section class="pane" id="pane-settings" hidden>
+  <h2>Public page</h2>
+  <div class="card switches">
+    <p class="lab">Shown on the public page</p>
+    <p class="swnote">Flipping a switch changes <b>your preview</b> straight away. The <b>live site</b> changes only when you press Save.</p>
+    <div class="swrow">
+      <button class="toggle" id="swTicker" aria-pressed="false" disabled><i></i>Scrolling list of universities</button>
+      <button class="toggle" id="swResults" aria-pressed="false" disabled><i></i>Poll results</button>
+      <button class="toggle" id="swWho" aria-pressed="false" disabled><i></i>Who has signed up</button>
+      <button class="toggle" id="swSharing" aria-pressed="false" disabled><i></i>Sharing: personal link, share buttons, reach</button>
+      <button class="toggle" id="swList" aria-pressed="false" disabled><i></i>Names and universities list</button>
+      <button class="toggle" id="swLetter" aria-pressed="false" disabled><i></i>Letter page</button>
+      <button class="toggle" id="swAbout" aria-pressed="false" disabled><i></i>About page</button>
+    </div>
+    <p class="swsave"><button class="btn main" id="btnSwSave" disabled>Save</button><button class="btn" id="btnSwUndo" hidden>Discard changes</button><span class="mute" id="swMsg" role="status"></span></p>
+    <p style="margin:16px 0 0"><a class="lab" id="lnkPreview" href="./" target="_blank" rel="noopener">Preview in this browser</a></p>
+  </div>
+
+  <h2>Campus organizers</h2>
+  <div class="card caps">
+    <p class="capline"><label class="lab" for="capAll">Organizers per university</label><input type="number" id="capAll" min="0" max="1000" inputmode="numeric"><span class="mute" id="capMsg" role="status"></span></p>
+    <p class="mute" style="margin:8px 0 0;font-size:.875rem">This is the number every university follows unless it has its own. Give one university its own number, or stop it taking new organizers, under Universities.</p>
+  </div>
+  </section>
   <p>&nbsp;</p>
 </div>
 
@@ -325,7 +368,7 @@ function clear(e){while(e.firstChild)e.removeChild(e.firstChild);}
 var C=window.OFF_CONFIG||{};
 if(!C.url){$("signin").hidden=false;$("msg").textContent="No backend is configured.";return;}
 var sb=window.supabase.createClient(C.url,C.key);
-var CAPS=null,CLOSED=[],SHOWN={},SUGS=null,SUGOPEN=true,EV={events:[],invites:[],ok:false},ROWS=[],F={uni:"",role:"",confirmed:true,mode:"total",allUnis:false};
+var TAB="overview",TABS=["overview","universities","responses","settings"],BIOS={},CAPS=null,CLOSED=[],SHOWN={},SUGS=null,SUGOPEN=true,EV={events:[],invites:[],ok:false},ROWS=[],F={uni:"",role:"",confirmed:true,mode:"total",allUnis:false};
 var ROLES=["an undergraduate","a graduate student","a postdoc","faculty","staff"],YEARS=["Freshman","Sophomore","Junior","Senior"];
 var RLAB={"an undergraduate":"Undergraduates","a graduate student":"Graduate students","a postdoc":"Postdocs","faculty":"Faculty","staff":"Staff"};
 var QS={feel:"How do you feel about where AI is headed?",plans:"Has AI changed your plans?",job:"When can AI do an entry-level job in your field?",
@@ -378,8 +421,17 @@ function dropdown(box,items,get,set,search){
   document.addEventListener("click",function(e){if(!box.contains(e.target))open(false);});
   return paint;
 }
-var paintUni,paintRole;
-function setUni(dom){F.uni=F.uni===dom?"":dom;paintUni();render();}
+var paintUni,paintUni2,paintRole;
+function setUni(dom){F.uni=F.uni===dom?"":dom;render();}
+/* ---------- the four tabs ---------- */
+function showTab(t,keep){if(TABS.indexOf(t)<0)t="overview";TAB=t;
+  TABS.forEach(function(k){$("pane-"+k).hidden=k!==t;$("atab-"+k).setAttribute("aria-selected",String(k===t));});
+  try{history.replaceState(null,"",t==="overview"?location.pathname+location.search:"#"+t);}catch(x){}
+  paintFnote();if(t==="overview"&&!$("dash").hidden)plot();if(!keep)window.scrollTo(0,0);}
+/* the filters live on Overview but narrow every tab, so the other tabs say when one is on */
+function paintFnote(){var n=$("fnote"),parts=[];if(F.uni&&TAB!=="universities")parts.push(uniName());if(F.role)parts.push(RLAB[F.role]);if(!F.confirmed)parts.push("including unconfirmed sign-ups");
+  n.hidden=!parts.length||TAB==="overview"||TAB==="settings";if(n.hidden)return;clear(n);n.appendChild(document.createTextNode("Filtered to "+parts.join(", ")+"."));
+  var b=mk("button",null,"Clear filters");b.type="button";b.addEventListener("click",function(){F.uni="";F.role="";F.confirmed=true;if(paintRole)paintRole();render();});n.appendChild(b);}
 
 /* ---------- sign-ups over time: a smooth curve, read off continuously under the pointer ---------- */
 var SER=null,CUR=null;
@@ -448,7 +500,7 @@ var rz;window.addEventListener("resize",function(){clearTimeout(rz);rz=setTimeou
 /* ---------- everything on the page ---------- */
 function render(){
   var rows=scope(),org=rows.filter(isLead),now=Date.now(),who=F.role?RLAB[F.role].toLowerCase():"sign-ups",uni=uniName();
-  $("chConfirmed").setAttribute("aria-pressed",String(F.confirmed));
+  $("chConfirmed").setAttribute("aria-pressed",String(F.confirmed));if(paintUni)paintUni();if(paintUni2)paintUni2();paintFnote();
 
   /* the count, as a note beside the section heading */
   var nUni=count(rows,function(r){return r.dom;}).length;
@@ -518,7 +570,12 @@ function render(){
   $("refNote").textContent=rows.length?num(viaAll)+" of "+num(rows.length)+" joined through someone's link ("+Math.round(viaAll/rows.length*100)+"%), from "+plural(bring,"person's link","people's links"):"";
   table($("tRef"),["Name","University","Opens","Direct","Downstream","Buttons","Organizer","Email"],refs.slice(0,50),function(x){return [x.r.name,x.r.uni,num(x.opens),num(x.direct),num(x.down),num(x.press),isLead(x.r)?"Yes":"",x.r.email];});
 
-  table($("tOrg"),["Name","University","Email","Phone","Confirmed","Signed up",""],org,function(r){return [r.name,r.uni,r.email,r.phone,r.verified_at?"Yes":"No",day(r.created_at),removeBtn(r)];});
+  table($("tOrg"),["Name","University","About them","Email","Phone","Confirmed","Signed up",""],org,function(r){
+    var about=mk("span",BIOS[r.id]?null:"mute",BIOS[r.id]||"No bio yet");about.wide=true;
+    return [r.name,r.uni,about,r.email,r.phone,r.verified_at?"Yes":"No",day(r.created_at),removeBtn(r)];});
+  var up=$("uniPick");if(F.uni){var all=ROWS.filter(function(r){return r.dom===F.uni;}),lead=all.filter(isLead).length,shutU=CLOSED.indexOf(F.uni)>-1;
+    up.textContent=plural(all.filter(function(r){return r.verified_at;}).length,"confirmed sign-up","confirmed sign-ups")+", "+plural(lead,"organizer","organizers")+" of "+num(capOf(F.uni))+", "+(shutU?"not taking new organizers":"taking new organizers");}
+  else up.textContent="Pick one to manage its organizers, limit and links on their own.";
   renderCaps();
   table($("tHidden"),["Name","University","Email","Confirmed",""],rows.filter(function(r){return r.name_hidden;}),function(r){return [r.name,r.uni,r.email,r.verified_at?"Yes":"No",hideBtn(r)];});
   table($("tConcern"),["Answer","University","Role"],rows.filter(function(r){return r.concern;}),function(r){var s=mk("span",null,r.concern);s.wide=true;return [s,r.uni,r.role];});
@@ -581,21 +638,21 @@ function removeBtn(r){var b=mk("button","btn small","Remove"),armed=false,t;
       if(!o.error)r.spread=r.spread.filter(function(k){return k!=="lead";});render();});});
   return b;}
 function capOf(dom){return CAPS&&dom in CAPS?CAPS[dom]:CAPS?CAPS["*"]:5;}
-function setAccepting(dom,on,btn){var m=$("capMsg");btn.disabled=true;m.textContent="Saving";
+function setAccepting(dom,on,btn){var m=$("capMsg2");btn.disabled=true;m.textContent="Saving";
   sb.rpc(C.dev?"dev_admin_set_accepting":"admin_set_accepting",{p_dom:dom,p_accepting:on}).then(function(o){
     if(o.error||!o.data){btn.disabled=false;m.textContent=/not_admin/.test((o.error||{}).message||"")?"Your sign-in has expired. Reload and ask for a new link.":"That didn't save. Try again.";return;}
     CLOSED=o.data;m.textContent="Saved.";render();});}
-function saveCap(dom,val){var m=$("capMsg");m.textContent="Saving";
+function saveCap(dom,val){var m=$(dom==="*"?"capMsg":"capMsg2");m.textContent="Saving";
   sb.rpc(C.dev?"dev_admin_set_cap":"admin_set_cap",{p_dom:dom,p_cap:val}).then(function(o){
     if(o.error||!o.data){m.textContent=/not_admin/.test((o.error||{}).message||"")?"Your sign-in has expired. Reload and ask for a new link.":"That didn't save. Try again.";return;}
     CAPS=o.data;m.textContent="Saved.";renderCaps();});}
 function renderCaps(){
   var list=$("capList"),add=$("capAdd"),all=$("capAll"),note=$("orgNote");
-  if(!CAPS){all.disabled=true;add.hidden=true;clear(list);$("capMsg").textContent="Limits aren't available yet: the database change has not been applied.";return;}
-  all.disabled=false;if(document.activeElement!==all)all.value=CAPS["*"];if(/^Limits aren't/.test($("capMsg").textContent))$("capMsg").textContent="";
+  if(!CAPS){all.disabled=true;add.hidden=true;clear(list);$("capMsg2").textContent="Limits aren't available yet: the database change has not been applied.";return;}
+  all.disabled=false;if(document.activeElement!==all)all.value=CAPS["*"];if(/^Limits aren't/.test($("capMsg2").textContent))$("capMsg2").textContent="";add.hidden=!!F.uni;
   var n={},nm={};ROWS.forEach(function(r){nm[r.dom]=r.uni;if(isLead(r))n[r.dom]=(n[r.dom]||0)+1;});
   /* listed: universities that are full or one short of it, and any with a number of their own. The rest are in the menu below. */
-  var doms=Object.keys(nm).filter(function(d){return d in CAPS||SHOWN[d]||CLOSED.indexOf(d)>-1||(n[d]||0)>=capOf(d)-1&&n[d];}).sort(function(a,b){return (n[b]||0)-(n[a]||0)||nm[a].localeCompare(nm[b]);});
+  var doms=Object.keys(nm).filter(function(d){if(F.uni)return d===F.uni;return d in CAPS||SHOWN[d]||CLOSED.indexOf(d)>-1||(n[d]||0)>=capOf(d)-1&&n[d];}).sort(function(a,b){return (n[b]||0)-(n[a]||0)||nm[a].localeCompare(nm[b]);});
   var full=Object.keys(nm).filter(function(d){return (n[d]||0)>=capOf(d);}).length,shut=CLOSED.filter(function(d){return nm[d];}).length,tot=Object.keys(n).reduce(function(a,d){return a+n[d];},0);
   note.textContent=num(tot)+" at "+plural(Object.keys(n).length,"university","universities")+", "+num(full)+" full"+(shut?", "+num(shut)+" switched off":"");
   clear(list);if(doms.length){var hd=mk("div","caprow caphead lab");["University","Limit","Organizers","Taking new ones"].forEach(function(t){hd.appendChild(mk("span",null,t));});list.appendChild(hd);}
@@ -606,7 +663,7 @@ function renderCaps(){
     inp.addEventListener("change",function(){var v=inp.value.trim();if(v!==""&&!/^\d{1,4}$/.test(v)){inp.value=d in CAPS?CAPS[d]:"";return;}saveCap(d,v===""?null:+v);});
     row.appendChild(mk("span",null,nm[d]));row.appendChild(inp);row.appendChild(st);row.appendChild(tg);list.appendChild(row);});
   /* any other university can be given its own number too */
-  clear(add);add.hidden=false;var o0=mk("option",null,"Show another university");o0.value="";add.appendChild(o0);
+  clear(add);add.hidden=!!F.uni;var o0=mk("option",null,"Show another university");o0.value="";add.appendChild(o0);
   Object.keys(nm).filter(function(d){return doms.indexOf(d)<0;}).sort(function(a,b){return nm[a].localeCompare(nm[b]);}).forEach(function(d){var o=mk("option",null,nm[d]+(n[d]?" ("+plural(n[d],"organizer","organizers")+")":""));o.value=d;add.appendChild(o);});
 }
 /* suggestions left on the Letter page */
@@ -636,7 +693,11 @@ function start(session){
       return [["","All universities",null]].concat(c.map(function(p){return [p[0],nm[p[0]],p[1]];}));},function(){return F.uni;},function(v){F.uni=v;},true);
     paintRole=dropdown($("ddRole"),function(){var c={};scope({noUni:false}).forEach(function(r){c[r.role]=(c[r.role]||0)+1;});
       return [["","All roles",null]].concat(ROLES.map(function(r){return [r,RLAB[r],F.role&&F.role!==r?null:c[r]||0];}));},function(){return F.role;},function(v){F.role=v;});
-    paintUni();paintRole();render();services(true);setInterval(function(){if(!document.hidden)services();},120000);
+    paintUni2=dropdown($("ddUni2"),function(){var c=count(scope({noUni:true}),function(r){return r.dom;}),nm={};ROWS.forEach(function(r){nm[r.dom]=r.uni;});
+      return [["","All universities",null]].concat(c.map(function(p){return [p[0],nm[p[0]],p[1]];}));},function(){return F.uni;},function(v){F.uni=v;},true);
+    TABS.forEach(function(k){$("atab-"+k).addEventListener("click",function(){showTab(k);});});
+    sb.rpc(C.dev?"dev_admin_bios":"admin_bios").then(function(o){if(!o.error&&o.data){BIOS=o.data;render();}},function(){});
+    paintUni();paintRole();render();showTab(location.hash.slice(1),true);services(true);setInterval(function(){if(!document.hidden)services();},120000);
     /* the three parts of the public page that are switched on from here; a change shows there within half a minute */
     /* the switches are a draft until Save is pressed. The draft is kept in this browser so the preview can show it. */
     var SW={ticker:$("swTicker"),results:$("swResults"),who:$("swWho"),sharing:$("swSharing"),list:$("swList"),letter:$("swLetter"),about:$("swAbout")},SAVED=null,DRAFT=null,msg=$("swMsg");

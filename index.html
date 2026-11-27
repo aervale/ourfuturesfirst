@@ -243,6 +243,7 @@ textarea{display:block;min-height:150px;resize:none}
 .leadbox{display:grid;gap:8px;padding:4px 0 4px 14px;border-left:2px solid var(--line2)}
 .leadbox .hint{margin:0}
 .leadbox a{color:var(--ink)}
+.leadbox textarea{min-height:120px}
 .err{color:var(--accent);margin:12px 0 0;min-height:1.5em;font-size:.9375rem}
 
 /* board */
@@ -638,6 +639,9 @@ footer{padding:22px 0 36px}
             <label class="lab" for="inPhone2">Phone number <span class="req">*</span></label>
             <input type="tel" id="inPhone2" autocomplete="tel" maxlength="30" placeholder="(555) 555-5555">
             <p class="hint bad" id="phoneHint" role="status"></p>
+            <label class="lab" for="inBio">About you</label>
+            <textarea id="inBio" maxlength="1200" placeholder="Around 100 words: who you are, what you study or work on, and why you want to help at your university."></textarea>
+            <p class="hint" id="bioHint" role="status">Only the organizers of this project read this.</p>
             <p class="hint bad" id="leadHint" role="status"></p>
           </div></div></div>
           <div class="pop" id="sharePop"><div><div class="leadbox">
@@ -720,7 +724,7 @@ footer{padding:22px 0 36px}
     <h2>Who we are</h2>
     <p>Our Futures First is a project run by students at U.S. universities. It is collecting interest in an open letter on AI. You can reach us at <a href="mailto:contact@ourfuturesfirst.org">contact@ourfuturesfirst.org</a>.</p>
     <h2>What we collect</h2>
-    <p>What you enter in the form: your name, your university email, your role and year or title, your major or field, a phone number if you volunteer as a campus organizer, your answers to the poll questions, your written answer, and whether you offered to help.</p>
+    <p>What you enter in the form: your name, your university email, your role and year or title, your major or field, a phone number and a short description of yourself if you volunteer as a campus organizer, your answers to the poll questions, your written answer, and whether you offered to help.</p>
     <p>We also record whether and when you confirmed your email, and, if you arrived through someone's share link, that their link brought you. The services that host this website and its database receive your IP address and basic browser details when your browser loads the page. A code saved in your browser lets you reopen your own entry from the same device. We do not use advertising trackers, and the only counting we do is described under Analytics below.</p>
     <h2>What is public</h2>
     <p>If you choose to show your name, your first name and last initial appear on the public list with your university. If you also choose to show them, so do your year or title and your major. If you volunteered as a campus organizer, the list says so. Answers to the poll questions, roles, years and majors are shown only as totals, and each university is shown with its number of sign-ups.</p>
@@ -728,7 +732,7 @@ footer{padding:22px 0 36px}
     <h2>How we use it</h2>
     <p>To confirm that you belong to a U.S. university, to contact you about the letter, to count sign-ups and show totals, and to decide what goes in the letter. If you volunteer as a campus organizer, your name is shared with the other campus organizers at your university.</p>
     <h2 id="texts">Phone numbers</h2>
-    <p>We ask for a phone number only if you volunteer as a campus organizer. Organizers are contacted by phone or text, by the students running this project, about the letter and organizing on their campus. We do not sell phone numbers or share them with anyone for marketing.</p>
+    <p>We ask for a phone number only if you volunteer as a campus organizer. Organizers are contacted by phone or text, by the students running this project, about the letter and organizing on their campus. We do not sell phone numbers or share them with anyone for marketing. Organizers are also asked for a short description of themselves, which only the students running this project read.</p>
     <h2>Inviting friends</h2>
     <p>If you ask us to email friends, we keep the addresses you type, send each one a single invitation with your link, and use them for nothing else. You can invite up to 20 people.</p>
     <h2>Suggestions on the letter</h2>
@@ -932,6 +936,13 @@ function renderLead(){
   $("leadPop").classList.toggle("open",on);$("sharePop").classList.toggle("open",!!S.spread.email);
   $("leadHint").textContent=on&&!leadPhone()?"Organizers need a phone number. You're listed as an organizer once we have it.":"";
 }
+/* campus organizers are asked for a short description of themselves; it saves when they leave the box */
+function bioWords(){var t=$("inBio").value.trim();return t?t.split(/\s+/).length:0;}
+function paintBio(msg){var n=bioWords();$("bioHint").textContent=msg||(n?n+(n===1?" word":" words")+(n>150?". Around 100 is plenty.":""):"Only the organizers of this project read this.");}
+$("inBio").addEventListener("input",function(){paintBio();});
+$("inBio").addEventListener("change",function(){if(!S.live||!S.token)return;var n=bioWords();paintBio("Saving");
+  sb.rpc("set_organizer_bio",{p_token:S.token,p_bio:$("inBio").value}).then(function(r){paintBio(r.error?FAIL.save:(n?n+(n===1?" word":" words")+". Saved.":"Removed."));},function(){paintBio(FAIL.save);});});
+function loadBio(){if(!S.live||!S.token)return;sb.rpc("get_organizer_bio",{p_token:S.token}).then(function(r){if(r.error||document.activeElement===$("inBio"))return;$("inBio").value=r.data||"";paintBio();},function(){});}
 /* a phone number is asked only of campus organizers */
 function savePhone(el){var phone=$("inPhone2").value.trim(),h=$("phoneHint");
   if(!phoneOk(phone)){h.textContent="That phone number looks incomplete.";return;}
@@ -1489,7 +1500,7 @@ function applyEntry(c){
   S.spread={};(c.spread||[]).forEach(function(k){S.spread[k]=true;});
   Object.keys(spreadBtns).forEach(function(k){spreadBtns[k].setAttribute("aria-pressed",String(!!S.spread[k]));});
   try{if(!PREVIEW)localStorage.setItem("off_token",c.token);}catch(x){}
-  showUni({dom:c.dom,name:c.uni},true);renderLead();renderNav();renderAll();loadRoom();
+  showUni({dom:c.dom,name:c.uni},true);renderLead();renderNav();renderAll();loadRoom();loadBio();
 }
 
 /* ---------- tabs ---------- */

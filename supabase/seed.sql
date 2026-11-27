@@ -132,3 +132,16 @@ begin
   return (select coalesce(jsonb_agg(dom), '[]'::jsonb) from organizer_closed);
 end $$;
 grant execute on function public.dev_admin_closed(), public.dev_admin_set_accepting(text, boolean) to anon, authenticated;
+
+-- Organizer bios (local test mode), with a few samples.
+create function public.dev_admin_bios() returns jsonb language sql stable security definer set search_path = public as $$
+  select coalesce(jsonb_object_agg(signup_id, bio), '{}'::jsonb) from organizer_bios;
+$$;
+grant execute on function public.dev_admin_bios() to anon, authenticated;
+insert into organizer_bios (signup_id, bio)
+select id, (array[
+  'I am a second-year PhD student in computer science working on program synthesis. I ran the graduate student council''s housing campaign last year, so I know how to get a room of people to show up. I want to help because most of my lab has an opinion about where AI is going and no place to put it.',
+  'Junior studying economics and philosophy. I write for the student paper and help run a debate society of about sixty people. I care about this because the people deciding how fast AI moves are not the people who will live longest with the result.',
+  'Postdoc in neuroscience. Before that I organized a union drive at my last university. I can reach the postdoc association and three departments directly.'
+])[1 + (row_number() over (order by created_at))::int % 3]
+from signups where 'lead' = any(spread) and verified_at is not null order by created_at limit 14;
