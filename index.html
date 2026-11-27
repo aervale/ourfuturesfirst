@@ -1123,7 +1123,9 @@ function renderTicker(B){
   var key=!!S.show3.ticker+"|"+B.unis.map(function(x){return x.key+x.n;}).join(",");if(key===tickKey)return;tickKey=key;
   /* NOTE: the scrolling banner is off by default. An admin switches it on from the admin page ("Public page"), and even then
      it waits until there are at least four universities. */
-  var row=$("tickerRow");clear(row);$("ticker").hidden=!S.show3.ticker||B.unis.length<4;
+  /* visitors only see it from four universities up; an admin preview shows it from one, and says so */
+  var few=B.unis.length<4,row=$("tickerRow");clear(row);$("ticker").hidden=!S.show3.ticker||(few&&!(PREVIEW||PLIVE))||!B.unis.length;
+  var tn=$("tickerNote");if(tn)tn.hidden=!(S.show3.ticker&&few&&B.unis.length&&(PREVIEW||PLIVE));
   for(var k=0;k<2;k++)B.unis.slice(0,24).forEach(function(x){var s=mk("span",null,x.name);s.appendChild(mk("b",null,num(x.n)));lights(s,x.name);row.appendChild(s);});
 }
 function renderWidget(){
@@ -1542,6 +1544,7 @@ if(PREVIEW||PLIVE){
   pn.appendChild(document.createTextNode(PLIVE?" The real sign-ups, with the admin page's switches as they stand in this browser. Anything you submit here is real."
     :" Made-up people that only this browser sees. Nothing here is real or saved."));pn.appendChild(off);
   off.addEventListener("click",function(){try{localStorage.removeItem("off_preview");}catch(x){}location.reload();});
+  var tn=mk("span",null," The scrolling list of universities is shown here, but visitors only see it once four universities have sign-ups.");tn.id="tickerNote";tn.hidden=true;pn.insertBefore(tn,off);
   window.addEventListener("storage",function(e){if(e.key==="off_draft"){S.show3=draftSwitches();renderAll();}});
 }
 if(PREVIEW){
