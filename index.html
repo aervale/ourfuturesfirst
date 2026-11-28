@@ -352,6 +352,9 @@ div.ghost i{display:block;height:14px;border-radius:4px;background:var(--inset)}
 #mapTip b{color:var(--accent);font-weight:500;margin-left:8px}
 .rcard .only{margin:6px 0 0;font-size:.8125rem;color:var(--faint)}
 .signed .acts{display:flex;gap:16px}
+/* the remove question stands out from the line above it, with the button that deletes in red */
+#removeRow{color:var(--ink);background:var(--inset);border-radius:var(--r);padding:12px 14px;margin-top:14px}
+#btnRemoveYes{color:var(--accent)}
 .two.solo{grid-template-columns:minmax(0,1fr)}
 .leadbox .lab{display:block;margin-top:8px}
 .leadbox .lab:first-child{margin-top:0}
@@ -1401,7 +1404,10 @@ function captcha(){
   });
 }
 function sendLink(email){return captcha().then(function(t){return sb.auth.signInWithOtp({email:email,options:{emailRedirectTo:location.href.split(/[?#]/)[0],captchaToken:t}});});}
-$("btnRemove").addEventListener("click",function(){$("removeRow").firstChild.textContent=REMOVE_ASK;$("removeRow").hidden=false;});
+/* the question appears below the card's last line: bring it into view and onto its button, so it can't be missed */
+function askRemove(text){var r=$("removeRow");r.firstChild.textContent=text;r.hidden=false;
+  r.scrollIntoView({block:"center",behavior:CALM?"auto":"smooth"});$("btnRemoveYes").focus({preventScroll:true});}
+$("btnRemove").addEventListener("click",function(){askRemove(REMOVE_ASK);});
 $("btnRemoveNo").addEventListener("click",function(){$("removeRow").hidden=true;});
 $("btnRemoveYes").addEventListener("click",function(){
   function gone(){try{if(!PREVIEW)localStorage.removeItem("off_token");}catch(x){}location.href=location.href.split(/[?#]/)[0];}
