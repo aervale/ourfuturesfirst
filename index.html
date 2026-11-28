@@ -465,24 +465,24 @@ body.withcount .dcount{display:block}
 .dcall .dcount{flex-basis:100%;margin-top:-4px}
 .after-dsc{margin:16px 0 18px}
 .after-dsc[hidden]{display:none}
-/* the card's Discord button: centred, with a slow sheen every few seconds; volunteering as an organizer sets off a
-   soft ring around it and moves the sheen up, and the line meant for everyone else steps aside */
-#dscAfter{justify-content:center;text-align:center}
+/* the card's Discord button: centred, with a slow, soft glow in Discord's colour. Volunteering as an organizer makes a
+   few small gold stars (the site's star) twinkle around it once, and the line meant for everyone else steps aside. */
+#dscAfter{position:relative;justify-content:center;text-align:center}
 #dscAfter .dgen,#dscAfter .dcount{flex-basis:100%}
 #dscAfter .dgen{overflow:hidden;max-height:5em;transition:max-height .45s var(--ease),opacity .3s ease}
 #afterHelp.leading #dscAfter .dgen{max-height:0;opacity:0}
-#dscAfter .dbtn{position:relative;overflow:hidden;isolation:isolate}
-#dscAfter .dbtn::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.26) 50%,transparent 70%);transform:translateX(-130%);animation:dsheen 7s ease-in-out 2s infinite}
-#afterHelp.leading #dscAfter .dbtn{animation:dring 1.8s ease-out .35s 2}
-#afterHelp.leading #dscAfter .dbtn::after{animation:dsheen2 7s ease-in-out .5s infinite}
-@keyframes dsheen{0%,78%{transform:translateX(-130%)}100%{transform:translateX(130%)}}
-@keyframes dsheen2{0%,78%{transform:translateX(-130%)}100%{transform:translateX(130%)}}
-@keyframes dring{0%{box-shadow:0 0 0 0 rgba(88,101,242,.6)}100%{box-shadow:0 0 0 16px rgba(88,101,242,0)}}
-@media (prefers-reduced-motion:reduce){#dscAfter .dbtn::after,#afterHelp.leading #dscAfter .dbtn::after,#afterHelp.leading #dscAfter .dbtn{animation:none}}
-/* "organize" in the organizer option links straight to About. While About is off, a click or tap shows the note in place. */
-.orgword{text-decoration:underline dotted;text-underline-offset:5px;text-decoration-color:var(--accent);text-decoration-thickness:2px;cursor:pointer;padding:6px 0;margin:-6px 0}
-.orgword:hover{color:color-mix(in srgb,var(--accent) 55%,var(--ink));text-decoration-style:solid}
+#dscAfter .dbtn{animation:dglow 4.2s ease-in-out infinite}
+@keyframes dglow{0%,100%{box-shadow:0 0 0 0 rgba(88,101,242,0)}50%{box-shadow:0 0 22px 2px rgba(88,101,242,.38)}}
+.spark{position:absolute;width:17px;height:17px;margin:-8.5px 0 0 -8.5px;pointer-events:none;color:var(--star);opacity:0;animation:twinkle 1.1s ease-out forwards}
+.spark svg{display:block;width:100%;height:100%}
+@keyframes twinkle{0%{opacity:0;transform:scale(.2) rotate(0)}35%{opacity:1;transform:scale(1.1) rotate(20deg)}100%{opacity:0;transform:scale(.4) rotate(45deg)}}
+@media (prefers-reduced-motion:reduce){#dscAfter .dbtn{animation:none}.spark{display:none}}
+/* "organize" in the organizer option links straight to About; on hover a small label says so. While About is off,
+   the label is the explanation itself, and a click or tap shows it in place. */
+.orgword{cursor:pointer;padding-bottom:3px;background:linear-gradient(var(--accent),var(--accent)) 0 100%/100% 1.5px no-repeat;transition:color .15s,background-size .15s}
+.orgword:hover{color:color-mix(in srgb,var(--accent) 55%,var(--ink));background-size:100% 2px}
 .orgword::after{content:attr(data-tip);position:absolute;left:12px;top:calc(100% + 8px);z-index:6;width:max-content;max-width:min(340px,calc(100% - 24px));padding:10px 12px;background:var(--pop);border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);font-size:.8125rem;line-height:1.45;white-space:pre-line;color:var(--ink);opacity:0;pointer-events:none;transition:opacity .15s}
+@media (hover:hover){.orgword:hover::after{opacity:1}}
 .orgword.open::after{opacity:1}
 #spread .opt{position:relative}
 #spread .opt:hover,#spread .opt:has(.orgword.open){z-index:6}
@@ -973,7 +973,7 @@ function buildForm(){
       b.addEventListener("mouseleave",function(){w.classList.remove("open");});}
     else b.appendChild(mk("span",null,s.t));b.appendChild(mk("span","saved","Saved"));
     function set(v){S.spread[s.id]=v;b.setAttribute("aria-pressed",String(v));}
-    b.addEventListener("click",function(){var was=!!S.spread[s.id];set(!was);renderLead();
+    b.addEventListener("click",function(){var was=!!S.spread[s.id];set(!was);renderLead();if(s.id==="lead"&&!was)twinkle();
       patch({spread:spreadList()}).then(function(){flash(b);},function(){set(was);renderLead();$("copyMsg").textContent=FAIL.save;});});
     if(s.id==="email"){b.classList.add("sharebit");$(s.pop).classList.add("sharebit");}
     sp.appendChild(b);
@@ -1006,8 +1006,16 @@ function loadRoom(){var d=S.mine&&S.mine.dom;if(!S.live||!d||!S.token)return;
 function leadFull(){if(S.spread.lead||!S.mine||ROOM.dom!==S.mine.dom)return "";return ROOM.closed?"closed":ROOM.count>=ROOM.cap?"full":"";}
 /* the note on "organize" says Discord only while its switch is on, and "click" only while About is */
 function orgWordTip(){var a=$("orgWord");if(!a)return;var b=document.body.classList;
+  if(!b.contains("noabout")){a.setAttribute("data-tip","Click to see what campus organizers do");return;}
   a.setAttribute("data-tip","Campus organizers spread the word at their university"+(b.contains("nodiscord")?".":" and work with organizers at other universities on our Discord.")
     +" Their names are marked on the public list.");}
+/* a few gold stars twinkle around the Discord button, once, when someone volunteers as an organizer */
+function twinkle(){var box=$("dscAfter"),btn=box&&box.querySelector(".dbtn");if(!btn||!btn.offsetParent)return;
+  var b=btn.getBoundingClientRect(),o=box.getBoundingClientRect(),cx=b.left-o.left+b.width/2,cy=b.top-o.top+b.height/2;
+  [[-.62,-.9],[.58,-1.05],[.7,.8],[-.55,1],[-.95,.05],[.98,-.1]].forEach(function(p,k){var sp=mk("span","spark");
+    sp.innerHTML='<svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 0L12 8L20 10L12 12L10 20L8 12L0 10L8 8Z"/></svg>';
+    sp.style.left=(cx+p[0]*b.width*.62)+"px";sp.style.top=(cy+p[1]*b.height*.95)+"px";sp.style.animationDelay=(250+k*110)+"ms";
+    box.appendChild(sp);setTimeout(function(){sp.remove();},2200);});}
 function renderLead(){
   paintShow();orgWordTip();
   var on=!!S.spread.lead,why=leadFull(),full=!!why,note=$("leadFull"),b=spreadBtns.lead;
