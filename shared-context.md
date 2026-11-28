@@ -55,6 +55,8 @@ Never put emails, tokens, passwords, people's names or anything private here.
 - 2026-11-28 David: no per-university "in charge" or coordinator on the admin page.
 - 2026-11-28 David: blocking unsuitable names uses the word list only; no outside screening service.
 - 2026-11-28 David, April: every live change goes through a migration file in the repo.
+- 2026-11-28 April: "Remove me" is counted (`removals`: date, university, whether confirmed, hours since
+  signing up; nothing that identifies the person) and shown on the admin page. The privacy page says so.
 
 ## Pitfalls
 

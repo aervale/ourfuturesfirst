@@ -294,6 +294,11 @@ td.wide{white-space:normal;min-width:320px}
     <div class="card"><h3>Links opened per day <span class="mute" style="font-weight:400">last 14 days</span></h3><div id="byOpenDay"></div></div>
   </div>
 
+  <!-- people who pressed "Remove me" (supabase/migrations/*_removals.sql): counts only, nothing that identifies them -->
+  <h2>Removed sign-ups <small id="remNote"></small></h2>
+  <div class="card facts" id="remFacts"></div>
+  <div class="scroll" style="margin-top:16px"><table id="tRemoved"></table></div>
+
   <!-- email delivery, as Resend reports it (supabase/migrations/*_mail_events.sql) -->
   <h2>Email delivery <small id="mailNote"></small></h2>
   <div class="card facts" id="mailFacts"></div>
@@ -621,7 +626,7 @@ function render(){
   table($("tRef"),["Name","University","Opens","Direct","Downstream","Buttons","Organizer","Email"],refs.slice(0,50),function(x){return [x.r.name,x.r.uni,num(x.opens),num(x.direct),num(x.down),num(x.press),isLead(x.r)?"Yes":"",x.r.email];});
 
   table($("tOrg"),["Name","University","Discord intro","Email","Confirmed","Signed up",""],org,function(r){
-    var about=mk("span",BIOS[r.id]?null:"mute",BIOS[r.id]||"Not on Discord yet");about.wide=true;
+    var about=mk("span",BIOS[r.id]?null:"mute",BIOS[r.id]||"Hasn't linked Discord");about.wide=true;
     return [r.name,r.uni,about,r.email,r.verified_at?"Yes":"No",day(r.created_at),removeBtn(r)];});
   renderDiscord();paintLinkForm();renderLinks();
   var up=$("uniPick");if(F.uni){var all=ROWS.filter(function(r){return r.dom===F.uni;}),lead=all.filter(isLead).length,shutU=CLOSED.indexOf(F.uni)>-1;
@@ -748,7 +753,20 @@ function mailReport(){sb.rpc(C.dev?"dev_admin_mail_report":"admin_mail_report").
     var st=mk("span",null,e.status+(e.detail?": "+e.detail:""));if(!/^(delivered|sent)$/.test(e.status))st.className="bad";
     return [e.sent_at?new Date(e.sent_at).toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}):"",e.to||"",e.subject,st,secs(e.queued_s),secs(e.deliver_s)];});
 },function(){});}
-function services(){gmail();mailTiming();mailReport();
+/* removed sign-ups: how many people pressed "Remove me", and where */
+function removalReport(){sb.rpc(C.dev?"dev_admin_removal_report":"admin_removal_report").then(function(o){
+  var f=$("remFacts");clear(f);
+  if(o.error||!o.data){$("remNote").textContent="Not available yet: the database change for counting removals has not been applied.";return;}
+  var d=o.data;
+  function fact(l,v){var x=mk("div");x.appendChild(mk("span","lab",l));x.appendChild(mk("span",null,v));f.appendChild(x);}
+  $("remNote").textContent="counted since November 28, 2026";
+  fact("Removed their sign-up",num(d.total||0)+(d.week?", "+num(d.week)+" in the past 7 days":""));
+  fact("Had confirmed their email",num(d.confirmed||0)+" of "+num(d.total||0));
+  fact("Typical time before removing",d.median_hours!=null?secs(d.median_hours*3600)+" after signing up":"Nobody has removed theirs yet");
+  table($("tRemoved"),["University","Removed","Had confirmed","Confirmed sign-ups now","Last removal"],d.unis||[],function(u){
+    return [u.uni||u.dom,num(u.removed),num(u.confirmed),num(u.now_confirmed),day(u.last_at)];});
+},function(){});}
+function services(){gmail();mailTiming();mailReport();removalReport();
   [["svcSupabase","https://status.supabase.com/api/v2/status.json"],["svcResend","https://resend-status.com/api/v2/status.json"]].forEach(function(p){
     var el=$(p[0]),dot=el.querySelector("i"),txt=el.querySelector("span");
     fetch(p[1],{cache:"no-store"}).then(function(r){return r.json();}).then(function(j){var s=j.status||{},k=s.indicator;

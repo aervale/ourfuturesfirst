@@ -205,3 +205,9 @@ create function public.dev_admin_mail_report() returns jsonb language sql stable
   select mail_report();
 $$;
 grant execute on function public.dev_admin_mail_report() to anon, authenticated;
+
+-- Local test mode only: the admin page's removal counts without signing in.
+create or replace function public.dev_admin_removal_report() returns jsonb language sql stable security definer set search_path = public as $$
+  select removal_report();
+$$;
+grant execute on function public.dev_admin_removal_report() to anon, authenticated;
