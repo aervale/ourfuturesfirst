@@ -34,7 +34,7 @@ const state = {
 	guild: { id: GUILD, name: "April's server", owner_id: OWNER, icon: null },
 	roles: [{ id: GUILD, name: '@everyone', permissions: String((1n << 10n) | (1n << 11n) | (1n << 16n)) }, { id: '600000000000000002', name: 'bot', permissions: '0' }],
 	channels: [{ id: id(), name: 'Text Channels', type: 4 }, { id: id(), name: 'general', type: 0 }],
-	messages: {}, memberRoles: {}, followups: [], whispers: [], dms: {}, calls: []
+	messages: {}, pins: {}, automod: [], memberRoles: {}, followups: [], whispers: [], dms: {}, calls: []
 };
 const mock = createServer((request, response) => {
 	let raw = '';
@@ -96,6 +96,15 @@ const mock = createServer((request, response) => {
 			return send({ id: id() });
 		}
 		if (path === '/users/@me/channels') return send({ id: (state.dms[body.recipient_id] ??= id()) });
+		if ((m = path.match(/^\/channels\/(\d+)\/pins$/))) return send((state.pins[m[1]] ?? []).map(pid => state.messages[m[1]].find(x => x.id === pid)));
+		if ((m = path.match(/^\/channels\/(\d+)\/pins\/(\d+)$/))) { (state.pins[m[1]] ??= []).push(m[2]); return send(null); }
+		if (path === `/guilds/${GUILD}/auto-moderation/rules`) {
+			if (request.method === 'GET') return send(state.automod);
+			const rule = { id: id(), ...body };
+			state.automod.push(rule);
+			return send(rule);
+		}
+		if ((m = path.match(/^\/guilds\/\d+\/auto-moderation\/rules\/(\d+)$/))) return send(Object.assign(state.automod.find(r => r.id === m[1]), body));
 		send({ message: `mock has no ${request.method} ${path}` }, 404);
 	});
 });
@@ -121,9 +130,18 @@ check('channels', names(0) === 'announcements,general,help,introductions,mod-log
 const start = state.channels.find(c => c.name === 'start-here');
 check('start message with its three buttons', state.messages[start.id]?.length === 1 && state.messages[start.id][0].components[0].components.map(b => b.custom_id).join() === 'join,code,guide');
 check('owner is on the core team', state.memberRoles[OWNER]?.size === 3);
-const before = JSON.stringify([state.roles.length, state.channels.length, state.messages[start.id].length]);
+const chan = (name) => state.channels.find(c => c.name === name && c.type === 0);
+check('nobody but admins can ping everyone', (BigInt(state.roles[0].permissions) & (1n << 17n)) === 0n);
+check('verification and image filter on', state.guild.verification_level === 2 && state.guild.explicit_content_filter === 2);
+check('slowmode', chan('general').rate_limit_per_user === 5 && chan('help').rate_limit_per_user === 10 && chan('introductions').rate_limit_per_user === 60);
+check('#resources: only the core team posts', chan('resources').permission_overwrites.some(o => o.id === GUILD && BigInt(o.deny ?? 0) & (1n << 11n)));
+const pinnedText = (name) => (state.pins[chan(name).id] ?? []).map(pid => state.messages[chan(name).id].find(x => x.id === pid).content);
+check('guides pinned, links filled in', pinnedText('resources').length === 1 && pinnedText('team-chat').length === 1 && !/\{\w+\}/.test(pinnedText('resources')[0] + pinnedText('team-chat')[0]));
+check('AutoMod rules, reporting to #mod-log', state.automod.length === 4 && state.automod.every(r => r.enabled && r.actions.some(a => a.type === 2 && a.metadata.channel_id === chan('mod-log').id)));
+const counts = () => JSON.stringify([state.roles.length, state.channels.length, state.messages[start.id].length, state.automod.length, ...Object.values(state.pins).map(p => p.length), ...Object.values(state.messages).map(l => l.length)]);
+const before = counts();
 await setup();
-check('running it again adds nothing', before === JSON.stringify([state.roles.length, state.channels.length, state.messages[start.id].length]));
+check('running it again adds nothing', before === counts());
 
 // ---------- Serve the bot with a test key ----------
 const keys = generateKeyPairSync('ed25519');

@@ -65,5 +65,8 @@
   "introLabel": "Introduce yourself",
   "introPlaceholder": "Who you are, what you study, why you want to help. Everyone in the server will see this.",
   "introPost": "{user} from **{uni}**\n{intro}",
-  "requestIntro": "Their introduction:"
+  "requestIntro": "Their introduction:",
+  "resourcesPin": "**Everything in one place**\n\n- **The site:** {site}. Sign up there, and find your personal link to share.\n- **The letter:** {site}/#letter. The draft as it stands. Say what should change in {general}.\n- **Bringing people in:** send your personal link from the site, or this server's link: {invite}\n- **Stuck?** Ask in {help}.\n\nThe core team adds flyers, talking points and how-tos here as they are ready. Reply to any of them in a thread.",
+  "teamPin": "**Core team cheat sheet**\n\n- **Admin page:** {site}/admin. Sign in with the emailed link.\n- **Join requests** land in {log} with Approve and Decline. Approve only when you are sure the email is theirs.\n- **AutoMod** blocks links to other Discord servers, mass mentions, spam, slurs and sexual content, and reports each block in {log}. The core team is exempt.\n- **Slowmode:** {general} 5 seconds, {help} 10, {introductions} 60. Change a channel's by hand only for a moment: the setup script puts it back.\n- **What we decided, and why:** shared-context.md in the repo.",
+  "inviteBlocked": "Links to other Discord servers are turned off here."
 }

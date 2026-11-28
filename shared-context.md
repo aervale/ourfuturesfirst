@@ -63,7 +63,17 @@ that makes it true.
   gets a say in how AI is built." The password page carries the same preview tags (`PREVIEW` in
   `functions/_middleware.js`): change them together with index.html's, and bump `?v=` on the image when it changes.
 
+- 2026-11-28 David: Discord moderation, all set by `discord/setup.mjs`: medium verification (account at least
+  5 minutes old), image filter for everyone, only admins can ping @everyone, slowmode (#general 5 s, #help 10 s,
+  #introductions 60 s), #resources posted to by the core team only, and four AutoMod rules (other servers' invites,
+  mass mentions, spam, slurs and sexual content) that block and report in #mod-log, core team exempt. Pinned guides
+  in #resources and #team-chat come from `resourcesPin` and `teamPin` in messages.json.
+
 ## Pitfalls
+- **The bot needs "Pin Messages"**, a permission Discord now keeps apart from Manage Messages and that the bot
+  cannot give itself. Tick it on the bot's role in Server Settings > Roles, or the guides are posted unpinned.
+- **Settings the script owns are put back on every run** (overwrites, slowmode, AutoMod rules, guide text). Change
+  them in `discord/setup.mjs` or messages.json, not by hand.
 
 - **Discord form limits.** Discord drops a form that breaks a limit and shows "didn't respond in time":
   input labels 45 characters, placeholders 100, form titles 45. `discord/test.mjs` checks the intro box.
