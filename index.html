@@ -238,6 +238,9 @@ textarea{display:block;min-height:150px;resize:none}
 @keyframes spark{0%{transform:translate(0,0) scale(0) rotate(0);opacity:1}35%{opacity:1}100%{transform:translate(var(--x),var(--y)) scale(var(--s)) rotate(140deg);opacity:0}}
 #after h2{font-size:clamp(1.8rem,3.2vw,2.6rem);font-weight:var(--hx);text-transform:var(--hc);margin:10px 0 10px}
 .sub3{margin:24px 0 10px}
+.campus{margin:26px 0 12px}
+.campushead{margin:0;font-family:var(--head);font-weight:var(--hw);font-size:1.375rem;line-height:1.2;color:var(--ink)}
+.campus .hint{margin-top:6px;max-width:56ch}
 #leadPop.open{margin-top:8px}
 #leadPop{transition:grid-template-rows .5s var(--ease),margin-top .5s var(--ease)}
 .leadtext{display:grid;gap:8px;opacity:0;transform:translateY(-6px);transition:opacity .35s ease,transform .35s ease}
@@ -248,11 +251,6 @@ textarea{display:block;min-height:150px;resize:none}
 .leadbox .hint{margin:0}
 .leadbox a{color:var(--ink)}
 .leadbox textarea{min-height:120px}
-/* "What does a campus organizer do?" under the organizer option: the answer shows on hover or focus, and on a tap */
-.orgq{position:relative;z-index:6;margin:-2px 0 4px 2px;font-size:.875rem}
-.orgq a{position:relative;color:var(--ink);text-decoration:underline dotted;text-underline-offset:4px;text-decoration-color:var(--accent);text-decoration-thickness:2px;cursor:help}
-.orgq a::after{content:attr(data-tip);position:absolute;left:0;top:calc(100% + 8px);z-index:3;width:max-content;max-width:min(340px,80vw);padding:10px 12px;background:var(--pop);border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);color:var(--ink);font-size:.8125rem;line-height:1.45;white-space:pre-line;opacity:0;pointer-events:none;transition:opacity .15s}
-.orgq a:hover::after,.orgq a:focus-visible::after,.orgq a.open::after{opacity:1}
 .err{color:var(--accent);margin:12px 0 0;min-height:1.5em;font-size:.9375rem}
 
 /* board */
@@ -644,7 +642,10 @@ body.withcount .dcount{display:block}
             <p>The email can take up to two minutes to arrive.<span class="sharebit"> While you wait, send your link to a few friends.</span></p>
             <i class="waitbar" aria-hidden="true"></i>
           </div>
-          <p class="lab sub3">Can you help it reach your campus?</p>
+          <div class="campus">
+            <p class="campushead">Help it reach your campus</p>
+            <p class="hint">Organizers bring the letter to their university: friends, classes, clubs, mailing lists. You'd do it alongside the others from your campus<span class="dsc">, on our Discord</span>.</p>
+          </div>
           <div class="opts" id="spread"></div>
           <div class="pop" id="leadPop"><div><div class="leadtext">
             <p class="hint">Thank you. We'll connect you with the other campus organizers at your university and contact you about next steps. Your name will be marked as a campus organizer on the public list. <a href="#organizers">Click for information on what that means.</a></p>
@@ -732,7 +733,9 @@ body.withcount .dcount{display:block}
     <p>If you have general feedback or suggestions, feel free to contact us at <a href="mailto:contact@ourfuturesfirst.org">contact@ourfuturesfirst.org</a>.</p>
     <h2 id="organizers">What is a campus organizer?</h2>
     <p>A campus organizer is anyone who has offered to help spread the word at their university. A university can have several organizers.</p>
-    <p>If you volunteer, we'll connect you with other organizers at your university. <span class="dsc">Our Discord server is our main way of talking with everyone who signs up, organizers included, and where we get everything set up. <a href="https://discord.gg/NqcenEuMFR" target="_blank" rel="noopener">Join it</a>: confirm your university email, write a short intro, and you land in a chat with the others at your university. </span>Organizers are marked publicly on <a href="#interest">the list</a>. We'll coordinate with organizers about spreading the word through university mailing lists, campus outreach, and engagements with faculty and staff.</p>
+    <p>If you volunteer, we'll connect you with the other organizers at your university, and your name is marked as an organizer on <a href="#interest">the list</a>. Together we'll work out how to reach people there: mailing lists, student groups, faculty and staff.</p>
+    <h2 class="dsc" id="join">Join us on Discord</h2>
+    <p class="dsc">Our Discord is where everyone who signs up talks. News reaches it first, every university has its own chat, and organizers plan there together. To get in, confirm your university email and write a line or two about yourself.</p>
     <p class="dcall dsc"><a class="btn dbtn" href="https://discord.gg/NqcenEuMFR" target="_blank" rel="noopener"><svg class="dico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg><span>Join our Discord</span></a></p>
     <h2>What happens to my information?</h2>
     <p>We use your email just to confirm your affiliation with your university and to notify you when the letter is ready to sign. Your first name and last initial are on the public list only if you choose to show them. Poll answers are anonymously shown as totals. Your answer to “What concerns you most about AI?” won't be displayed publicly. You can find more details on our <a href="#privacy">privacy page</a>.</p>
@@ -926,10 +929,6 @@ function buildForm(){
       patch({spread:spreadList()}).then(function(){flash(b);},function(){set(was);renderLead();$("copyMsg").textContent=FAIL.save;});});
     if(s.id==="email"){b.classList.add("sharebit");$(s.pop).classList.add("sharebit");}
     sp.appendChild(b);
-    if(s.id==="lead"){var q=mk("p","orgq"),qa=mk("a",null,"What does a campus organizer do?");qa.id="orgWhat";qa.href="#organizers";q.appendChild(qa);sp.appendChild(q);
-      /* with About off there is no page to go to, so a click (or tap) shows the answer in place instead */
-      qa.addEventListener("click",function(e){if(document.body.classList.contains("noabout")){e.preventDefault();qa.classList.toggle("open");}});
-      qa.addEventListener("blur",function(){qa.classList.remove("open");});}
     sp.appendChild($(s.pop));spreadBtns[s.id]=b;
     if(s.id==="lead"){var full=mk("p","hint");full.id="leadFull";full.hidden=true;sp.appendChild(full);
       /* the Discord button sits between the two offers and stays put; volunteering only adds text above it */
@@ -957,13 +956,8 @@ function loadRoom(){var d=S.mine&&S.mine.dom;if(!S.live||!d||!S.token)return;
   sb.rpc("organizer_room",{p_dom:d}).then(function(r){if(r.error||!r.data)return;ROOM={dom:d,cap:r.data.cap,count:r.data.count,closed:!!r.data.closed};renderLead();},function(){});}
 /* "closed": an admin has switched organizers off for this university. "full": it has reached its number. */
 function leadFull(){if(S.spread.lead||!S.mine||ROOM.dom!==S.mine.dom)return "";return ROOM.closed?"closed":ROOM.count>=ROOM.cap?"full":"";}
-/* the answer under "What does a campus organizer do?"; Discord is mentioned only while its switch is on */
-function orgTip(){var a=$("orgWhat");if(!a)return;var dsc=!document.body.classList.contains("nodiscord"),about=!document.body.classList.contains("noabout");
-  a.setAttribute("data-tip","Campus organizers help the letter reach their university: telling friends and classmates, sharing it with clubs and mailing lists, and reaching out to faculty and staff."
-    +"\n\n"+(dsc?"You'll meet the other organizers at your university on our Discord, and we'll work out next steps with you there.":"We'll connect you with the other organizers at your university and work out next steps with you.")
-    +" Your name is marked as an organizer on the public list."+(about?"\n\nClick for more.":""));}
 function renderLead(){
-  paintShow();orgTip();
+  paintShow();
   var on=!!S.spread.lead,why=leadFull(),full=!!why,note=$("leadFull"),b=spreadBtns.lead;
   if(b){b.disabled=full;b.classList.toggle("full",full);}
   if(note){note.hidden=!full;if(full){clear(note);
@@ -1550,7 +1544,7 @@ window.addEventListener("hashchange",function(){route();var t=(ANCH[location.has
 function paintSwitches(){var f=S.show3;$("resPart").hidden=!f.results;$("whoPart").hidden=!f.who;$("resSection").hidden=!f.results&&!f.who;
   document.body.classList.toggle("noresults",!f.results);document.body.classList.toggle("nosharing",f.sharing===false);
   document.body.classList.toggle("nolist",f.list===false);document.body.classList.toggle("noletter",f.letter===false);document.body.classList.toggle("noabout",f.about===false);
-  document.body.classList.toggle("nodiscord",f.discord===false);orgTip();paintDcount();route();}
+  document.body.classList.toggle("nodiscord",f.discord===false);paintDcount();route();}
 /* how many people are in our Discord: read from its public invite, once per visit, only while the switch is on */
 var DCOUNT=null;
 function paintDcount(){var on=!!S.show3.discord_count&&S.show3.discord!==false;
