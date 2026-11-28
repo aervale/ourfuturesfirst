@@ -479,12 +479,13 @@ body.withcount .dcount{display:block}
 @keyframes dsheen2{0%,78%{transform:translateX(-130%)}100%{transform:translateX(130%)}}
 @keyframes dring{0%{box-shadow:0 0 0 0 rgba(88,101,242,.6)}100%{box-shadow:0 0 0 16px rgba(88,101,242,0)}}
 @media (prefers-reduced-motion:reduce){#dscAfter .dbtn::after,#afterHelp.leading #dscAfter .dbtn::after,#afterHelp.leading #dscAfter .dbtn{animation:none}}
-/* the heading: a short note on hover or focus; a click opens About, or shows the note when About is off */
-#orgHead{position:relative;color:inherit;text-decoration:underline dotted;text-underline-offset:5px;text-decoration-color:var(--faint);text-decoration-thickness:2px}
-#orgHead:hover{text-decoration-color:var(--star)}
-#orgHead::after{content:attr(data-tip);position:absolute;left:0;top:calc(100% + 10px);z-index:6;width:max-content;max-width:min(340px,80vw);padding:10px 12px;background:var(--pop);border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);font-family:var(--sans);font-size:.8125rem;font-weight:400;line-height:1.45;white-space:pre-line;color:var(--ink);opacity:0;pointer-events:none;transition:opacity .15s}
-#orgHead:hover::after,#orgHead:focus-visible::after,#orgHead.open::after{opacity:1}
-.campus{position:relative;z-index:6}
+/* "organize" in the organizer option: a short note on hover; a click opens About, or shows the note when About is off */
+.orgword{position:relative;text-decoration:underline dotted;text-underline-offset:5px;text-decoration-color:var(--accent);text-decoration-thickness:2px;cursor:help}
+.orgword:hover{color:color-mix(in srgb,var(--accent) 55%,var(--ink))}
+.orgword::after{content:attr(data-tip);position:absolute;left:0;top:calc(100% + 10px);z-index:6;width:max-content;max-width:min(340px,80vw);padding:10px 12px;background:var(--pop);border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);font-size:.8125rem;line-height:1.45;white-space:pre-line;color:var(--ink);opacity:0;pointer-events:none;transition:opacity .15s}
+.orgword:hover::after,.orgword.open::after{opacity:1}
+#spread .opt{position:relative}
+#spread .opt:hover{z-index:6}
 /* the Discord icon at the top right */
 .tabs a.navd{color:var(--mute);border-bottom-color:transparent}
 .tabs a.navd:hover{color:#5865F2}
@@ -676,7 +677,7 @@ body.withcount .dcount{display:block}
             <i class="waitbar" aria-hidden="true"></i>
           </div>
           <div class="campus">
-            <p class="campushead"><a href="#organizers" id="orgHead">Help it reach your campus</a></p>
+            <p class="campushead">Help it reach your campus</p>
             <p class="hint">Share it with friends, classes, clubs and mailing lists at your university.</p>
           </div>
           <div class="opts" id="spread"></div>
@@ -963,7 +964,14 @@ function buildForm(){
   /* help checkboxes live in the panel that appears after submitting; each tick saves on its own */
   var sp=$("spread");
   SPREAD.forEach(function(s){var b=mk("button","opt pick");b.type="button";b.setAttribute("aria-pressed","false");
-    b.appendChild(mk("span","key"));b.appendChild(mk("span",null,s.t));b.appendChild(mk("span","saved","Saved"));
+    b.appendChild(mk("span","key"));
+    if(s.id==="lead"){var tx=mk("span"),w=mk("span","orgword","organize");w.id="orgWord";
+      tx.appendChild(document.createTextNode("I can help "));tx.appendChild(w);tx.appendChild(document.createTextNode(" this at my university"));b.appendChild(tx);
+      /* a click on the word explains it (About, or the note in place when About is off) instead of ticking the box */
+      w.addEventListener("click",function(e){e.stopPropagation();e.preventDefault();
+        if(document.body.classList.contains("noabout"))w.classList.toggle("open");else location.hash="#organizers";});
+      b.addEventListener("mouseleave",function(){w.classList.remove("open");});}
+    else b.appendChild(mk("span",null,s.t));b.appendChild(mk("span","saved","Saved"));
     function set(v){S.spread[s.id]=v;b.setAttribute("aria-pressed",String(v));}
     b.addEventListener("click",function(){var was=!!S.spread[s.id];set(!was);renderLead();
       patch({spread:spreadList()}).then(function(){flash(b);},function(){set(was);renderLead();$("copyMsg").textContent=FAIL.save;});});
@@ -996,12 +1004,12 @@ function loadRoom(){var d=S.mine&&S.mine.dom;if(!S.live||!d||!S.token)return;
   sb.rpc("organizer_room",{p_dom:d}).then(function(r){if(r.error||!r.data)return;ROOM={dom:d,cap:r.data.cap,count:r.data.count,closed:!!r.data.closed};renderLead();},function(){});}
 /* "closed": an admin has switched organizers off for this university. "full": it has reached its number. */
 function leadFull(){if(S.spread.lead||!S.mine||ROOM.dom!==S.mine.dom)return "";return ROOM.closed?"closed":ROOM.count>=ROOM.cap?"full":"";}
-/* the note under "Help it reach your campus" says Discord only while its switch is on, and "click" only while About is */
-function orgHeadTip(){var a=$("orgHead");if(!a)return;var b=document.body.classList;
+/* the note on "organize" says Discord only while its switch is on, and "click" only while About is */
+function orgWordTip(){var a=$("orgWord");if(!a)return;var b=document.body.classList;
   a.setAttribute("data-tip","Campus organizers spread the word at their university"+(b.contains("nodiscord")?".":" and work with organizers at other universities on our Discord.")
     +" Their names are marked on the public list."+(b.contains("noabout")?"":"\n\nClick to read more."));}
 function renderLead(){
-  paintShow();orgHeadTip();
+  paintShow();orgWordTip();
   var on=!!S.spread.lead,why=leadFull(),full=!!why,note=$("leadFull"),b=spreadBtns.lead;
   if(b){b.disabled=full;b.classList.toggle("full",full);}
   if(note){note.hidden=!full;if(full){clear(note);
@@ -1605,13 +1613,11 @@ function route(){
     if(t[1]===v)$(t[0]).setAttribute("aria-current","page");else $(t[0]).removeAttribute("aria-current");});
 }
 window.addEventListener("hashchange",function(){route();var t=(ANCH[location.hash]||location.hash==="#discord"||location.hash==="#cookies")&&$(location.hash.slice(1));if(t)t.scrollIntoView();else window.scrollTo(0,0);});
-$("orgHead").addEventListener("click",function(e){if(document.body.classList.contains("noabout")){e.preventDefault();this.classList.toggle("open");}});
-$("orgHead").addEventListener("blur",function(){this.classList.remove("open");});
 /* ---------- boot ---------- */
 function paintSwitches(){var f=S.show3;$("resPart").hidden=!f.results;$("whoPart").hidden=!f.who;$("resSection").hidden=!f.results&&!f.who;
   document.body.classList.toggle("noresults",!f.results);document.body.classList.toggle("nosharing",f.sharing===false);
   document.body.classList.toggle("nolist",f.list===false);document.body.classList.toggle("noletter",f.letter===false);document.body.classList.toggle("noabout",f.about===false);
-  document.body.classList.toggle("nodiscord",f.discord===false);orgHeadTip();paintDcount();route();}
+  document.body.classList.toggle("nodiscord",f.discord===false);orgWordTip();paintDcount();route();}
 /* how many people are in our Discord: read from its public invite, once per visit, only while the switch is on */
 var DCOUNT=null;
 function paintDcount(){var on=!!S.show3.discord_count&&S.show3.discord!==false;
