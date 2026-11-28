@@ -63,7 +63,7 @@ Never put emails, tokens, passwords, people's names or anything private here.
 - **Local admin page** uses `dev_admin_*` functions that exist only in `supabase/seed.sql`, never on live.
   `discord/test.mjs` expects the Discord tables empty, so seed data must not add rows there.
 - **Admin emails live only in the database** (`admins`, `discord_team`), never in the repo.
-- **Writing style:** say "university", not "school"; U.S. only; no middle dot (·) anywhere on the site or admin page.
+- **Writing style:** say "university", not "school"; U.S. only; no middle dot (U+00B7) anywhere on the site or admin page.
 
 ## Open
 
