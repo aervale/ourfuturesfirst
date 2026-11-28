@@ -1515,7 +1515,7 @@ CONTACT.forEach(function(c){if(!c[1])return;var li=mk("li",c[0]==="Discord"?"dsc
   else k.appendChild(mk("span"));k.appendChild(mk("span",null,c[0]));li.appendChild(k);
   a.href=c[1];if(c[1].indexOf("mailto:")!==0){a.target="_blank";a.rel="noopener";}li.appendChild(a);$("contactList").appendChild(li);});
 function route(){
-  var h=location.hash,v=h==="#draft"?"viewDraft":(h==="#privacy"||h==="#texts"||h==="#discord")?"viewPrivacy":(h==="#about"||ANCH[h])?"viewAbout":"viewInterest",el,about;
+  var h=location.hash,v=(h==="#draft"||h==="#letter")?"viewDraft":(h==="#privacy"||h==="#texts"||h==="#discord"||h==="#cookies")?"viewPrivacy":(h==="#about"||ANCH[h])?"viewAbout":"viewInterest",el,about;
   /* a page an admin has switched off cannot be opened, whatever the address says */
   if((v==="viewDraft"&&S.show3.letter===false)||(v==="viewAbout"&&S.show3.about===false))v="viewInterest";
   if(!$(v).hidden&&v===route.at)return;route.at=v;el=$(v);about=v!=="viewInterest";
@@ -1524,7 +1524,7 @@ function route(){
   [["tabInterest","viewInterest"],["tabDraft","viewDraft"],["tabAbout","viewAbout"]].forEach(function(t){
     if(t[1]===v)$(t[0]).setAttribute("aria-current","page");else $(t[0]).removeAttribute("aria-current");});
 }
-window.addEventListener("hashchange",function(){route();var t=(ANCH[location.hash]||location.hash==="#discord")&&$(location.hash.slice(1));if(t)t.scrollIntoView();else window.scrollTo(0,0);});
+window.addEventListener("hashchange",function(){route();var t=(ANCH[location.hash]||location.hash==="#discord"||location.hash==="#cookies")&&$(location.hash.slice(1));if(t)t.scrollIntoView();else window.scrollTo(0,0);});
 /* ---------- boot ---------- */
 function paintSwitches(){var f=S.show3;$("resPart").hidden=!f.results;$("whoPart").hidden=!f.who;$("resSection").hidden=!f.results&&!f.who;
   document.body.classList.toggle("noresults",!f.results);document.body.classList.toggle("nosharing",f.sharing===false);
