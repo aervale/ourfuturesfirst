@@ -1,5 +1,10 @@
-/* Testing gate: the whole site asks for one shared password until launch.
-   Delete this file to make the site public.
+/* Two jobs, on every request:
+
+   1. Only the site's own files are served. Everything else in the repository (shared-context.md, CLAUDE.md,
+      supabase/, discord/, tools/, ...) answers 404, gated or not. A new file the pages use must be added to SITE.
+
+   2. Testing gate: until launch, the whole site asks for one shared password.
+      Set GATED to false to make the site public. Do not delete this file: that would also serve the repository.
 
    The password itself is not in this repository. PASS is the SHA-256 of the password,
    and KEY is the SHA-256 of the cookie a visitor gets after typing it, where that cookie is
@@ -8,6 +13,18 @@ const PASS = "3de13649d544fb267b75c1369f0b6a7fc0336c35f1c985831ca35612b6c0c80e";
 const KEY = "7b988bbe7094e0c8be30d232db0a3008780bf1a0f0ad3f6214289bfd28c1c26e";
 const COOKIE = "off_gate";
 const DAYS = 30;
+const GATED = true;
+
+// The paths the site serves. "/admin" and "/index" are how Cloudflare Pages names the .html pages.
+const SITE = new Set(["/", "/index", "/index.html", "/admin", "/admin.html", "/config.js", "/og.png"]);
+const siteFile = (path) => SITE.has(path) || /^\/assets\/[A-Za-z0-9_.\/-]+$/.test(path);
+
+function notFound() {
+  return new Response("Not found", {
+    status: 404,
+    headers: { "Content-Type": "text/plain; charset=utf-8", "X-Robots-Tag": "noindex" },
+  });
+}
 
 async function sha(text) {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
@@ -49,6 +66,8 @@ button{margin-top:12px;width:100%;padding:12px;border:0;border-radius:6px;backgr
 
 export async function onRequest(ctx) {
   const { request } = ctx;
+  if (!siteFile(new URL(request.url).pathname)) return notFound();
+  if (!GATED) return ctx.next();
   const c = cookieOf(request);
   if (c && (await sha(c)) === KEY) return ctx.next();
 

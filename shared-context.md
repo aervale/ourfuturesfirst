@@ -4,8 +4,7 @@ What David, April and their Claude sessions need to know that the code does not 
 changed, pitfalls, and open questions. Read it before starting work. Update it in the same commit as the change
 that makes it true.
 
-**This repository is public**, and until the password gate comes off every file is also served at the site's root.
-Never put emails, tokens, passwords, people's names or anything private here.
+**This repository is public** on GitHub (the site itself serves only its own files). Never put emails, tokens, passwords, people's names or anything private here.
 
 ## How to keep this file
 
@@ -57,6 +56,9 @@ Never put emails, tokens, passwords, people's names or anything private here.
 - 2026-11-28 David, April: every live change goes through a migration file in the repo.
 - 2026-11-28 April: "Remove me" is counted (`removals`: date, university, whether confirmed, hours since
   signing up; nothing that identifies the person) and shown on the admin page. The privacy page says so.
+- 2026-11-28 David: the site serves only its own files, gated or not. `functions/_middleware.js` answers 404 for
+  everything else in the repo. A new file the pages use must be added to its `SITE` list (or live under `assets/`).
+  To go public, set `GATED = false` there; never delete the file, or the whole repo is served.
 
 ## Pitfalls
 
@@ -95,9 +97,6 @@ Never put emails, tokens, passwords, people's names or anything private here.
 - Core team list (`discord_team`) has one address. Add the others so their codes give them the Core team role.
 - If someone changes their organizer choice on the site after joining Discord, their role does not change.
   Fine for the preview; a re-sync can come later.
-- Once the gate comes off, everything in the repo is served by the site too (`shared-context.md`, `CLAUDE.md`,
-  `supabase/`, `discord/`). Nothing there is secret, but decide whether to stop serving them (for example, have
-  `functions/_middleware.js` answer 404 outside the site's own files). (2026-11-28, April's session)
 - Which page switches are on at launch, and when the gate and Cloudflare Access come off.
 - The About page promises things not built yet (a public comment on your signature, signing without signing up
   first, an early-December email). Build them or soften the words.
