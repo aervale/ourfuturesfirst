@@ -59,9 +59,11 @@ that makes it true.
 - 2026-11-28 David: the site serves only its own files, gated or not. `functions/_middleware.js` answers 404 for
   everything else in the repo. A new file the pages use must be added to its `SITE` list (or live under `assets/`).
   To go public, set `GATED = false` there; never delete the file, or the whole repo is served.
-- 2026-11-28 David: link previews (iMessage and others) show the gold star with "One letter. Every campus. Our voice on the future of superintelligence." (`og.png`) and the title "Students are writing
+- 2026-11-28 David: link previews (iMessage and others) show the gold star with "One letter. Every campus. Our voice on the future of AI." (`og.png`) and the title "Students are writing
   a letter about AI. Add your voice." The password page carries the same preview tags (`PREVIEW` in
   `functions/_middleware.js`): change them together with index.html's, and bump `?v=` on the image when it changes.
+  The image is made from `tools/og.html`, which copies the site headline's font, weight and colours from
+  index.html, so re-render it after the headline style changes (how is at the top of that file).
 
 - 2026-11-28 David: Discord moderation, all set by `discord/setup.mjs`: medium verification (account at least
   5 minutes old), image filter for everyone, only admins can ping @everyone, slowmode (#general 5 s, #help 10 s,
