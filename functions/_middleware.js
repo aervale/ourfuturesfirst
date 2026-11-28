@@ -26,7 +26,7 @@ const PREVIEW = `<meta property="og:type" content="website">
 <meta property="og:site_name" content="Our Futures First">
 <meta property="og:title" content="Students are writing an open letter on the development of AI. Add your voice.">
 <meta property="og:description" content="Students are writing an open letter on regulating AI development and asking what belongs in it. Open to anyone at a U.S. university.">
-<meta property="og:image" content="https://ourfuturesfirst.org/og.png?v=5">
+<meta property="og:image" content="https://ourfuturesfirst.org/og.png?v=6">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="A gold compass star beside the words: One letter. Every campus. Our voice on the future of AI.">
@@ -34,7 +34,7 @@ const PREVIEW = `<meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Students are writing an open letter on the development of AI. Add your voice.">
 <meta name="twitter:description" content="Students are writing an open letter on regulating AI development and asking what belongs in it.">
-<meta name="twitter:image" content="https://ourfuturesfirst.org/og.png?v=5">
+<meta name="twitter:image" content="https://ourfuturesfirst.org/og.png?v=6">
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg?v=gold">`;
 
 function notFound() {

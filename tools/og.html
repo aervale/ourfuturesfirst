@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- The link preview image (og.png): the star beside the slogan, set exactly like the site's headline.
+<!-- The link preview image (og.png): the star beside the slogan, set like the site's headline, with the second phrase in the star's gold.
      It reads the headline's font, weight, colours and line spacing from index.html, so it always matches the site.
      To make og.png: serve the repo (any static server), open /tools/og.html in a browser at 1200x630 and screenshot it,
      e.g. chrome --headless --window-size=1200,630 --screenshot=og.png http://localhost:4177/tools/og.html
@@ -27,7 +27,9 @@ document.getElementById("site").addEventListener("load", function () {
   var a = getComputedStyle(src), em = src.querySelector("em"), b = em ? getComputedStyle(em) : a, h = document.getElementById("h");
   ["fontFamily", "fontWeight", "fontStretch", "letterSpacing", "color", "textTransform"].forEach(function (k) { h.style[k] = a[k]; });
   document.body.style.background = getComputedStyle(doc.body).backgroundColor;
-  h.querySelector("em").style.color = b.color;
+  /* the second phrase in the site's gold (--star, the colour of the star), not the headline's red */
+  var gold = getComputedStyle(doc.documentElement).getPropertyValue("--star").trim();
+  h.querySelector("em").style.color = gold || b.color;
 });
 </script>
 </body></html>
