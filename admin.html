@@ -686,9 +686,9 @@ function renderDiscord(){
   note.textContent=plural(DSC.members.length,"person","people")+" in "+plural(DSC.unis.length,"university channel","university channels")+(F.uni?"; showing "+(unis[0]?unis[0].uni:"this university"):"");
   table($("tDscUni"),["University","Channel","In the channel","Signed on the site","Organizers in it"],unis,function(u){var p=per[u.dom]||{n:0,signed:0,lead:0};
     return [u.uni,chanLink(u.channel,"#"+slug(u.uni)),num(p.n),num(p.signed),num(p.lead)+" of "+num(leads[u.dom]||0)];});
-  table($("tDscMem"),["Discord name","University","Email","Signed","Organizer","Introduction","Joined"],mem.slice(0,300),function(m){
+  table($("tDscMem"),["Discord name","University","Email","Signed","Role","Introduction","Joined"],mem.slice(0,300),function(m){
     var i=mk("span",m.intro?null:"mute",m.intro||"None");i.wide=true;
-    return [m.name,m.uni,m.email,m.signup?"Yes":"No",m.lead?"Yes":"",i,day(m.joined)];});
+    return [m.name,m.uni,m.email,m.signup?"Yes":"No",m.lead?"Organizer":"Member",i,day(m.joined)];});
   $("waitNote").textContent=DSC.waiting.length?plural(DSC.waiting.length,"person","people"):"";
   table($("tDscWait"),["Discord name","University","Email they typed","Introduction","Asked"],DSC.waiting,function(w){
     var i=mk("span",null,w.intro);i.wide=true;return [w.name,w.uni,w.email,i,day(w.asked)];});
@@ -712,7 +712,7 @@ function signedInAt(session){try{var p=JSON.parse(atob(session.access_token.spli
 var GMAIL_COUNT="https://script.google.com/macros/s/AKfycbxrgMAs1X2hgs4d7lMr9Lz7CCfRWFg9kW0N2vznq2V4eUqqwkapJx-Z2OFZ0OD2p9YmTA/exec";
 function gmail(){var el=$("msgGmail");if(!GMAIL_COUNT){el.textContent="Not connected yet";return;}
   fetch(GMAIL_COUNT,{cache:"no-store"}).then(function(r){return r.json();}).then(function(j){
-    el.textContent=j.people+(j.people===1?" person":" people")+" have written · "+j.week+" this week · "+j.unread+" unread";},
+    el.textContent=j.people+(j.people===1?" person":" people")+" have written, "+j.week+" this week, "+j.unread+" unread";},
   function(){el.textContent="Count did not load";});}
 function dbTime(ms){$("svcDb").textContent=ms<0?"Our database: not answering":"Our database answered in "+Math.round(ms)+" ms";}
 /* the most recent email: seconds from the request to Resend accepting it (see supabase/migrations/*_mail_timing.sql) */
@@ -725,7 +725,7 @@ function mailTiming(){var el=$("svcMail");if(C.dev){el.textContent="";return;}
       if(d.state==="waiting"&&++tries<8){setTimeout(look,1000);return;}
       if(d.state!=="ok"){el.textContent=d.state==="none"?"No emails sent yet":"Email send time did not load";return;}
       var ago=Math.round((Date.now()-new Date(d.sent_at))/60000),when=ago<1?"just now":ago<60?ago+" min ago":ago<1440?Math.round(ago/60)+" h ago":Math.round(ago/1440)+" d ago";
-      el.textContent="Last email ("+when+")"+(d.seconds!=null?": sent "+d.seconds+" s after the "+(d.kind==="invite"?"invitation":"request"):"")+(d.last_event?" · "+d.last_event:"");
+      el.textContent="Last email ("+when+")"+(d.seconds!=null?": sent "+d.seconds+" s after the "+(d.kind==="invite"?"invitation":"request"):"")+(d.last_event?", "+d.last_event:"");
       el.title=d.subject||"";});})();});}
 /* email delivery: Resend's events (sent, delivered, delayed, bounced, spam reports) and how many people confirm */
 function secs(v){return v==null?"":v<60?(+v).toFixed(v<10?1:0)+" s":v<3600?Math.round(v/60)+" min":(v/3600).toFixed(1)+" h";}
