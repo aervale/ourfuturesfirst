@@ -30,8 +30,16 @@ Never put emails, tokens, passwords, people's names or anything private here.
 - **Never run `supabase db push`.** Live's migration history mixes the files' versions with timestamps that
   `apply_migration` chose (for example `admin_discord` is 20261128052919 on live, 20261128000500 in the repo), so
   `db push` would try to re-run nearly everything. Match migrations by **name**, not version.
+- **Naming a migration:** start the file name with a fresh timestamp (`YYYYMMDDHHMMSS`), not the next small
+  number: two sessions picking "the next number" collided once (2026-11-28, April's session).
+- **Running a file without the MCP** (April's session, CLI 3.x): `supabase db query --remote=pexnchjiphwyftvhykih --yes -f <file>`,
+  then insert `(version, name, statements)` into `supabase_migrations.schema_migrations`. `--read-only` for looking.
 - **Bot:** after changing `supabase/functions/discord/`, redeploy the `discord` function (verify JWT off: Discord
-  signs its own requests) and say the new version number in the commit or here.
+  signs its own requests) and say the new version number in the commit or here. CLI:
+  `supabase functions deploy discord --remote=pexnchjiphwyftvhykih --no-verify-jwt --use-api --yes`.
+- **Confirmation email:** the live template is set by hand in the Supabase dashboard (Authentication > Emails >
+  Confirm sign up). `supabase/templates/confirm.html` is the copy in the repo: change both, paste the file's whole
+  text. Only HTML can be set there; the plain-text part is generated from it on the way out.
 - **Discord server:** `node --env-file=<your env file> discord/setup.mjs`. Safe to re-run: it finds things by
   name and only adds or corrects.
 
@@ -62,6 +70,19 @@ Never put emails, tokens, passwords, people's names or anything private here.
 - **Supabase CLI:** version 2.62 cannot read `supabase/config.toml` (`[local_smtp]`); use 3.x.
 - **Local admin page** uses `dev_admin_*` functions that exist only in `supabase/seed.sql`, never on live.
   `discord/test.mjs` expects the Discord tables empty, so seed data must not add rows there.
+- **Never add, drop or reorder columns of `public.signups`.** `sweep_unconfirmed()` copies its rows by position;
+  put new per-sign-up data in a side table keyed by the sign-up's id (2026-11-28, April's session).
+- **Email delivery tracking** (2026-11-28, April's session): Resend posts every email event to the `resend-webhook`
+  function (verify JWT off), which hands the raw body and Svix headers to `mail_event()`. That checks the signature
+  in SQL against the Vault secret `resend_webhook_secret`, refuses anything over 10 minutes old, and stores the event
+  in `mail_events` (kept 120 days). The admin page's "Email delivery" section reads `admin_mail_report()`. Vault
+  also holds `resend_api_key` (send only, used by the database) and `resend_read_key` (full access, used to read
+  Resend's status and to set the webhook up). Never print a secret: move it from Resend's answer straight into Vault.
+- **Junk folders are invisible.** No provider tells a sender an email went to Junk. The admin page's stand-in is
+  the share of sign-ups confirmed, per university, after at least an hour. A slow arrival after "delivered" is the
+  university's own scanning (Microsoft Defender at MIT), not us.
+- **Page switch for Discord:** with the `discord` switch off, every element with class `dsc` is hidden
+  (`body.nodiscord .dsc`). Give any new Discord link or button that class.
 - **Admin emails live only in the database** (`admins`, `discord_team`), never in the repo.
 - **Writing style:** say "university", not "school"; U.S. only; no middle dot (U+00B7) anywhere on the site or admin page.
 
@@ -72,6 +93,9 @@ Never put emails, tokens, passwords, people's names or anything private here.
 - Core team list (`discord_team`) has one address. Add the others so their codes give them the Core team role.
 - If someone changes their organizer choice on the site after joining Discord, their role does not change.
   Fine for the preview; a re-sync can come later.
+- Once the gate comes off, everything in the repo is served by the site too (`shared-context.md`, `CLAUDE.md`,
+  `supabase/`, `discord/`). Nothing there is secret, but decide whether to stop serving them (for example, have
+  `functions/_middleware.js` answer 404 outside the site's own files). (2026-11-28, April's session)
 - Which page switches are on at launch, and when the gate and Cloudflare Access come off.
 - The About page promises things not built yet (a public comment on your signature, signing without signing up
   first, an early-December email). Build them or soften the words.
