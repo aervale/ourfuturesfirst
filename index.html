@@ -178,8 +178,10 @@ textarea{display:block;min-height:150px;resize:none}
 #story .frame::before{content:"";position:absolute;inset:-18%;background:radial-gradient(closest-side,color-mix(in srgb,var(--star) 38%,transparent),transparent);filter:blur(10px);opacity:.75;pointer-events:none}
 #story img{position:relative;display:block;width:100%;border-radius:10px;border:1px solid var(--line2);transform:rotate(-3deg);box-shadow:0 18px 40px rgba(0,0,0,.5);transition:transform .35s cubic-bezier(.2,.9,.3,1.2)}
 #story .frame:hover img{transform:rotate(0) scale(1.03)}
-#story .next{text-align:center;margin:-8px 0 18px}
-#story .next .link{font-size:12px;color:var(--star)}
+#story .pick{display:flex;justify-content:center;gap:10px;margin:-6px 0 20px}
+#story .pick button{width:40px;height:71px;padding:0;border-radius:7px;border:1px solid var(--line2);background:#0C0C0E center/cover no-repeat;cursor:pointer;opacity:.6;transition:opacity .2s,transform .2s,box-shadow .2s}
+#story .pick button:hover{opacity:.9}
+#story .pick button[aria-pressed="true"]{opacity:1;border-color:var(--star);box-shadow:0 0 0 2px color-mix(in srgb,var(--star) 45%,transparent);transform:translateY(-2px)}
 #story ol{list-style:none;margin:0 0 20px;padding:0;display:grid;gap:9px;counter-reset:st}
 #story li{counter-increment:st;display:flex;gap:12px;align-items:baseline;font-size:14.5px;line-height:1.4;color:var(--mute)}
 #story li::before{content:counter(st);flex:none;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;border:1px solid color-mix(in srgb,var(--star) 55%,transparent);color:var(--star);font-size:12px;font-weight:700;transform:translateY(-1px)}
@@ -872,7 +874,7 @@ body.withcount .dcount{display:block}
   <span class="lab">Instagram</span>
   <h2 id="storyHead">Your story is ready.</h2>
   <div class="frame"><img id="storyImg" alt="I signed, with my signer number. I ask the U.S. government and AI companies to put our futures first. Add your voice: ourfuturesfirst.org"></div>
-  <p class="next"><button type="button" class="link" id="storyNext">Another background</button></p>
+  <div class="pick" id="storyPick" role="group" aria-label="Background"></div>
   <ol>
     <li id="stepShare"><span><b>Share</b> it and pick Instagram, then Story.</span></li>
     <li id="stepSave" hidden><span><b>Save</b> the image, then open Instagram and add it to your story.</span></li>
@@ -1556,14 +1558,20 @@ function paintStory(b){var url=URL.createObjectURL(b);STORY.blob=b;$("storyImg")
 function storyFile(b){try{return new File([b],"our-futures-first-story.png",{type:"image/png"});}catch(x){return null;}}
 function canShareFile(f){try{return !!(f&&navigator.canShare&&navigator.canShare({files:[f]}));}catch(x){return false;}}
 function showStory(b){var d=$("story"),f=storyFile(b);
-  var share=canShareFile(f);paintStory(b);$("storyShare").hidden=!share;
+  var share=canShareFile(f);paintStory(b);paintPick();$("storyShare").hidden=!share;
   $("stepShare").hidden=!share;$("stepSave").hidden=share;
   /* a phone browser without a share sheet would save a downloaded file to Files, where Instagram can't see it: say how to put it in Photos */
   if(!share&&matchMedia("(pointer:coarse)").matches)$("stepSave").firstChild.innerHTML="<b>Press and hold</b> the image, choose Save to Photos, then add it to your Instagram story.";$("storySave").classList.toggle("ghost",share);$("storySave").classList.toggle("wide",!share);$("storyCopy").classList.toggle("wide",!share);
   if(d.showModal)d.showModal();else d.setAttribute("open","");}
 $("storyX").addEventListener("click",function(){$("story").close();});
-$("storyNext").addEventListener("click",function(){var b=this;b.disabled=true;STORY.k=(STORY.k+1)%((window.STORY_BACKGROUNDS||[0]).length);
-  drawStory().then(function(bl){b.disabled=false;paintStory(bl);},function(){b.disabled=false;});});
+/* the background picker: one small tile per background; the chosen one is what Share, Save image and the preview use */
+function paintPick(){var box=$("storyPick");
+  if(!box.childNodes.length)(window.STORY_BACKGROUNDS||[]).forEach(function(bk,i){
+    var t=mk("button");t.type="button";t.setAttribute("aria-label","Background "+(i+1));t.style.backgroundImage="url(assets/"+bk.file+")";
+    t.addEventListener("click",function(){if(STORY.k===i)return;STORY.k=i;paintPick();
+      drawStory().then(function(bl){if(STORY.k===i)paintStory(bl);},function(){});});
+    box.appendChild(t);});
+  Array.prototype.forEach.call(box.childNodes,function(t,i){t.setAttribute("aria-pressed",String(i===STORY.k));});}
 $("story").addEventListener("click",function(ev){if(ev.target===this)this.close();});
 $("storyShare").addEventListener("click",function(){var f=storyFile(STORY.blob);if(canShareFile(f))navigator.share({files:[f]}).catch(function(){});});
 $("storyCopy").addEventListener("click",function(){var b=this;try{navigator.clipboard.writeText(shareUrl()).then(function(){b.textContent="Link copied";setTimeout(function(){b.textContent="Copy link";},2500);},function(){});}catch(x){}});
