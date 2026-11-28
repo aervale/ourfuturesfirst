@@ -343,6 +343,10 @@ deno_version = 2
 [functions.discord]
 verify_jwt = false
 
+# Resend's delivery events. Resend signs its own requests (checked in the database), so no Supabase login is asked for.
+[functions.resend-webhook]
+verify_jwt = false
+
 [analytics]
 enabled = true
 port = 54427

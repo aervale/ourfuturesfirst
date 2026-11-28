@@ -61,6 +61,10 @@ header .wrap{height:46px}
 header .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px}
 h1,h2,h3{font-family:var(--head);font-weight:500;margin:0;line-height:1.1;letter-spacing:0}
 h2{font-size:clamp(1.5rem,2.6vw,2.1rem);margin:56px 0 18px}
+.mailnote{font-size:.875rem;max-width:80ch;margin:14px 0 0}
+.mailh{font-size:1.15rem;margin:30px 0 10px}
+.mailh .mute{font-family:var(--sans);font-size:.8125rem}
+#tConfirm .bad,#tMail .bad{color:var(--accent)}
 h2 small{font-family:var(--head);font-style:italic;font-size:.6em;font-weight:400;color:var(--mute);margin-left:.5em}
 th{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
 a{color:var(--ink)}
@@ -289,6 +293,15 @@ td.wide{white-space:normal;min-width:320px}
     <div class="card"><h3>How opened links were sent</h3><div id="bySource"></div></div>
     <div class="card"><h3>Links opened per day <span class="mute" style="font-weight:400">last 14 days</span></h3><div id="byOpenDay"></div></div>
   </div>
+
+  <!-- email delivery, as Resend reports it (supabase/migrations/*_mail_events.sql) -->
+  <h2>Email delivery <small id="mailNote"></small></h2>
+  <div class="card facts" id="mailFacts"></div>
+  <p class="mute mailnote">"Delivered" means the receiving mail server accepted the email; whether it went to the inbox or to Junk is never reported to senders. The confirmation rate below is the best sign of Junk: where few people press the link, the email is probably not reaching their inbox.</p>
+  <h3 class="mailh">Confirmation rate by university <span class="mute" style="font-weight:400">sign-ups in the past 30 days, at least an hour old</span></h3>
+  <div class="scroll"><table id="tConfirm"></table></div>
+  <h3 class="mailh">Recent emails</h3>
+  <div class="scroll"><table id="tMail"></table></div>
   </section>
 
   <!-- Universities: everything that is managed campus by campus -->
@@ -714,7 +727,28 @@ function mailTiming(){var el=$("svcMail");if(C.dev){el.textContent="";return;}
       var ago=Math.round((Date.now()-new Date(d.sent_at))/60000),when=ago<1?"just now":ago<60?ago+" min ago":ago<1440?Math.round(ago/60)+" h ago":Math.round(ago/1440)+" d ago";
       el.textContent="Last email ("+when+")"+(d.seconds!=null?": sent "+d.seconds+" s after the "+(d.kind==="invite"?"invitation":"request"):"")+(d.last_event?" · "+d.last_event:"");
       el.title=d.subject||"";});})();});}
-function services(){gmail();mailTiming();
+/* email delivery: Resend's events (sent, delivered, delayed, bounced, spam reports) and how many people confirm */
+function secs(v){return v==null?"":v<60?(+v).toFixed(v<10?1:0)+" s":v<3600?Math.round(v/60)+" min":(v/3600).toFixed(1)+" h";}
+function mailReport(){sb.rpc(C.dev?"dev_admin_mail_report":"admin_mail_report").then(function(o){
+  var f=$("mailFacts");clear(f);
+  if(o.error||!o.data){$("mailNote").textContent="Not available yet: the database change for email delivery has not been applied.";return;}
+  var d=o.data,m=d.summary||{},c=d.confirm||{},all=c.all||{};
+  function fact(l,v){var x=mk("div");x.appendChild(mk("span","lab",l));x.appendChild(mk("span",null,v));f.appendChild(x);}
+  $("mailNote").textContent=d.tracking_since?"tracked since "+new Date(d.tracking_since).toLocaleDateString():"no emails tracked yet";
+  fact("Emails in the past 7 days",num(m.sent||0)+" sent, "+num(m.delivered||0)+" delivered");
+  fact("Time to deliver",m.deliver_median_s!=null?secs(m.deliver_median_s)+" typical, "+secs(m.deliver_p90_s)+" for the slowest tenth":"Nothing delivered yet");
+  fact("From request to sending",m.queued_median_s!=null?secs(m.queued_median_s)+" typical":"Not measured yet");
+  fact("Delayed, bounced, failed",num(m.delayed||0)+" delayed, "+num(m.bounced||0)+" bounced, "+num(m.failed||0)+" failed");
+  fact("Reported as spam",num(m.complained||0));
+  fact("Pressed the link in their email",all.total?num(all.confirmed)+" of "+num(all.total)+" ("+Math.round(all.confirmed/all.total*100)+"%)":"No sign-ups in the past 30 days");
+  table($("tConfirm"),["University","Sign-ups","Confirmed","Rate","Typical time to confirm"],c.unis||[],function(u){
+    var r=Math.round(u.confirmed/u.total*100),rc=mk("span",null,r+"%");if(u.total>=5&&r<60)rc.className="bad";
+    return [u.uni||u.dom,num(u.total),num(u.confirmed),rc,u.median_min!=null?secs(u.median_min*60):""];});
+  table($("tMail"),["Sent","To","Subject","What happened","Request to sending","Sending to delivery"],d.emails||[],function(e){
+    var st=mk("span",null,e.status+(e.detail?": "+e.detail:""));if(!/^(delivered|sent)$/.test(e.status))st.className="bad";
+    return [e.sent_at?new Date(e.sent_at).toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}):"",e.to||"",e.subject,st,secs(e.queued_s),secs(e.deliver_s)];});
+},function(){});}
+function services(){gmail();mailTiming();mailReport();
   [["svcSupabase","https://status.supabase.com/api/v2/status.json"],["svcResend","https://resend-status.com/api/v2/status.json"]].forEach(function(p){
     var el=$(p[0]),dot=el.querySelector("i"),txt=el.querySelector("span");
     fetch(p[1],{cache:"no-store"}).then(function(r){return r.json();}).then(function(j){var s=j.status||{},k=s.indicator;

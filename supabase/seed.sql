@@ -200,3 +200,8 @@ where abs(hashtext(g || l.slug)) % 100 < case l.slug when 'instagram-bio' then 9
 insert into link_signups (signup_id, slug)
 select s.id, case when s.dom = 'mit.edu' then 'mit-the-tech' when s.dom = 'harvard.edu' then 'harvard-cs-list' when s.dom = 'stanford.edu' then 'stanford-flyer' else 'instagram-bio' end
 from signups s where abs(hashtext(s.email || 'l')) % 90 = 0 on conflict do nothing;
+-- Email delivery report (local test mode): read without signing in.
+create function public.dev_admin_mail_report() returns jsonb language sql stable security definer set search_path = public as $$
+  select mail_report();
+$$;
+grant execute on function public.dev_admin_mail_report() to anon, authenticated;
