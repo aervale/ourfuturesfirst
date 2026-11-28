@@ -9,7 +9,7 @@ import { createServer } from 'node:http';
 import { spawn, execFile, execFileSync } from 'node:child_process';
 import { promisify } from 'node:util';
 import { generateKeyPairSync, sign } from 'node:crypto';
-import { writeFileSync, mkdtempSync, rmSync } from 'node:fs';
+import { writeFileSync, readFileSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -107,6 +107,12 @@ const setup = () => promisify(execFile)('node', [join(root, 'discord/setup.mjs')
 console.log('Setup script');
 await setup();
 const names = (type) => state.channels.filter(c => c.type === type).map(c => c.name).sort().join(',');
+// Discord drops a form that breaks its limits and shows "didn't respond": labels 45 characters, placeholders 100, titles 45.
+{
+	const W = JSON.parse(readFileSync(new URL('../supabase/functions/discord/messages.json', import.meta.url), 'utf8'));
+	check('form text within Discord limits', W.introLabel.length <= 45 && W.introPlaceholder.length <= 100,
+		`label ${W.introLabel.length}/45, placeholder ${W.introPlaceholder.length}/100`);
+}
 check('server renamed and given a picture', state.guild.name === 'Our Futures First' && state.guild.icon === 'set');
 check('roles made', ['Core team', 'Member', 'Organizer'].every(n => state.roles.some(r => r.name === n)));
 check('@everyone lost view-channels', (BigInt(state.roles[0].permissions) & (1n << 10n)) === 0n);

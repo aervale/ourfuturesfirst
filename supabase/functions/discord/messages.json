@@ -63,7 +63,7 @@
     "short_intro": "Write a little more in your introduction: a sentence or two about who you are and why you want to help."
   },
   "introLabel": "Introduce yourself",
-  "introPlaceholder": "Who you are, what you study or work on, and why you want to help. A few sentences is plenty. Everyone in the server will see this.",
+  "introPlaceholder": "Who you are, what you study, why you want to help. Everyone in the server will see this.",
   "introPost": "{user} from **{uni}**\n{intro}",
   "requestIntro": "Their introduction:"
 }
