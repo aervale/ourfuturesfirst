@@ -582,9 +582,9 @@ function render(){
   $("refNote").textContent=rows.length?num(viaAll)+" of "+num(rows.length)+" joined through someone's link ("+Math.round(viaAll/rows.length*100)+"%), from "+plural(bring,"person's link","people's links"):"";
   table($("tRef"),["Name","University","Opens","Direct","Downstream","Buttons","Organizer","Email"],refs.slice(0,50),function(x){return [x.r.name,x.r.uni,num(x.opens),num(x.direct),num(x.down),num(x.press),isLead(x.r)?"Yes":"",x.r.email];});
 
-  table($("tOrg"),["Name","University","About them","Email","Phone","Confirmed","Signed up",""],org,function(r){
-    var about=mk("span",BIOS[r.id]?null:"mute",BIOS[r.id]||"No bio yet");about.wide=true;
-    return [r.name,r.uni,about,r.email,r.phone,r.verified_at?"Yes":"No",day(r.created_at),removeBtn(r)];});
+  table($("tOrg"),["Name","University","Discord intro","Email","Confirmed","Signed up",""],org,function(r){
+    var about=mk("span",BIOS[r.id]?null:"mute",BIOS[r.id]||"Not on Discord yet");about.wide=true;
+    return [r.name,r.uni,about,r.email,r.verified_at?"Yes":"No",day(r.created_at),removeBtn(r)];});
   var up=$("uniPick");if(F.uni){var all=ROWS.filter(function(r){return r.dom===F.uni;}),lead=all.filter(isLead).length,shutU=CLOSED.indexOf(F.uni)>-1;
     up.textContent=plural(all.filter(function(r){return r.verified_at;}).length,"confirmed sign-up","confirmed sign-ups")+", "+plural(lead,"organizer","organizers")+" of "+num(capOf(F.uni))+", "+(shutU?"not taking new organizers":"taking new organizers");}
   else up.textContent="Pick one to manage its organizers, limit and links on their own.";
@@ -600,7 +600,7 @@ function render(){
 
 /* cells that start with = + - @ are prefixed so a spreadsheet does not run them as formulas */
 function csv(){
-  var cols=["name","show_name","name_hidden","email","uni","dom","role","year","title","major","show_info","phone","spread","ref","ref_by","verified_at","created_at","concern"].concat(Object.keys(QS));
+  var cols=["name","show_name","name_hidden","email","uni","dom","role","year","title","major","show_info","spread","ref","ref_by","verified_at","created_at","concern"].concat(Object.keys(QS));
   function cell(v){v=v==null?"":Array.isArray(v)?v.join(" "):String(v);if(/^[=+\-@\t\r]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"';}
   var out=[cols.join(",")].concat(ROWS.map(function(r){return cols.map(function(c){return cell(QS[c]?(r.answers||{})[c]:r[c]);}).join(",");}));
   var a=mk("a");a.href=URL.createObjectURL(new Blob([out.join("\n")],{type:"text/csv"}));a.download="sign-ups-"+new Date().toISOString().slice(0,10)+".csv";a.click();

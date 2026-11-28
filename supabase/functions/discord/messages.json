@@ -16,11 +16,11 @@
   "site": "https://ourfuturesfirst.org",
   "start": {
     "title": "Welcome to Our Futures First",
-    "body": "Our Futures First is a student-run open letter on how AI is developed, written by people at U.S. universities. This server is where campus organizers work together before launch day.\n\n**To get in:** press **Find my campus** and type your university email. We email you a 6-digit code (look in Junk too), you press **Enter my code** and type it in, and you land in a private chat with everyone else from your university.\n\nYour email is only used to work out your university. It is never shown in the server. The organizing team sees it only if you ask them to add you by hand.",
+    "body": "Our Futures First is a student-run open letter on how AI is developed, written by people at U.S. universities. This server is where campus organizers work together before launch day.\n\n**To get in:** press **Find my campus**, type your university email and a few lines about yourself. We email you a 6-digit code (look in Junk too), you press **Enter my code** and type it in, and you land in a private chat with everyone else from your university. Your introduction is posted in #introductions and in your campus chat.\n\nYour email is only used to work out your university. It is never shown in the server. The organizing team sees it only if you ask them to add you by hand.",
     "join": "Find my campus",
     "guide": "What do organizers do?"
   },
-  "guide": "**What organizers do**\n\n1. **Meet your campus.** Your university has its own private chat here. Say who you are and what you study.\n2. **Bring people in.** Your personal link is on {site}. Send it to people at your university: friends, classmates, clubs, professors.\n3. **Shape the letter.** The draft changes as answers come in. Tell us in the server what should change.\n4. **Be ready for launch day.** Everyone is contacted at once to sign and share. Watch {announcements} for the date.",
+  "guide": "**What organizers do**\n\n1. **Meet your campus.** Your university has its own private chat here, and your introduction is posted there when you join.\n2. **Bring people in.** Your personal link is on {site}. Send it to people at your university: friends, classmates, clubs, professors.\n3. **Shape the letter.** The draft changes as answers come in. Tell us in the server what should change.\n4. **Be ready for launch day.** Everyone is contacted at once to sign and share. Watch {announcements} for the date.",
   "codeSent": "We emailed a 6-digit code to **{email}** ({uni}), from contact@ourfuturesfirst.org.\n\n**Check your Junk or Spam folder too.** University mail filters often put it there. The code works for an hour.",
   "enterCode": "Enter my code",
   "otherEmail": "Use a different email",
@@ -40,7 +40,7 @@
   "requestGone": "This request was already handled, or replaced by a newer one.",
   "teamOnly": "Only the core team can approve or decline requests.",
   "declinedDm": "An organizer could not confirm the email you typed in the Our Futures First server, so you were not added. If that is a mistake, write to contact@ourfuturesfirst.org.",
-  "placed": "You're in{name}. Your campus chat is {campus}: **{uni}**, {people} so far.\n\n**First things to do**\n1. Say hi in {campus}, then introduce yourself in {introductions}.\n2. Send your personal link from {site} to a few people at {uni}.\n3. Keep an eye on {announcements} for launch day.",
+  "placed": "You're in{name}. Your campus chat is {campus}: **{uni}**, {people} so far.\n\n**First things to do**\n1. Your introduction is up in {introductions} and {campus}. Say hi to the others there.\n2. Send your personal link from {site} to a few people at {uni}.\n3. Keep an eye on {announcements} for launch day.",
   "notSigned": "\n\nOne thing: we could not find a confirmed sign-up for this email. Add your voice at {site} so you are counted.",
   "campusFirst": "{user} is the first one here from **{uni}**. Everyone who joins from {uni} lands in this channel.",
   "campusJoined": "{user} just joined from **{uni}**. That makes {count} of you here.",
@@ -57,6 +57,11 @@
     "declined": "An organizer looked at your request and could not confirm that address. If that is a mistake, write to contact@ourfuturesfirst.org.",
     "busy": "The organizers have a lot of requests right now. Try again in an hour.",
     "full": "You are confirmed for **{uni}**, but the server has run out of room for new campus channels. An organizer will add yours by hand.",
-    "other": "Something went wrong on our side. Try again in a minute, or write to contact@ourfuturesfirst.org."
-  }
+    "other": "Something went wrong on our side. Try again in a minute, or write to contact@ourfuturesfirst.org.",
+    "short_intro": "Write a little more in your introduction: a sentence or two about who you are and why you want to help."
+  },
+  "introLabel": "Introduce yourself",
+  "introPlaceholder": "Who you are, what you study or work on, and why you want to help. A few sentences is plenty. Everyone in the server will see this.",
+  "introPost": "{user} from **{uni}**\n{intro}",
+  "requestIntro": "Their introduction:"
 }

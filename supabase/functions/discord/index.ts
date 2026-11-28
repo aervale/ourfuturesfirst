@@ -1,10 +1,12 @@
 // The Our Futures First Discord bot. Discord calls this function whenever someone presses one of the
 // bot's buttons or submits one of its forms (an "interactions endpoint"), so nothing has to stay running.
 //
-// What it does: a newcomer presses "Find my campus" in #start-here and types their university email.
+// What it does: a newcomer presses "Find my campus" in #start-here and types their university email and a short
+// introduction of themselves.
 // The database emails that address a 6-digit code (discord_start). When the code comes back
 // (discord_finish) the bot gives them the Organizer role and their university's role, creating the
-// university's private channel the first time someone from it arrives, and tells them what to do next.
+// university's private channel the first time someone from it arrives, posts their introduction in
+// #introductions and in their campus channel, and tells them what to do next.
 //
 // When the code never arrives ("Didn't get a code?") the newcomer can ask the organizers instead: the
 // request goes to #mod-log with Approve and Decline buttons, and a core team member's Approve places
@@ -82,9 +84,13 @@ const reply = (data: Json) => Response.json({ type: 4, data: { flags: EPHEMERAL,
 const buttons = (...list: [id: string, label: string, style?: number][]) => [
 	{ type: 1, components: list.map(([custom_id, label, style = 2]) => ({ type: 2, custom_id, label, style })) }
 ];
-const modal = (custom_id: string, title: string, input: Json) =>
-	Response.json({ type: 9, data: { custom_id, title, components: [{ type: 1, components: [{ type: 4, style: 1, required: true, ...input }] }] } });
-const emailModal = () => modal('email', 'Find your campus', { custom_id: 'email', label: 'Your university email', placeholder: 'you@university.edu', min_length: 6, max_length: 160 });
+const modal = (custom_id: string, title: string, ...inputs: Json[]) =>
+	Response.json({ type: 9, data: { custom_id, title, components: inputs.map(input => ({ type: 1, components: [{ type: 4, style: 1, required: true, ...input }] })) } });
+/** The email and the introduction, on one form. Opens filled in with what this account typed last time. */
+const emailModal = (draft: Json = {}) =>
+	modal('email', 'Find your campus',
+		{ custom_id: 'email', label: 'Your university email', placeholder: 'you@university.edu', min_length: 6, max_length: 160, ...(draft.email ? { value: String(draft.email) } : {}) },
+		{ custom_id: 'intro', style: 2, label: M.introLabel, placeholder: M.introPlaceholder, min_length: 20, max_length: 1000, ...(draft.intro ? { value: String(draft.intro) } : {}) });
 const codeModal = () => modal('verify', 'Enter your code', { custom_id: 'code', label: 'The 6-digit code we emailed you', placeholder: '123456', min_length: 6, max_length: 12 });
 const typed = (interaction: Json, id: string): string =>
 	(interaction.data?.components ?? []).flatMap((row: Json) => row.components ?? []).find((input: Json) => input.custom_id === id)?.value ?? '';
@@ -119,6 +125,10 @@ function later(interaction: Json, work: () => Promise<Json | null>, update = fal
 }
 
 // ---------- Placing someone in their campus ----------
+/** An introduction as a Discord quote block, with mentions and links to everyone defused. */
+const quote = (text: string) =>
+	String(text ?? '').trim().replace(/@(everyone|here)/g, '@\u200b$1').replace(/<@[!&]?\d+>/g, '@someone').split('\n').map(line => `> ${line}`).join('\n').slice(0, 1600);
+
 const slug = (name: string) => name.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 90) || 'campus';
 
 /** The university's role and private channel, made the first time someone from it arrives. */
@@ -190,10 +200,18 @@ async function settle(guild: string, bot: string, userId: string, result: Json, 
 		if (before.role_id) await take(userId, before.role_id);
 	}
 
+	const intro = quote(result.intro);
 	await discord('POST', `/channels/${spot.channel}/messages`, {
-		content: fill(result.count > 1 ? M.campusJoined : M.campusFirst, { user: `<@${userId}>`, uni: result.uni, count: result.count }),
+		content: (fill(result.count > 1 ? M.campusJoined : M.campusFirst, { user: `<@${userId}>`, uni: result.uni, count: result.count }) + (intro ? `\n\n${intro}` : '')).slice(0, 2000),
 		allowed_mentions: { users: [userId] }
 	}).catch(error => console.error(error));
+	const hello = channels.find((c: Json) => c.type === 0 && c.name === NAMES.introductions);
+	if (hello && intro) {
+		await discord('POST', `/channels/${hello.id}/messages`, {
+			content: fill(M.introPost, { user: `<@${userId}>`, uni: result.uni, intro }).slice(0, 2000),
+			allowed_mentions: { parse: [] }
+		}).catch(error => console.error(error));
+	}
 
 	const values = {
 		name: result.first_name ? `, ${result.first_name}` : '', uni: result.uni, campus: `<#${spot.channel}>`, site: M.site,
@@ -232,7 +250,8 @@ async function askTeam(interaction: Json): Promise<Json> {
 		const team = roles.find((r: Json) => r.name === NAMES.team);
 		const text =
 			fill(M.request, { team: team ? `<@&${team.id}>` : '', user: `<@${user.id}>`, name: plain(shown), email: plain(asked.email), uni: asked.uni }) +
-			(asked.held_by ? fill(M.requestHeld, { other: `<@${asked.held_by}>`, uni: asked.uni }) : '');
+			(asked.held_by ? fill(M.requestHeld, { other: `<@${asked.held_by}>`, uni: asked.uni }) : '') +
+			(asked.intro ? `\n\n${M.requestIntro}\n${quote(asked.intro)}` : '');
 		const posted = await discord('POST', `/channels/${log.id}/messages`, {
 			content: text.slice(0, 2000),
 			allowed_mentions: { roles: team ? [team.id] : [] }, // the core team is pinged; nobody else is
@@ -296,7 +315,7 @@ Deno.serve(async request => {
 	try {
 		if (interaction.type === 3) {
 			// A button.
-			if (id === 'join') return emailModal();
+			if (id === 'join') return emailModal(await rpc('discord_draft', { p_discord_id: user.id }).catch(() => ({})));
 			if (id === 'code') return codeModal();
 			if (id === 'guide') return reply({ content: fill(M.guide, { site: M.site, announcements: `#${NAMES.announcements}` }) });
 			if (id === 'nocode') return reply({ content: M.noCodeHelp, components: buttons(['request', M.askTeam, 1], ['code', M.enterCode]) });
@@ -307,7 +326,7 @@ Deno.serve(async request => {
 		if (interaction.type === 5 && id === 'email') {
 			// The email form: send the code.
 			const email = typed(interaction, 'email').trim();
-			const sent = await rpc('discord_start', { p_discord_id: user.id, p_email: email });
+			const sent = await rpc('discord_start', { p_discord_id: user.id, p_email: email, p_intro: typed(interaction, 'intro') });
 			// Mail is off: the address is on record all the same, so the organizers can be asked straight away.
 			if (sent.error === 'mail_off') return reply({ content: problem(sent.error), components: buttons(['request', M.askTeam, 1]) });
 			if (sent.error) return reply({ content: problem(sent.error), components: buttons(['join', M.start.join, 1]) });

@@ -437,6 +437,14 @@ textarea{display:block;min-height:150px;resize:none}
 footer{padding:22px 0 36px}
 /* the Discord link, in four places; an admin can switch it off (admin page, "Public page") */
 .nodiscord .dsc{display:none!important}
+/* Discord's own blue, so the link reads as Discord at a glance */
+.dico{width:17px;height:17px;flex:none}
+.btn.dbtn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:#5865F2;border-color:#5865F2;color:#FFFFFF}
+.btn.dbtn:hover{background:#4752C4;border-color:#4752C4;color:#FFFFFF}
+.dcall{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin-top:20px;color:var(--mute);font-size:.9375rem}
+.after-dsc{margin:4px 0 22px}
+.dscnext{display:grid;gap:10px}
+.dscnext .btn{margin-top:2px}
 
 @media (max-width:920px){
   #usMap{max-width:560px;margin-left:auto;margin-right:auto;margin-bottom:40px}
@@ -622,6 +630,7 @@ footer{padding:22px 0 36px}
             <i class="waitbar" aria-hidden="true"></i>
           </div>
           <p class="muted" id="spreadNote"></p>
+          <p class="dcall dsc after-dsc"><a class="btn dbtn" href="https://discord.gg/NqcenEuMFR" target="_blank" rel="noopener"><svg class="dico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg><span>Join our Discord</span></a><span>Discord is our main way of talking with campus organizers and getting everything set up. Join to meet the others from your university.</span></p>
           <div class="mylink">
             <p class="lab">Your personal link</p>
             <div class="linkrow"><span class="trace"><input type="text" id="myLink" readonly aria-label="Your personal link"></span><button class="btn" type="button" id="btnCopy">Copy</button></div>
@@ -638,14 +647,8 @@ footer{padding:22px 0 36px}
           <div class="opts" id="spread"></div>
           <div class="pop" id="leadPop"><div><div class="leadbox">
             <p class="hint">We'll connect you with other groups of campus organizers at your university and contact you about next steps. Your name will be shown on the public list, marked as a campus organizer. <a href="#organizers">Click for information on what that means.</a></p>
-            <label class="lab" for="inPhone2">Phone number <span class="req">*</span></label>
-            <input type="tel" id="inPhone2" autocomplete="tel" maxlength="30" placeholder="(555) 555-5555">
-            <p class="hint bad" id="phoneHint" role="status"></p>
-            <label class="lab" for="inBio">About you</label>
-            <textarea id="inBio" maxlength="1200" placeholder="Around 100 words: who you are, what you study or work on, and why you want to help at your university."></textarea>
-            <p class="hint" id="bioHint" role="status">Only the organizers of this project read this.</p>
-            <p class="hint dsc">Campus organizers work together on Discord. <a href="https://discord.gg/NqcenEuMFR" target="_blank" rel="noopener">Join the organizers' server</a> with your university email and you'll land in a chat with the others at your university.</p>
-            <p class="hint bad" id="leadHint" role="status"></p>
+            <div class="dsc dscnext"><p class="hint"><b>Next step: join us on Discord.</b> It's our main way of talking with campus organizers and where we get everything set up. Confirm your university email, write a short intro, and you land in a chat with the others at your university.</p>
+              <a class="btn dbtn wide" href="https://discord.gg/NqcenEuMFR" target="_blank" rel="noopener"><svg class="dico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg><span>Join the organizers' Discord</span></a></div>
           </div></div></div>
           <div class="pop" id="sharePop"><div><div class="leadbox">
             <label class="lab" for="inInvites">Your friends' email addresses</label>
@@ -716,7 +719,8 @@ footer{padding:22px 0 36px}
     <p>If you have general feedback or suggestions, feel free to contact us at <a href="mailto:contact@ourfuturesfirst.org">contact@ourfuturesfirst.org</a>.</p>
     <h2 id="organizers">What is a campus organizer?</h2>
     <p>A campus organizer is anyone who has offered to help spread the word at their university. A university can have several organizers.</p>
-    <p>If you volunteer, we'll connect you with other organizers at your university. <span class="dsc">Organizers work together in <a href="https://discord.gg/NqcenEuMFR" target="_blank" rel="noopener">our Discord server</a>: join with your university email and you land in a chat with the others at your university. </span>Organizers are marked publicly on <a href="#interest">the list</a>. We'll coordinate with organizers about spreading the word through university mailing lists, campus outreach, and engagements with faculty and staff.</p>
+    <p>If you volunteer, we'll connect you with other organizers at your university. <span class="dsc">Our Discord server is our main way of talking with organizers and getting everything set up. <a href="https://discord.gg/NqcenEuMFR" target="_blank" rel="noopener">Join it</a>: confirm your university email, write a short intro, and you land in a chat with the others at your university. </span>Organizers are marked publicly on <a href="#interest">the list</a>. We'll coordinate with organizers about spreading the word through university mailing lists, campus outreach, and engagements with faculty and staff.</p>
+    <p class="dcall dsc"><a class="btn dbtn" href="https://discord.gg/NqcenEuMFR" target="_blank" rel="noopener"><svg class="dico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg><span>Join our Discord</span></a></p>
     <h2>What happens to my information?</h2>
     <p>We use your email just to confirm your affiliation with your university and to notify you when the letter is ready to sign. Your first name and last initial are on the public list only if you choose to show them. Poll answers are anonymously shown as totals. Your answer to “What concerns you most about AI?” won't be displayed publicly. You can find more details on our <a href="#privacy">privacy page</a>.</p>
     <h2 id="contact">Contact</h2>
@@ -731,15 +735,15 @@ footer{padding:22px 0 36px}
     <h2>Who we are</h2>
     <p>Our Futures First is a project run by students at U.S. universities. It is collecting interest in an open letter on AI. You can reach us at <a href="mailto:contact@ourfuturesfirst.org">contact@ourfuturesfirst.org</a>.</p>
     <h2>What we collect</h2>
-    <p>What you enter in the form: your name, your university email, your role and year or title, your major or field, a phone number and a short description of yourself if you volunteer as a campus organizer, your answers to the poll questions, your written answer, and whether you offered to help.</p>
+    <p>What you enter in the form: your name, your university email, your role and year or title, your major or field, your answers to the poll questions, your written answer, and whether you offered to help.</p>
     <p>We also record whether and when you confirmed your email, and, if you arrived through someone's share link, that their link brought you. The services that host this website and its database receive your IP address and basic browser details when your browser loads the page. A code saved in your browser lets you reopen your own entry from the same device. We do not use advertising trackers, and the only counting we do is described under Analytics below.</p>
     <h2>What is public</h2>
     <p>If you choose to show your name, your first name and last initial appear on the public list with your university. If you also choose to show them, so do your year or title and your major. If you volunteered as a campus organizer, the list says so. Answers to the poll questions, roles, years and majors are shown only as totals, and each university is shown with its number of sign-ups.</p>
-    <p>Your email, phone number and written answer are never shown. Anything that has been public may have been copied by others, and we can't delete their copies.</p>
+    <p>Your email and written answer are never shown. Anything that has been public may have been copied by others, and we can't delete their copies.</p>
     <h2>How we use it</h2>
     <p>To confirm that you belong to a U.S. university, to contact you about the letter, to count sign-ups and show totals, and to decide what goes in the letter. If you volunteer as a campus organizer, your name is shared with the other campus organizers at your university.</p>
-    <h2 id="texts">Phone numbers</h2>
-    <p>We ask for a phone number only if you volunteer as a campus organizer. Organizers are contacted by phone or text, by the students running this project, about the letter and organizing on their campus. We do not sell phone numbers or share them with anyone for marketing. Organizers are also asked for a short description of themselves, which only the students running this project read.</p>
+    <h2 id="discord">Our Discord server</h2>
+    <p>Campus organizers work together in our Discord server. To get in, you type your university email there and we email it a code, which tells us your university; the email is never shown in the server. You also write a short introduction, which is posted in the server for its members to read and kept by the students running this project. Discord's own privacy policy covers what Discord itself collects.</p>
     <h2>Inviting friends</h2>
     <p>If you ask us to email friends, we keep the addresses you type, send each one a single invitation with your link, and use them for nothing else. You can invite up to 20 people.</p>
     <h2>Suggestions on the letter</h2>
@@ -906,9 +910,7 @@ function buildForm(){
     b.appendChild(mk("span","key"));b.appendChild(mk("span",null,s.t));b.appendChild(mk("span","saved","Saved"));
     function set(v){S.spread[s.id]=v;b.setAttribute("aria-pressed",String(v));}
     b.addEventListener("click",function(){var was=!!S.spread[s.id];set(!was);renderLead();
-      /* organizing needs a phone number: until there is one, the choice waits and is not saved */
-      var wait=s.id==="lead"&&!was&&!leadPhone();if(wait)$("inPhone2").focus();
-      patch({spread:spreadList()}).then(function(){if(!wait)flash(b);},function(){set(was);renderLead();$("copyMsg").textContent=FAIL.save;});});
+      patch({spread:spreadList()}).then(function(){flash(b);},function(){set(was);renderLead();$("copyMsg").textContent=FAIL.save;});});
     if(s.id==="email"){b.classList.add("sharebit");$(s.pop).classList.add("sharebit");}
     sp.appendChild(b);sp.appendChild($(s.pop));spreadBtns[s.id]=b;
     if(s.id==="lead"){var full=mk("p","hint");full.id="leadFull";full.hidden=true;sp.appendChild(full);}});
@@ -928,8 +930,6 @@ function ready(){return Q.every(function(q,k){return !asked(k)||S.answers[q.id];
 function asked(k){return k>=Q.length||!Q[k].stu||ROLES.indexOf(S.role)<2;}
 function step(i,dir){do{i+=dir;}while(i>=0&&i<slides.length&&!asked(i));return i;}
 function updateBtn(){var b=$("btnSubmit"),was=b.disabled;b.disabled=S.saving||!ready();if(was&&!b.disabled&&!S.saving&&!S.submitted)flash(b);}
-/* volunteering as a campus organizer asks for a phone number and consent to texts */
-function leadPhone(){var v=$("inPhone2").value.trim();return !!v&&phoneOk(v);}
 /* each university takes a set number of campus organizers. When it is full the option stays in view, greyed out, with
    the reason and who to write to. Someone who is already an organizer is not affected. */
 var ROOM={dom:"",cap:0,count:0,closed:false};
@@ -946,22 +946,7 @@ function renderLead(){
       :(S.mine.name||"Your university")+" already has "+(ROOM.cap===1?"its one campus organizer":"its "+num(ROOM.cap)+" campus organizers")+", which is as many as we take at one university for now. If you'd still like to help there, write to "));
     var a=mk("a",null,"contact@ourfuturesfirst.org");a.href="mailto:contact@ourfuturesfirst.org?subject="+encodeURIComponent("Helping at "+(S.mine.name||"my university"));note.appendChild(a);note.appendChild(document.createTextNode("."));}}
   $("leadPop").classList.toggle("open",on);$("sharePop").classList.toggle("open",!!S.spread.email);
-  $("leadHint").textContent=on&&!leadPhone()?"Organizers need a phone number. You're listed as an organizer once we have it.":"";
 }
-/* campus organizers are asked for a short description of themselves; it saves when they leave the box */
-function bioWords(){var t=$("inBio").value.trim();return t?t.split(/\s+/).length:0;}
-function paintBio(msg){var n=bioWords();$("bioHint").textContent=msg||(n?n+(n===1?" word":" words")+(n>150?". Around 100 is plenty.":""):"Only the organizers of this project read this.");}
-$("inBio").addEventListener("input",function(){paintBio();});
-$("inBio").addEventListener("change",function(){if(!S.live||!S.token)return;var n=bioWords();paintBio("Saving");
-  sb.rpc("set_organizer_bio",{p_token:S.token,p_bio:$("inBio").value}).then(function(r){paintBio(r.error?FAIL.save:(n?n+(n===1?" word":" words")+". Saved.":"Removed."));},function(){paintBio(FAIL.save);});});
-function loadBio(){if(!S.live||!S.token)return;sb.rpc("get_organizer_bio",{p_token:S.token}).then(function(r){if(r.error||document.activeElement===$("inBio"))return;$("inBio").value=r.data||"";paintBio();},function(){});}
-/* a phone number is asked only of campus organizers */
-function savePhone(el){var phone=$("inPhone2").value.trim(),h=$("phoneHint");
-  if(!phoneOk(phone)){h.textContent="That phone number looks incomplete.";return;}
-  h.textContent="";
-  patch({phone:phone,spread:spreadList()}).then(function(){flash(el);if(S.spread.lead&&phone)flash(spreadBtns.lead);renderLead();},function(){h.textContent=FAIL.save;});}
-$("inPhone2").addEventListener("input",function(){this.value=fmtPhone(this.value);$("phoneHint").textContent="";});
-$("inPhone2").addEventListener("change",function(){savePhone(this);});
 function go(i){
   if(busy||i===S.slide||i<0||i>=slides.length)return;
   var st=$("stage"),cur=slides[S.slide],nx=slides[i],dir=i>S.slide?1:-1;
@@ -1050,13 +1035,6 @@ $("inName").addEventListener("change",function(){
   this.value=v;
 });
 /* U.S. numbers become (617) 555-0100 as you type; numbers starting with + are left as typed */
-function fmtPhone(v){
-  if(/^\s*\+/.test(v))return v.replace(/[^\d+ ()-]/g,"");
-  var d=v.replace(/\D/g,"");if(d.length===11&&d.charAt(0)==="1")d=d.slice(1);d=d.slice(0,10);
-  if(d.length<4)return d;if(d.length<7)return "("+d.slice(0,3)+") "+d.slice(3);
-  return "("+d.slice(0,3)+") "+d.slice(3,6)+"-"+d.slice(6);
-}
-function phoneOk(v){var d=v.replace(/\D/g,"").length;return !v||(/^\+/.test(v)?d>=8:d===10);}
 /* major: suggestions you can click, but anything typed is accepted */
 var BASIC=["Biology","Business","Chemistry","Computer Science","Economics","Electrical Engineering","English","History","Mathematics","Mechanical Engineering","Neuroscience","Philosophy","Physics","Political Science","Psychology","Sociology","Undeclared"];
 /* each entry is [name, aliases]: typing "cs" or a course number finds the full name, and the full name is what is kept */
@@ -1473,7 +1451,7 @@ function shortName(n){return n.trim().replace(/^(\S+)\s+(?:.*\s)?(\S)\S*$/,"$1 $
 function patch(p){
   if(!S.live){if(S.local&&p.answers){S.local.a=p.answers;S.local.name=p.show_name?shortName(p.name):"";}return Promise.resolve();}
   return sb.rpc("update_interest",{p_token:S.token,p:p}).then(function(r){if(r.error)throw "save";
-    if(r.data&&r.data.spread&&p.spread&&S.spread.lead&&r.data.spread.indexOf("lead")<0&&leadPhone()){S.spread.lead=false;spreadBtns.lead.setAttribute("aria-pressed","false");loadRoom();}
+    if(r.data&&r.data.spread&&p.spread&&S.spread.lead&&r.data.spread.indexOf("lead")<0){S.spread.lead=false;spreadBtns.lead.setAttribute("aria-pressed","false");loadRoom();}
     return loadBoard();});
 }
 function fail(msg,el){$("err").textContent=msg;if(el){el.scrollIntoView({block:"center",behavior:CALM?"auto":"smooth"});if(el.focus)el.focus({preventScroll:true});}}
@@ -1507,25 +1485,25 @@ $("form").addEventListener("submit",function(e){
 /* fill the form from a stored entry: a returning visitor, or someone arriving from the emailed link */
 function applyEntry(c){
   S.email=c.email;S.verified=!!c.verified;S.token=c.token;S.ref=c.ref||"";S.invited=c.invited||0;S.downstream=c.downstream||0;S.chain=c.chain||{};S.submitted=true;
-  $("inEmail").value=c.email;$("inName").value=c.name||"";$("inMajor").value=c.major||"";$("inPhone2").value=c.phone||"";
+  $("inEmail").value=c.email;$("inName").value=c.name||"";$("inMajor").value=c.major||"";
   $("inConcern").value=c.concern||"";S.role=c.role||"";S.year=c.year||"";paintChips();
   S.show=c.show_name!==false;S.info=c.show_info!==false;$("inTitle").value=c.title||"";
   Q.forEach(function(q){var a=c.answers&&c.answers[q.id];if(a&&optBtns[q.id][a])pick(q,a);});
   S.spread={};(c.spread||[]).forEach(function(k){S.spread[k]=true;});
   Object.keys(spreadBtns).forEach(function(k){spreadBtns[k].setAttribute("aria-pressed",String(!!S.spread[k]));});
   try{if(!PREVIEW)localStorage.setItem("off_token",c.token);}catch(x){}
-  showUni({dom:c.dom,name:c.uni},true);renderLead();renderNav();renderAll();loadRoom();loadBio();
+  showUni({dom:c.dom,name:c.uni},true);renderLead();renderNav();renderAll();loadRoom();
 }
 
 /* ---------- tabs ---------- */
 var ANCH={"#organizers":1,"#why-wait":1,"#help":1,"#why-draft":1,"#contact":1};
-var CONTACT=[["Email","mailto:contact@ourfuturesfirst.org","contact@ourfuturesfirst.org","assets/mail.svg"],["Instagram","https://www.instagram.com/ourfuturesfirst/","ourfuturesfirst","assets/instagram.svg"],["X","https://x.com/ourfuturesfirst","ourfuturesfirst","assets/x.svg"],["Discord","https://discord.gg/NqcenEuMFR","Organizers' server","assets/discord.svg"]];
+var CONTACT=[["Email","mailto:contact@ourfuturesfirst.org","contact@ourfuturesfirst.org","assets/mail.svg"],["Instagram","https://www.instagram.com/ourfuturesfirst/","ourfuturesfirst","assets/instagram.svg"],["X","https://x.com/ourfuturesfirst","ourfuturesfirst","assets/x.svg"],["Discord","https://discord.gg/NqcenEuMFR","discord.gg/NqcenEuMFR","assets/discord.svg"]];
 CONTACT.forEach(function(c){if(!c[1])return;var li=mk("li",c[0]==="Discord"?"dsc":null),a=mk("a",null,c[2]),k=mk("span","lab");
   if(c[3]){var im=document.createElement("img");im.src=c[3];im.alt="";im.width=14;im.height=14;im.onerror=function(){im.remove();};k.appendChild(im);}
   else k.appendChild(mk("span"));k.appendChild(mk("span",null,c[0]));li.appendChild(k);
   a.href=c[1];if(c[1].indexOf("mailto:")!==0){a.target="_blank";a.rel="noopener";}li.appendChild(a);$("contactList").appendChild(li);});
 function route(){
-  var h=location.hash,v=h==="#draft"?"viewDraft":(h==="#privacy"||h==="#texts")?"viewPrivacy":(h==="#about"||ANCH[h])?"viewAbout":"viewInterest",el,about;
+  var h=location.hash,v=h==="#draft"?"viewDraft":(h==="#privacy"||h==="#texts"||h==="#discord")?"viewPrivacy":(h==="#about"||ANCH[h])?"viewAbout":"viewInterest",el,about;
   /* a page an admin has switched off cannot be opened, whatever the address says */
   if((v==="viewDraft"&&S.show3.letter===false)||(v==="viewAbout"&&S.show3.about===false))v="viewInterest";
   if(!$(v).hidden&&v===route.at)return;route.at=v;el=$(v);about=v!=="viewInterest";
@@ -1534,7 +1512,7 @@ function route(){
   [["tabInterest","viewInterest"],["tabDraft","viewDraft"],["tabAbout","viewAbout"]].forEach(function(t){
     if(t[1]===v)$(t[0]).setAttribute("aria-current","page");else $(t[0]).removeAttribute("aria-current");});
 }
-window.addEventListener("hashchange",function(){route();var t=(ANCH[location.hash]||location.hash==="#texts")&&$(location.hash.slice(1));if(t)t.scrollIntoView();else window.scrollTo(0,0);});
+window.addEventListener("hashchange",function(){route();var t=(ANCH[location.hash]||location.hash==="#discord")&&$(location.hash.slice(1));if(t)t.scrollIntoView();else window.scrollTo(0,0);});
 /* ---------- boot ---------- */
 function paintSwitches(){var f=S.show3;$("resPart").hidden=!f.results;$("whoPart").hidden=!f.who;$("resSection").hidden=!f.results&&!f.who;
   document.body.classList.toggle("noresults",!f.results);document.body.classList.toggle("nosharing",f.sharing===false);

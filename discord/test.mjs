@@ -141,8 +141,11 @@ async function interact(payload, { badSignature = false } = {}) {
 }
 const member = (userId, name) => ({ member: { user: { id: userId, username: name, global_name: name } } });
 const button = (userId, custom_id) => interact({ type: 3, data: { custom_id }, ...member(userId, 'tester') });
-const form = (userId, custom_id, field, value, name = 'tester') =>
-	interact({ type: 5, data: { custom_id, components: [{ type: 1, components: [{ type: 4, custom_id: field, value }] }] }, ...member(userId, name) });
+// The email form also carries an introduction; tests give each person their own, so where it lands can be checked.
+const introOf = userId => `Hi, I am tester ${userId} and I study things.`;
+const form = (userId, custom_id, field, value, name = 'tester', intro = introOf(userId)) =>
+	interact({ type: 5, data: { custom_id, components: [{ type: 1, components: [{ type: 4, custom_id: field, value }] },
+		...(custom_id === 'email' ? [{ type: 1, components: [{ type: 4, custom_id: 'intro', value: intro }] }] : [])] }, ...member(userId, name) });
 async function followup(token) {
 	for (let i = 0; i < 60; i++) {
 		const found = state.followups.find(f => f.token === token);
@@ -172,15 +175,20 @@ try {
 	check('refuses a request Discord did not sign', (await interact({ type: 1 }, { badSignature: true })).status === 401);
 	const joinModal = await button(A, 'join');
 	check('"Find my campus" opens the email form', joinModal.json?.type === 9 && joinModal.json.data.custom_id === 'email');
+	check('the form asks for an introduction too', joinModal.json?.data?.components?.[1]?.components?.[0]?.custom_id === 'intro' && joinModal.json.data.components[1].components[0].style === 2, JSON.stringify(joinModal.json));
 	const guide = await button(A, 'guide');
 	check('"What do organizers do?" answers privately', guide.json?.type === 4 && guide.json.data.flags === 64 && /Bring people in/.test(guide.json.data.content));
 
 	const gmail = await form(A, 'email', 'email', 'someone@gmail.com');
 	check('a non-university email is turned away', /could not match/.test(gmail.json?.data?.content ?? ''), JSON.stringify(gmail.json));
+	const short = await form(A, 'email', 'email', signed, 'tester', 'hi');
+	check('a too-short introduction is turned away', /a little more/.test(short.json?.data?.content ?? ''), JSON.stringify(short.json));
 	const start1 = await form(A, 'email', 'email', signed);
 	// No mail key on a local database, so the code is not sent; with one it says "We emailed a 6-digit code".
 	check('a university email reaches the code step (or says mail is off locally)', /emailed a 6-digit code|cannot send codes/.test(start1.json?.data?.content ?? ''), JSON.stringify(start1.json));
 
+	const again = await button(A, 'join');
+	check('the form opens filled in the second time', again.json?.data?.components?.[0]?.components?.[0]?.value === signed && again.json.data.components[1].components[0].value === introOf(A), JSON.stringify(again.json));
 	plant(A, signed, '123456');
 	const wrong = await form(A, 'verify', 'code', '000000');
 	check('code form is answered at once', wrong.json?.type === 5 && wrong.json.data.flags === 64, JSON.stringify(wrong.json));
@@ -200,6 +208,10 @@ try {
 	check('the newcomer gets Organizer and MIT', state.memberRoles[A]?.has(organizer.id) && state.memberRoles[A]?.has(mitRole?.id));
 	check('they are told where to go', new RegExp(`<#${mitChannel?.id}>`).test(placed?.content ?? '') && /first one here/.test(placed.content) && !/could not find a confirmed sign-up/.test(placed.content), placed?.content);
 	check('#mit greets them', /first one here from \*\*MIT\*\*/.test(state.messages[mitChannel?.id]?.[0]?.content ?? ''));
+	check('#mit shows their introduction', (state.messages[mitChannel?.id]?.[0]?.content ?? '').includes(`> ${introOf(A)}`));
+	const hello = state.channels.find(c => c.name === 'introductions');
+	check('their introduction is posted in #introductions', (state.messages[hello.id]?.[0]?.content ?? '').includes(`<@${A}> from **MIT**`) && state.messages[hello.id][0].content.includes(introOf(A)), JSON.stringify(state.messages[hello.id]));
+	check('their introduction becomes the description on the admin page', sql(`select b.bio from public.organizer_bios b join public.signups s on s.id = b.signup_id where s.email = '${signed}'`) === introOf(A));
 	const linked = () => sql(`select m.discord_id from public.discord_members m join public.signups s on s.id = m.signup_id where s.email = '${signed}'`);
 	check('their sign-up is linked to their Discord account', linked() === A);
 
@@ -225,11 +237,12 @@ try {
 	const tooSoon = await followup((await button(D, 'request')).token);
 	check('asking before typing an email is turned away', /no code waiting/i.test(tooSoon?.content ?? '') && posts().length === 0, tooSoon?.content);
 
-	const typedD = await form(D, 'email', 'email', 'dana@mit.edu', 'Dana');
+	const typedD = await form(D, 'email', 'email', 'dana@mit.edu', 'Dana', 'Dana here, @everyone come say hi. I study physics.');
 	check('the address is on record even when no mail can be sent', sql(`select email from public.discord_codes where discord_id = '${D}'`) === 'dana@mit.edu', JSON.stringify(typedD.json));
 	const asked = await followup((await interact({ type: 3, data: { custom_id: 'request' }, ...member(D, 'Dana') })).token);
 	check('the request reaches #mod-log with Approve and Decline', /^Asked/.test(asked?.content ?? '') && posts().length === 1 && /dana@mit\.edu/.test(posts()[0].content) && posts()[0].content.includes(`<@&${teamRole.id}>`)
 		&& posts()[0].components[0].components.map(b => b.custom_id.split(':')[0]).join() === 'approve,decline', JSON.stringify(posts()));
+	check('the request shows their introduction, with @everyone defused', /> Dana here, @\u200beveryone/.test(posts()[0].content), posts()[0].content);
 	check('only the core team is pinged by it', JSON.stringify(posts()[0].allowed_mentions) === JSON.stringify({ roles: [teamRole.id] }));
 	const askedAgain = await followup((await button(D, 'request')).token);
 	check('asking twice does not post twice', posts().length === 1 && /already with the organizers/.test(askedAgain?.content ?? ''), askedAgain?.content);
