@@ -2,7 +2,7 @@
    "I signed.", their signer number, the ask, and the site's address.
    Drawn on a canvas in the site's own fonts (EB Garamond, Nunito Sans) and colours, so it needs no server.
    storyImage(n) resolves to a PNG Blob; n is the signer number (left out if unknown).
-   Instagram covers about the top and bottom 250 px of a story with its own buttons, so nothing sits there.
+   The background (assets/story-bg.jpg) carries the stars, the name and the dawn line; the text sits between them.
    Preview: tools/story.html. */
 (function () {
   var W = 1080, H = 1920, PAD = 110,
@@ -10,7 +10,7 @@
       INSET = "rgba(236,234,224,.05)", GOLD = "#D3993C",
       HEAD = '"EB Garamond", Garamond, Georgia, serif', SANS = '"Nunito Sans", system-ui, -apple-system, sans-serif';
 
-  function star(src) {
+  function picture(src) {
     return new Promise(function (done) {
       var i = new Image(); i.onload = function () { done(i); }; i.onerror = function () { done(null); }; i.src = src;
     });
@@ -34,24 +34,21 @@
     return lines;
   }
 
-  window.storyImage = function (n, starSrc) {
+  window.storyImage = function (n, bgSrc) {
     var fonts = document.fonts ? Promise.all([
       document.fonts.load('500 200px "EB Garamond"'), document.fonts.load('400 60px "EB Garamond"'),
       document.fonts.load('600 40px "Nunito Sans"'), document.fonts.load('700 40px "Nunito Sans"'), document.fonts.load('400 40px "Nunito Sans"')
     ]).catch(function () {}) : Promise.resolve();
-    return Promise.all([fonts, star(starSrc || "assets/star.svg")]).then(function (got) {
-      var img = got[1], cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+    return Promise.all([fonts, picture(bgSrc || "assets/story-bg.jpg")]).then(function (got) {
+      var bg = got[1], cv = document.createElement("canvas"); cv.width = W; cv.height = H;
       var c = cv.getContext("2d"); c.textBaseline = "alphabetic";
       c.fillStyle = BG; c.fillRect(0, 0, W, H);
-
-      /* the star and the name, first letters in gold */
-      var y = 330;
-      if (img) c.drawImage(img, PAD - 4, y - 92, 124, 124);
-      c.font = "600 44px " + SANS; c.fillStyle = INK;
-      spaced(c, "OUR FUTURES FIRST", PAD + (img ? 146 : 0), y - 14, 6);
+      /* the night sky: gold stars above, "OUR FUTURES FIRST" and a dawn line along the bottom (assets/story-bg.jpg) */
+      if (bg) c.drawImage(bg, 0, 0, W, H);
+      else { c.font = "600 44px " + SANS; c.fillStyle = INK; spaced(c, "OUR FUTURES FIRST", PAD, H - 220, 12); }
 
       /* I signed. */
-      y = 690;
+      var y = 640;
       c.fillStyle = INK; c.font = "500 210px " + HEAD;
       c.fillText("I signed.", PAD - 6, y);
 
@@ -83,7 +80,7 @@
       }
 
       /* where to sign */
-      y = H - 330;
+      y = H - 460;
       c.font = "400 40px " + SANS; c.fillStyle = MUTE; c.fillText("Add your voice", PAD, y);
       c.font = "700 56px " + SANS; c.fillStyle = INK; c.fillText("ourfuturesfirst.org", PAD, y + 74);
 

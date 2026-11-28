@@ -8,7 +8,7 @@
 <script src="../assets/story.js"></script>
 <script>
 var n = new URLSearchParams(location.search).get("n") || 412;
-storyImage(n, "../assets/star.svg").then(function (b) {
+storyImage(n, "../assets/story-bg.jpg").then(function (b) {
   var i = new Image(); i.src = URL.createObjectURL(b); document.body.appendChild(i);
 });
 </script>
