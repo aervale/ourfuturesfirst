@@ -708,8 +708,8 @@ function csv(){
   var a=mk("a");a.href=URL.createObjectURL(new Blob([out.join("\n")],{type:"text/csv"}));a.download="sign-ups-"+new Date().toISOString().slice(0,10)+".csv";a.click();
 }
 
-/* the database only accepts a sign-in made by emailed link within the last 12 hours; say so here instead of failing oddly */
-var MAXAGE=12*3600;
+/* the database only accepts a sign-in made by emailed link within the last 30 days; say so here instead of failing oddly */
+var MAXAGE=30*86400;
 function signedInAt(session){try{var p=JSON.parse(atob(session.access_token.split(".")[1].replace(/-/g,"+").replace(/_/g,"/"))),t=0;
   (p.amr||[]).forEach(function(m){if(m.timestamp>t)t=m.timestamp;});return t;}catch(x){return 0;}}
 /* Supabase and Resend publish their own status; each link opens the full status page */
