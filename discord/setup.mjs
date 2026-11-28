@@ -4,6 +4,7 @@
 //
 //   node --env-file=supabase/functions/.env discord/setup.mjs            set the server up
 //   node --env-file=supabase/functions/.env discord/setup.mjs message    only refresh the #start-here message (after editing messages.json)
+//   node --env-file=supabase/functions/.env discord/setup.mjs avatar     only give the bot the project's picture
 //   node discord/setup.mjs invite <application id>                       print the link that adds the bot
 //
 // Needs DISCORD_BOT_TOKEN (in supabase/functions/.env, which git ignores). Optional: DISCORD_GUILD_ID
@@ -80,6 +81,14 @@ async function startMessage(startId) {
 	if (posted) await discord('PATCH', `/channels/${startId}/messages/${posted.id}`, message);
 	else await discord('POST', `/channels/${startId}/messages`, message);
 	note(posted ? 'Start message updated' : 'Start message posted in #' + N.start);
+}
+// The bot's own picture: the same star as the server's (DISCORD_ICON for a different one).
+if (process.argv[2] === 'avatar') {
+	const path = process.env.DISCORD_ICON ?? here('../../our-futures-first-profile.png');
+	const image = `data:image/png;base64,${readFileSync(path).toString('base64')}`;
+	const bot = await discord('PATCH', '/users/@me', { avatar: image });
+	console.log(`  ${bot.username} now has the picture from ${path}`);
+	process.exit(0);
 }
 if (process.argv[2] === 'message') {
 	const found = (await discord('GET', `/guilds/${guildId}/channels`)).find(c => c.type === 0 && c.name === N.start);

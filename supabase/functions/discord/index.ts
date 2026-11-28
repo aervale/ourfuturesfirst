@@ -300,8 +300,21 @@ async function decide(interaction: Json, requestId: string, approve: boolean): P
 	}
 }
 
+/** A promise's value, or `fallback` if it takes longer than `ms` or fails. */
+const within = <T>(ms: number, promise: Promise<T>, fallback: T): Promise<T> =>
+	Promise.race([promise.catch(() => fallback), new Promise<T>(done => setTimeout(() => done(fallback), ms))]);
+
 // ---------- The endpoint ----------
+// Discord allows three seconds for the first answer. Each answer's time is logged (Edge Functions > discord > Logs),
+// so a slow one can be found.
 Deno.serve(async request => {
+	const started = performance.now();
+	const response = await answer(request);
+	if (request.method === 'POST') console.log(`answered ${response.status} in ${Math.round(performance.now() - started)} ms`);
+	return response;
+});
+
+async function answer(request: Request): Promise<Response> {
 	if (request.method !== 'POST') return new Response('Our Futures First Discord bot', { status: 200 });
 	const body = await request.text();
 	if (!(await fromDiscord(request, body))) return new Response('Bad signature', { status: 401 });
@@ -315,7 +328,8 @@ Deno.serve(async request => {
 	try {
 		if (interaction.type === 3) {
 			// A button.
-			if (id === 'join') return emailModal(await rpc('discord_draft', { p_discord_id: user.id }).catch(() => ({})));
+			// A form has to be the first answer, so it cannot wait long for last time's answers: after a second it opens empty.
+			if (id === 'join') return emailModal(await within(1000, rpc('discord_draft', { p_discord_id: user.id }), {}));
 			if (id === 'code') return codeModal();
 			if (id === 'guide') return reply({ content: fill(M.guide, { site: M.site, announcements: `#${NAMES.announcements}` }) });
 			if (id === 'nocode') return reply({ content: M.noCodeHelp, components: buttons(['request', M.askTeam, 1], ['code', M.enterCode]) });
@@ -325,12 +339,15 @@ Deno.serve(async request => {
 		}
 		if (interaction.type === 5 && id === 'email') {
 			// The email form: send the code.
+			// Answered at once ("thinking"), and filled in once the database has recorded the address and queued the email.
 			const email = typed(interaction, 'email').trim();
-			const sent = await rpc('discord_start', { p_discord_id: user.id, p_email: email, p_intro: typed(interaction, 'intro') });
-			// Mail is off: the address is on record all the same, so the organizers can be asked straight away.
-			if (sent.error === 'mail_off') return reply({ content: problem(sent.error), components: buttons(['request', M.askTeam, 1]) });
-			if (sent.error) return reply({ content: problem(sent.error), components: buttons(['join', M.start.join, 1]) });
-			return reply({ content: fill(M.codeSent, { email, uni: sent.uni }), components: buttons(['code', M.enterCode, 1], ['join', M.otherEmail], ['nocode', M.noCode]) });
+			return later(interaction, async () => {
+				const sent = await rpc('discord_start', { p_discord_id: user.id, p_email: email, p_intro: typed(interaction, 'intro') });
+				// Mail is off: the address is on record all the same, so the organizers can be asked straight away.
+				if (sent.error === 'mail_off') return { content: problem(sent.error), components: buttons(['request', M.askTeam, 1]) };
+				if (sent.error) return { content: problem(sent.error), components: buttons(['join', M.start.join, 1]) };
+				return { content: fill(M.codeSent, { email, uni: sent.uni }), components: buttons(['code', M.enterCode, 1], ['join', M.otherEmail], ['nocode', M.noCode]) };
+			});
 		}
 		// The code form: answer at once ("thinking"), then do the placing and fill the answer in.
 		if (interaction.type === 5 && id === 'verify') return later(interaction, () => place(interaction));
@@ -339,4 +356,4 @@ Deno.serve(async request => {
 		return reply({ content: problem('other') });
 	}
 	return reply({ content: problem('other') });
-});
+}

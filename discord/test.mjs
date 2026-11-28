@@ -146,6 +146,12 @@ const introOf = userId => `Hi, I am tester ${userId} and I study things.`;
 const form = (userId, custom_id, field, value, name = 'tester', intro = introOf(userId)) =>
 	interact({ type: 5, data: { custom_id, components: [{ type: 1, components: [{ type: 4, custom_id: field, value }] },
 		...(custom_id === 'email' ? [{ type: 1, components: [{ type: 4, custom_id: 'intro', value: intro }] }] : [])] }, ...member(userId, name) });
+// The email form answers at once ("thinking") and fills the message in afterwards: this waits for that message.
+// `first` is the immediate answer; `json.data` is the filled-in message, shaped like a direct reply's.
+async function emailForm(userId, email, name, intro) {
+	const r = await form(userId, 'email', 'email', email, name, intro);
+	return { first: r.json, json: { data: await followup(r.token) } };
+}
 async function followup(token) {
 	for (let i = 0; i < 60; i++) {
 		const found = state.followups.find(f => f.token === token);
@@ -179,11 +185,12 @@ try {
 	const guide = await button(A, 'guide');
 	check('"What do organizers do?" answers privately', guide.json?.type === 4 && guide.json.data.flags === 64 && /Bring people in/.test(guide.json.data.content));
 
-	const gmail = await form(A, 'email', 'email', 'someone@gmail.com');
+	const gmail = await emailForm(A, 'someone@gmail.com');
 	check('a non-university email is turned away', /could not match/.test(gmail.json?.data?.content ?? ''), JSON.stringify(gmail.json));
-	const short = await form(A, 'email', 'email', signed, 'tester', 'hi');
+	const short = await emailForm(A, signed, 'tester', 'hi');
 	check('a too-short introduction is turned away', /a little more/.test(short.json?.data?.content ?? ''), JSON.stringify(short.json));
-	const start1 = await form(A, 'email', 'email', signed);
+	const start1 = await emailForm(A, signed);
+	check('the email form is answered at once, then filled in', start1.first?.type === 5 && start1.first.data.flags === 64, JSON.stringify(start1.first));
 	// No mail key on a local database, so the code is not sent; with one it says "We emailed a 6-digit code".
 	check('a university email reaches the code step (or says mail is off locally)', /emailed a 6-digit code|cannot send codes/.test(start1.json?.data?.content ?? ''), JSON.stringify(start1.json));
 
@@ -237,7 +244,7 @@ try {
 	const tooSoon = await followup((await button(D, 'request')).token);
 	check('asking before typing an email is turned away', /no code waiting/i.test(tooSoon?.content ?? '') && posts().length === 0, tooSoon?.content);
 
-	const typedD = await form(D, 'email', 'email', 'dana@mit.edu', 'Dana', 'Dana here, @everyone come say hi. I study physics.');
+	const typedD = await emailForm(D, 'dana@mit.edu', 'Dana', 'Dana here, @everyone come say hi. I study physics.');
 	check('the address is on record even when no mail can be sent', sql(`select email from public.discord_codes where discord_id = '${D}'`) === 'dana@mit.edu', JSON.stringify(typedD.json));
 	const asked = await followup((await interact({ type: 3, data: { custom_id: 'request' }, ...member(D, 'Dana') })).token);
 	check('the request reaches #mod-log with Approve and Decline', /^Asked/.test(asked?.content ?? '') && posts().length === 1 && /dana@mit\.edu/.test(posts()[0].content) && posts()[0].content.includes(`<@&${teamRole.id}>`)
@@ -259,7 +266,7 @@ try {
 	const twice = await followup((await press(TEAM, [teamRole.id], posts()[0], 0)).token);
 	check('a second press on the same request changes nothing', /already handled/.test(twice?.content ?? ''), twice?.content);
 
-	await form(E, 'email', 'email', 'eve@mit.edu', 'Eve');
+	await emailForm(E, 'eve@mit.edu', 'Eve');
 	await followup((await button(E, 'request')).token);
 	const declined = await followup((await press(TEAM, [teamRole.id], posts()[1], 1)).token);
 	check('a declined request places nobody', /Declined\*\* by/.test(declined?.content ?? '') && !state.memberRoles[E]?.has(mitRole.id) && !state.memberRoles[E]?.has(organizer.id), declined?.content);
