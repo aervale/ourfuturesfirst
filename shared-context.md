@@ -70,8 +70,9 @@ that makes it true.
   in #resources and #team-chat come from `resourcesPin` and `teamPin` in messages.json.
 
 ## Pitfalls
-- **The bot needs "Pin Messages"**, a permission Discord now keeps apart from Manage Messages and that the bot
-  cannot give itself. Tick it on the bot's role in Server Settings > Roles, or the guides are posted unpinned.
+- **The bot cannot pin.** Discord now keeps "Pin Messages" apart from Manage Messages, and the bot's role lacks it;
+  only the server owner (April) can tick it on that role. The two guides were pinned by hand (2026-11-28); once
+  pinned, the script finds and updates them. A new guide is posted unpinned until someone pins it.
 - **Settings the script owns are put back on every run** (overwrites, slowmode, AutoMod rules, guide text). Change
   them in `discord/setup.mjs` or messages.json, not by hand.
 

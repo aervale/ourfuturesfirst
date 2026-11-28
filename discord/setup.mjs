@@ -224,8 +224,9 @@ async function pinned(channelId, content) {
 	let mine = pins.find(m => m.author?.id === me.id);
 	const isPinned = !!mine;
 	mine ??= (await discord('GET', `/channels/${channelId}/messages?limit=50`)).find(m => m.author?.id === me.id && !m.components?.length && m.content?.split('\n')[0] === head);
-	if (mine && mine.content !== content) await discord('PATCH', `/channels/${channelId}/messages/${mine.id}`, { content });
-	if (!mine) mine = await discord('POST', `/channels/${channelId}/messages`, { content, allowed_mentions: { parse: [] } });
+	// No link preview cards under a guide (flag 4): it reads as a list.
+	if (mine && (mine.content !== content || !(mine.flags & 4))) await discord('PATCH', `/channels/${channelId}/messages/${mine.id}`, { content, flags: 4 });
+	if (!mine) mine = await discord('POST', `/channels/${channelId}/messages`, { content, flags: 4, allowed_mentions: { parse: [] } });
 	if (isPinned) return;
 	await discord('PUT', `/channels/${channelId}/pins/${mine.id}`)
 		.then(() => note(`Guide pinned in #${name}`))
