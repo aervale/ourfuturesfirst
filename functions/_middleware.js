@@ -19,6 +19,24 @@ const GATED = true;
 const SITE = new Set(["/", "/index", "/index.html", "/admin", "/admin.html", "/config.js", "/og.png"]);
 const siteFile = (path) => SITE.has(path) || /^\/assets\/[A-Za-z0-9_.\/-]+$/.test(path);
 
+// Shown without the password, so a link sent in a message (iMessage, WhatsApp, Slack, Discord) still gets its
+// picture and title. Keep these in step with the <meta> tags at the top of index.html.
+const OPEN = new Set(["/og.png", "/assets/star.svg", "/assets/favicon.svg"]);
+const PREVIEW = `<meta property="og:type" content="website">
+<meta property="og:site_name" content="Our Futures First">
+<meta property="og:title" content="Our generation gets a say in how AI is built.">
+<meta property="og:description" content="Students are writing an open letter on regulating AI development and asking what belongs in it. Open to anyone at a U.S. university.">
+<meta property="og:image" content="https://ourfuturesfirst.org/og.png?v=gold">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Our Futures First star, a gold compass star on black.">
+<meta property="og:url" content="https://ourfuturesfirst.org/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Our generation gets a say in how AI is built.">
+<meta name="twitter:description" content="Students are writing an open letter on regulating AI development and asking what belongs in it.">
+<meta name="twitter:image" content="https://ourfuturesfirst.org/og.png?v=gold">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg?v=gold">`;
+
 function notFound() {
   return new Response("Not found", {
     status: 404,
@@ -40,6 +58,7 @@ function page(wrong) {
   const html = `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex"><title>Our Futures First</title>
+${PREVIEW}
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
 <style>
 body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0C0C0E;color:#ECEAE0;font-family:"Nunito Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
@@ -59,7 +78,7 @@ button{margin-top:12px;width:100%;padding:12px;border:0;border-radius:6px;backgr
 <button type="submit">Enter</button>${wrong ? '<p class="err">That password is not right.</p>' : ""}</form>
 </main></body></html>`;
   return new Response(html, {
-    status: 401,
+    status: 200, // 200, not 401: link previews are skipped for error pages
     headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store", "X-Robots-Tag": "noindex" },
   });
 }
@@ -67,7 +86,7 @@ button{margin-top:12px;width:100%;padding:12px;border:0;border-radius:6px;backgr
 export async function onRequest(ctx) {
   const { request } = ctx;
   if (!siteFile(new URL(request.url).pathname)) return notFound();
-  if (!GATED) return ctx.next();
+  if (!GATED || OPEN.has(new URL(request.url).pathname)) return ctx.next();
   const c = cookieOf(request);
   if (c && (await sha(c)) === KEY) return ctx.next();
 

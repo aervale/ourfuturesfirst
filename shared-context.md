@@ -59,6 +59,9 @@ that makes it true.
 - 2026-11-28 David: the site serves only its own files, gated or not. `functions/_middleware.js` answers 404 for
   everything else in the repo. A new file the pages use must be added to its `SITE` list (or live under `assets/`).
   To go public, set `GATED = false` there; never delete the file, or the whole repo is served.
+- 2026-11-28 David: link previews (iMessage and others) show the gold star (`og.png`) and the title "Our generation
+  gets a say in how AI is built." The password page carries the same preview tags (`PREVIEW` in
+  `functions/_middleware.js`): change them together with index.html's, and bump `?v=` on the image when it changes.
 
 ## Pitfalls
 
