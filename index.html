@@ -479,13 +479,13 @@ body.withcount .dcount{display:block}
 @keyframes dsheen2{0%,78%{transform:translateX(-130%)}100%{transform:translateX(130%)}}
 @keyframes dring{0%{box-shadow:0 0 0 0 rgba(88,101,242,.6)}100%{box-shadow:0 0 0 16px rgba(88,101,242,0)}}
 @media (prefers-reduced-motion:reduce){#dscAfter .dbtn::after,#afterHelp.leading #dscAfter .dbtn::after,#afterHelp.leading #dscAfter .dbtn{animation:none}}
-/* "organize" in the organizer option: a short note on hover; a click opens About, or shows the note when About is off */
-.orgword{position:relative;text-decoration:underline dotted;text-underline-offset:5px;text-decoration-color:var(--accent);text-decoration-thickness:2px;cursor:help}
-.orgword:hover{color:color-mix(in srgb,var(--accent) 55%,var(--ink))}
-.orgword::after{content:attr(data-tip);position:absolute;left:0;top:calc(100% + 10px);z-index:6;width:max-content;max-width:min(340px,80vw);padding:10px 12px;background:var(--pop);border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);font-size:.8125rem;line-height:1.45;white-space:pre-line;color:var(--ink);opacity:0;pointer-events:none;transition:opacity .15s}
-.orgword:hover::after,.orgword.open::after{opacity:1}
+/* "organize" in the organizer option links straight to About. While About is off, a click or tap shows the note in place. */
+.orgword{text-decoration:underline dotted;text-underline-offset:5px;text-decoration-color:var(--accent);text-decoration-thickness:2px;cursor:pointer;padding:6px 0;margin:-6px 0}
+.orgword:hover{color:color-mix(in srgb,var(--accent) 55%,var(--ink));text-decoration-style:solid}
+.orgword::after{content:attr(data-tip);position:absolute;left:12px;top:calc(100% + 8px);z-index:6;width:max-content;max-width:min(340px,calc(100% - 24px));padding:10px 12px;background:var(--pop);border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);font-size:.8125rem;line-height:1.45;white-space:pre-line;color:var(--ink);opacity:0;pointer-events:none;transition:opacity .15s}
+.orgword.open::after{opacity:1}
 #spread .opt{position:relative}
-#spread .opt:hover{z-index:6}
+#spread .opt:hover,#spread .opt:has(.orgword.open){z-index:6}
 /* the Discord icon at the top right */
 .tabs a.navd{color:var(--mute);border-bottom-color:transparent}
 .tabs a.navd:hover{color:#5865F2}
@@ -682,7 +682,7 @@ body.withcount .dcount{display:block}
           </div>
           <div class="opts" id="spread"></div>
           <div class="pop" id="leadPop"><div><div class="leadtext">
-            <p class="hint">Thank you. Your name will be marked as a campus organizer on the public list, and we'll be in touch about next steps. <a href="#organizers">Read what campus organizers do.</a></p>
+            <p class="hint">Thank you. Your name will be marked as a campus organizer on the public list, and we'll be in touch about next steps.</p>
             <p class="hint dsc"><b>Next step: join our Discord server.</b> You'll be introduced to campus organizers at other universities and be able to meet people from your own.</p>
           </div></div></div>
           <div class="pop" id="sharePop"><div><div class="leadbox">
@@ -1007,7 +1007,7 @@ function leadFull(){if(S.spread.lead||!S.mine||ROOM.dom!==S.mine.dom)return "";r
 /* the note on "organize" says Discord only while its switch is on, and "click" only while About is */
 function orgWordTip(){var a=$("orgWord");if(!a)return;var b=document.body.classList;
   a.setAttribute("data-tip","Campus organizers spread the word at their university"+(b.contains("nodiscord")?".":" and work with organizers at other universities on our Discord.")
-    +" Their names are marked on the public list."+(b.contains("noabout")?"":"\n\nClick to read more."));}
+    +" Their names are marked on the public list.");}
 function renderLead(){
   paintShow();orgWordTip();
   var on=!!S.spread.lead,why=leadFull(),full=!!why,note=$("leadFull"),b=spreadBtns.lead;
