@@ -1,4 +1,4 @@
-/* The Instagram story image (1080x1920) a signer can post: "I signed," their signer number in large gold
+/* The Instagram story image (1080x1920) a signer can post: "I signed", their signer number in large gold
    figures, the ask, and "Add your voice / ourfuturesfirst.org", over one of three backgrounds.
    Drawn on a canvas in the site's own fonts (EB Garamond, Nunito Sans) and colours, so it needs no server.
    storyImage(n, k, base) resolves to a PNG Blob: n is the signer number (left out if unknown), k picks the
@@ -10,7 +10,7 @@
       BG = "#0C0C0E", INK = "#ECEAE0", GOLD = "#D3993C",
       HEAD = '"EB Garamond", Garamond, Georgia, serif', SANS = '"Nunito Sans", system-ui, -apple-system, sans-serif';
 
-  /* top: the baseline of "I signed,"; gap: from the number down to the ask; width: the ask's line length;
+  /* top: the baseline of "I signed"; gap: from the number down to the ask; width: the ask's line length;
      hush: [x, y, radius] of a soft dark pool behind the text where the picture is bright; shade: darken from this height down, so text over a busy part stays readable */
   var BACKS = window.STORY_BACKGROUNDS = [
     { file: "story-bg-arcs.jpg", top: 380, gap: 118, width: 700, hush: [400, 560, 700] },
@@ -58,10 +58,10 @@
       /* a soft shadow under every letter keeps it clear of the gold lines behind */
       c.shadowColor = "rgba(0,0,0,.65)"; c.shadowBlur = 28;
 
-      /* I signed, */
+      /* I signed */
       var y = back.top;
       c.fillStyle = INK; c.font = "500 190px " + HEAD;
-      c.fillText("I signed,", PAD - 6, y);
+      c.fillText("I signed", PAD - 6, y);
 
       /* the signer number, large, in gold */
       if (n) {
