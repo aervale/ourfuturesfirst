@@ -5,6 +5,7 @@
 //   node --env-file=supabase/functions/.env discord/setup.mjs            set the server up
 //   node --env-file=supabase/functions/.env discord/setup.mjs message    only refresh the #start-here message (after editing messages.json)
 //   node --env-file=supabase/functions/.env discord/setup.mjs avatar     only give the bot the project's picture
+//   node --env-file=supabase/functions/.env discord/setup.mjs roles      only make or correct the roles
 //   node discord/setup.mjs invite <application id>                       print the link that adds the bot
 //
 // Needs DISCORD_BOT_TOKEN (in supabase/functions/.env, which git ignores). Optional: DISCORD_GUILD_ID
@@ -117,8 +118,10 @@ async function role(name, wanted) {
 		found = await discord('POST', `/guilds/${guildId}/roles`, { name, ...wanted });
 		roles.push(found);
 		note(`Role made: ${name}`);
-	} else if (wanted.permissions && found.permissions !== wanted.permissions) {
-		found = await discord('PATCH', `/guilds/${guildId}/roles/${found.id}`, { permissions: wanted.permissions });
+	} else {
+		const change = {};
+		for (const k of ['permissions', 'color', 'hoist']) if (k in wanted && found[k] !== wanted[k]) change[k] = wanted[k];
+		if (Object.keys(change).length) found = await discord('PATCH', `/guilds/${guildId}/roles/${found.id}`, change);
 	}
 	return found;
 }
@@ -129,7 +132,16 @@ if (BigInt(everyone.permissions) & P.VIEW) {
 	note('@everyone can no longer see channels by default');
 }
 const team = await role(N.team, { permissions: String(P.VIEW), color: 0xd3993c, hoist: true, mentionable: true });
-const organizer = await role(N.organizer, { permissions: String(P.VIEW) });
+// Member: everyone who confirmed a university email; it is what lets them see the server.
+// Organizer: campus organizers only, shown as their own group in the member list.
+const member = await role(N.member, { permissions: String(P.VIEW) });
+const organizer = await role(N.organizer, { permissions: String(P.VIEW), color: 0xa22c29, hoist: true });
+// `roles`: only the roles above (and the owner's), nothing else; safe to run without touching any channel.
+if (process.argv[2] === 'roles') {
+	for (const r of [team, member, organizer]) await discord('PUT', `/guilds/${guildId}/members/${guild.owner_id}/roles/${r.id}`).catch(error => note(`Could not give the owner ${r.name}: ${error.message}`));
+	console.log(`  Roles ready: ${[team, member, organizer].map(r => r.name).join(', ')}`);
+	process.exit(0);
+}
 
 // ---------- Channels ----------
 let channels = await discord('GET', `/guilds/${guildId}/channels`);
@@ -158,7 +170,7 @@ const start = await channel(N.start, 0, {
 	permission_overwrites: [{ id: guildId, type: 0, allow: String(P.VIEW | P.HISTORY), deny: String(TALK) }, botHere]
 });
 
-// Community: open to every confirmed organizer. A new server's own "Text Channels" category is reused.
+// Community: open to everyone who confirmed their university email (Member role). A new server's own "Text Channels" category is reused.
 const stock = channels.find(c => c.type === 4 && c.name === 'Text Channels');
 if (stock && !channels.some(c => c.type === 4 && c.name === N.community)) Object.assign(stock, await discord('PATCH', `/channels/${stock.id}`, { name: N.community }));
 const community = await channel(N.community, 4);
@@ -194,8 +206,8 @@ await startMessage(start.id);
 const invite = await discord('POST', `/channels/${start.id}/invites`, { max_age: 0, max_uses: 0, unique: false }).catch(error => (note(`No invite link made: ${error.message}`), null));
 
 // ---------- The owner is on the core team ----------
-for (const r of [team, organizer]) await discord('PUT', `/guilds/${guildId}/members/${guild.owner_id}/roles/${r.id}`).catch(error => note(`Could not give the owner ${r.name}: ${error.message}`));
+for (const r of [team, member, organizer]) await discord('PUT', `/guilds/${guildId}/members/${guild.owner_id}/roles/${r.id}`).catch(error => note(`Could not give the owner ${r.name}: ${error.message}`));
 
 console.log(`\nDone. Server id: ${guildId}`);
 if (invite?.code) console.log(`Invite link for organizers: https://discord.gg/${invite.code}`);
-console.log(`Put the bot's role above "${N.team}" and "${N.organizer}" if it is not already (Server Settings > Roles): it can only hand out roles below its own.`);
+console.log(`Put the bot's role above "${N.team}", "${N.member}" and "${N.organizer}" if it is not already (Server Settings > Roles): it can only hand out roles below its own.`);

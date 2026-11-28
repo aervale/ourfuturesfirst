@@ -4,7 +4,7 @@
 // What it does: a newcomer presses "Find my campus" in #start-here and types their university email and a short
 // introduction of themselves.
 // The database emails that address a 6-digit code (discord_start). When the code comes back
-// (discord_finish) the bot gives them the Organizer role and their university's role, creating the
+// (discord_finish) the bot gives them the Member role (Organizer too if their sign-up offered to organize) and their university's role, creating the
 // university's private channel the first time someone from it arrives, posts their introduction in
 // #introductions and in their campus channel, and tells them what to do next.
 //
@@ -174,10 +174,13 @@ async function campus(guild: string, bot: string, dom: string, uni: string, role
  */
 async function settle(guild: string, bot: string, userId: string, result: Json, team = false): Promise<{ ok: boolean; text: string; channel?: string }> {
 	const [roles, channels] = await Promise.all([discord('GET', `/guilds/${guild}/roles`), discord('GET', `/guilds/${guild}/channels`)]);
+	// Member lets everyone confirmed see the server; Organizer marks campus organizers (their sign-up offered to organize).
+	const member = roles.find((r: Json) => r.name === NAMES.member);
 	const organizer = roles.find((r: Json) => r.name === NAMES.organizer);
 	const give = (role: string) => discord('PUT', `/guilds/${guild}/members/${userId}/roles/${role}`);
 	const take = (member: string, role: string) => discord('DELETE', `/guilds/${guild}/members/${member}/roles/${role}`).catch(() => null);
-	if (organizer) await give(organizer.id);
+	if (member) await give(member.id);
+	if (organizer && result.lead) await give(organizer.id);
 	// Only ever after an emailed code: this address is on the core team list (discord_team).
 	const teamRole = team ? roles.find((r: Json) => r.name === NAMES.team) : null;
 	if (teamRole) await give(teamRole.id);
@@ -193,6 +196,7 @@ async function settle(guild: string, bot: string, userId: string, result: Json, 
 	// The email used to belong to another Discord account, or this account used to be at another university.
 	if (result.replaced) {
 		await take(result.replaced, spot.role);
+		if (member) await take(result.replaced, member.id);
 		if (organizer) await take(result.replaced, organizer.id);
 	}
 	if (result.moved_from) {

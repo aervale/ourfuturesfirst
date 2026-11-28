@@ -108,13 +108,13 @@ console.log('Setup script');
 await setup();
 const names = (type) => state.channels.filter(c => c.type === type).map(c => c.name).sort().join(',');
 check('server renamed and given a picture', state.guild.name === 'Our Futures First' && state.guild.icon === 'set');
-check('roles made', ['Core team', 'Organizer'].every(n => state.roles.some(r => r.name === n)));
+check('roles made', ['Core team', 'Member', 'Organizer'].every(n => state.roles.some(r => r.name === n)));
 check('@everyone lost view-channels', (BigInt(state.roles[0].permissions) & (1n << 10n)) === 0n);
 check('categories', names(4) === 'Campuses,Community,Team', names(4));
 check('channels', names(0) === 'announcements,general,help,introductions,mod-log,resources,start-here,team-chat', names(0));
 const start = state.channels.find(c => c.name === 'start-here');
 check('start message with its three buttons', state.messages[start.id]?.length === 1 && state.messages[start.id][0].components[0].components.map(b => b.custom_id).join() === 'join,code,guide');
-check('owner is on the core team', state.memberRoles[OWNER]?.size === 2);
+check('owner is on the core team', state.memberRoles[OWNER]?.size === 3);
 const before = JSON.stringify([state.roles.length, state.channels.length, state.messages[start.id].length]);
 await setup();
 check('running it again adds nothing', before === JSON.stringify([state.roles.length, state.channels.length, state.messages[start.id].length]));
@@ -163,7 +163,8 @@ async function followup(token) {
 
 const A = '900000000000000001', B = '900000000000000002', C = '900000000000000003', D = '900000000000000004', E = '900000000000000005', TEAM = '900000000000000009';
 const everyone = `'${A}','${B}','${C}','${D}','${E}'`;
-const signed = sql("select email from public.signups where verified_at is not null and dom = 'mit.edu' order by created_at limit 1");
+// a confirmed MIT sign-up that offered to organize, so it should get the Organizer role
+const signed = sql("select email from public.signups where verified_at is not null and dom = 'mit.edu' and 'lead' = any(spread) order by created_at limit 1");
 const clean = () => sql(`delete from public.discord_members where discord_id in (${everyone}); delete from public.discord_codes where discord_id in (${everyone}); delete from public.discord_asks where discord_id in (${everyone}); delete from public.discord_requests where discord_id in (${everyone}); delete from public.discord_team where email = '${signed}'; delete from public.discord_unis where dom = 'mit.edu';`);
 const plant = (userId, email, code) => sql(`insert into public.discord_codes (discord_id, email, code_hash) values ('${userId}', '${email}', public.discord_code_hash('${userId}', '${code}')) on conflict (discord_id) do update set email = excluded.email, code_hash = excluded.code_hash, tries = 0, created_at = now()`);
 
@@ -207,12 +208,13 @@ try {
 	const mitChannel = state.channels.find(c => c.name === 'mit');
 	const campuses = state.channels.find(c => c.type === 4 && c.name === 'Campuses');
 	const organizer = state.roles.find(r => r.name === 'Organizer');
+	const memberRole = state.roles.find(r => r.name === 'Member');
 	check('MIT role and private #mit channel are made', !!mitRole && mitChannel?.parent_id === campuses.id, state.calls.slice(-12).join(' | '));
 	check('#mit is hidden from everyone but MIT, the core team and the bot', (() => {
 		const o = mitChannel?.permission_overwrites ?? [];
 		return o.find(x => x.id === GUILD)?.deny === '1024' && o.find(x => x.id === mitRole?.id)?.allow === '1024' && o.some(x => x.id === BOT && x.type === 1) && o.length === 4;
 	})(), JSON.stringify(mitChannel?.permission_overwrites));
-	check('the newcomer gets Organizer and MIT', state.memberRoles[A]?.has(organizer.id) && state.memberRoles[A]?.has(mitRole?.id));
+	check('a campus organizer gets Member, Organizer and MIT', state.memberRoles[A]?.has(memberRole.id) && state.memberRoles[A]?.has(organizer.id) && state.memberRoles[A]?.has(mitRole?.id));
 	check('they are told where to go', new RegExp(`<#${mitChannel?.id}>`).test(placed?.content ?? '') && /first one here/.test(placed.content) && !/could not find a confirmed sign-up/.test(placed.content), placed?.content);
 	check('#mit greets them', /first one here from \*\*MIT\*\*/.test(state.messages[mitChannel?.id]?.[0]?.content ?? ''));
 	check('#mit shows their introduction', (state.messages[mitChannel?.id]?.[0]?.content ?? '').includes(`> ${introOf(A)}`));
@@ -225,6 +227,7 @@ try {
 	plant(B, 'not-signed-up@mit.edu', '654321');
 	const second = await followup((await form(B, 'verify', 'code', '654321')).token);
 	check('a second MIT person lands in the same channel', state.channels.filter(c => c.name === 'mit').length === 1 && state.memberRoles[B]?.has(mitRole.id) && /2 people/.test(second?.content ?? ''), second?.content);
+	check('someone who is not an organizer gets Member and MIT, not Organizer', state.memberRoles[B]?.has(memberRole.id) && !state.memberRoles[B]?.has(organizer.id));
 	check('someone who has not signed is pointed at the site', /could not find a confirmed sign-up/.test(second?.content ?? ''));
 	check('#mit announces the second arrival', /That makes 2 of you/.test(state.messages[mitChannel.id]?.[1]?.content ?? ''));
 
@@ -252,7 +255,7 @@ try {
 	check('the request shows their introduction, with @everyone defused', /> Dana here, @\u200beveryone/.test(posts()[0].content), posts()[0].content);
 	check('only the core team is pinged by it', JSON.stringify(posts()[0].allowed_mentions) === JSON.stringify({ roles: [teamRole.id] }));
 	const askedAgain = await followup((await button(D, 'request')).token);
-	check('asking twice does not post twice', posts().length === 1 && /already with the organizers/.test(askedAgain?.content ?? ''), askedAgain?.content);
+	check('asking twice does not post twice', posts().length === 1 && /already with the core team/.test(askedAgain?.content ?? ''), askedAgain?.content);
 
 	const sneaky = await press(E, [], posts()[0], 0);
 	for (let i = 0; i < 40 && !state.whispers.length; i++) await new Promise(done => setTimeout(done, 250));
@@ -260,7 +263,7 @@ try {
 
 	const approved = await followup((await press(TEAM, [teamRole.id], posts()[0], 0)).token);
 	check('a core team member approves and the person is placed', /Approved\*\* by <@900000000000000009>/.test(approved?.content ?? '') && approved?.content.includes('dana@mit.edu') && approved.components.length === 0
-		&& state.memberRoles[D]?.has(mitRole.id) && state.memberRoles[D]?.has(organizer.id), approved?.content);
+		&& state.memberRoles[D]?.has(mitRole.id) && state.memberRoles[D]?.has(memberRole.id) && !state.memberRoles[D]?.has(organizer.id), approved?.content);
 	check('approval by hand never gives the Core team role', !state.memberRoles[D]?.has(teamRole.id));
 	check('the approved person is told what to do next by direct message', /You're in/.test(state.messages[state.dms[D]]?.[0]?.content ?? ''), JSON.stringify(state.dms));
 	const twice = await followup((await press(TEAM, [teamRole.id], posts()[0], 0)).token);
@@ -269,7 +272,7 @@ try {
 	await emailForm(E, 'eve@mit.edu', 'Eve');
 	await followup((await button(E, 'request')).token);
 	const declined = await followup((await press(TEAM, [teamRole.id], posts()[1], 1)).token);
-	check('a declined request places nobody', /Declined\*\* by/.test(declined?.content ?? '') && !state.memberRoles[E]?.has(mitRole.id) && !state.memberRoles[E]?.has(organizer.id), declined?.content);
+	check('a declined request places nobody', /Declined\*\* by/.test(declined?.content ?? '') && !state.memberRoles[E]?.has(mitRole.id) && !state.memberRoles[E]?.has(memberRole.id), declined?.content);
 	const pushy = await followup((await button(E, 'request')).token);
 	check('a declined person cannot ask again straight away', /could not confirm/.test(pushy?.content ?? '') && posts().length === 2, pushy?.content);
 
