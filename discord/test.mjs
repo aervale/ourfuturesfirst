@@ -111,7 +111,7 @@ check('server renamed and given a picture', state.guild.name === 'Our Futures Fi
 check('roles made', ['Core team', 'Organizer'].every(n => state.roles.some(r => r.name === n)));
 check('@everyone lost view-channels', (BigInt(state.roles[0].permissions) & (1n << 10n)) === 0n);
 check('categories', names(4) === 'Campuses,Community,Team', names(4));
-check('channels', names(0) === 'announcements,general,help,introductions,mod-log,resources,start-here', names(0));
+check('channels', names(0) === 'announcements,general,help,introductions,mod-log,resources,start-here,team-chat', names(0));
 const start = state.channels.find(c => c.name === 'start-here');
 check('start message with its three buttons', state.messages[start.id]?.length === 1 && state.messages[start.id][0].components[0].components.map(b => b.custom_id).join() === 'join,code,guide');
 check('owner is on the core team', state.memberRoles[OWNER]?.size === 2);

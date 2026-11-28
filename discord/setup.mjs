@@ -168,6 +168,11 @@ await channel(N.campuses, 4, { permission_overwrites: [deny(guildId, P.VIEW), bo
 
 // Team: the core team only.
 const teamCategory = await channel(N.teamCategory, 4, { permission_overwrites: [deny(guildId, P.VIEW), allow(team.id, P.VIEW), botHere] });
+// #team-chat: where the core team plans and decides, out of sight of everyone else.
+await channel(N.teamChat, 0, {
+	parent_id: teamCategory.id, topic: 'Core team only: plans, decisions, who is taking which university.',
+	permission_overwrites: [deny(guildId, P.VIEW), allow(team.id, P.VIEW), botHere]
+});
 await channel(N.log, 0, {
 	parent_id: teamCategory.id, topic: 'Things the bot could not do by itself.',
 	permission_overwrites: [deny(guildId, P.VIEW), allow(team.id, P.VIEW), botHere]

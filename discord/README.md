@@ -47,7 +47,7 @@ they typed. Approving places them without the email check, so approve only peopl
 
 ## The Core team
 
-The Core team role sees every campus channel and `#mod-log`, and is the only role that can approve
+The Core team role sees every campus channel, `#team-chat` (the team's own planning channel) and `#mod-log`, and is the only role that can approve
 or decline requests. Two ways onto it:
 
 - Someone already in the server: give them the role in Discord (right-click their name > Roles).
