@@ -145,3 +145,30 @@ select id, (array[
   'Postdoc in neuroscience. Before that I organized a union drive at my last university. I can reach the postdoc association and three departments directly.'
 ])[1 + (row_number() over (order by created_at))::int % 3]
 from signups where 'lead' = any(spread) and verified_at is not null order by created_at limit 14;
+
+-- Discord (local test mode): the admin page reads the server's state without signing in. While the bot's tables are
+-- empty it shows made-up channels and members built from the sample sign-ups, so the page has something to show;
+-- nothing is written to those tables, which discord/test.mjs expects to find empty.
+create function public.dev_admin_discord() returns jsonb language sql stable security definer set search_path = public as $$
+  with real as (select exists (select 1 from discord_members) or exists (select 1 from discord_unis) or exists (select 1 from discord_requests) any_rows),
+  su as (select dom, min(uni) uni, row_number() over (order by count(*) desc) k from signups
+         where verified_at is not null and 'lead' = any(spread) group by dom order by count(*) desc limit 6),
+  sm as (select s.*, row_number() over (order by s.verified_at desc) k from signups s join su on su.dom = s.dom
+         where s.verified_at is not null and ('lead' = any(s.spread) or abs(hashtext(s.email)) % 25 = 0) limit 40)
+  select case when (select any_rows from real) then jsonb_build_object(
+    'unis', coalesce((select jsonb_agg(jsonb_build_object('dom', u.dom, 'uni', u.uni, 'channel', u.channel_id, 'made', u.created_at) order by u.uni) from discord_unis u), '[]'::jsonb),
+    'members', coalesce((select jsonb_agg(jsonb_build_object('name', m.discord_name, 'email', m.email, 'dom', m.dom, 'uni', m.uni,
+                 'signup', m.signup_id, 'lead', coalesce('lead' = any(s.spread), false), 'intro', m.intro, 'joined', m.joined_at) order by m.joined_at desc)
+               from discord_members m left join signups s on s.id = m.signup_id), '[]'::jsonb),
+    'waiting', coalesce((select jsonb_agg(jsonb_build_object('name', r.discord_name, 'email', r.email, 'dom', r.dom, 'uni', r.uni, 'intro', r.intro, 'asked', r.asked_at) order by r.asked_at)
+               from discord_requests r where r.decided_at is null), '[]'::jsonb))
+  else jsonb_build_object(
+    'unis', coalesce((select jsonb_agg(jsonb_build_object('dom', dom, 'uni', uni, 'channel', (910000000000000000 + k)::text, 'made', now())) from su), '[]'::jsonb),
+    'members', coalesce((select jsonb_agg(jsonb_build_object('name', lower(split_part(name, ' ', 1)) || '_' || k, 'email', email, 'dom', dom, 'uni', uni, 'signup', id,
+                 'lead', 'lead' = any(spread), 'intro', 'Hi, I am ' || split_part(name, ' ', 1) || '. I study ' || coalesce(nullif(major, ''), 'here') || ' and want to help get people at my university involved.',
+                 'joined', verified_at) order by verified_at desc) from sm), '[]'::jsonb),
+    'waiting', coalesce((select jsonb_agg(jsonb_build_object('name', 'sam_k', 'email', 'sam.k@' || dom, 'dom', dom, 'uni', uni,
+                 'intro', 'Sophomore here, my university mail filter seems to eat everything. Happy to help however I can.', 'asked', now())) from su where k = 1), '[]'::jsonb))
+  end;
+$$;
+grant execute on function public.dev_admin_discord() to anon, authenticated;

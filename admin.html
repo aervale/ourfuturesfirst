@@ -307,6 +307,11 @@ td.wide{white-space:normal;min-width:320px}
   </div>
   <div class="scroll" style="margin-top:22px"><table id="tOrg"></table></div>
 
+  <h2>Discord <small id="dscNote"></small></h2>
+  <p class="mute">Read from the Discord bot's records, so it matches the server. Everyone who confirms a university email in Discord lands in that university's private channel; the channel is made when the first person arrives.</p>
+  <div class="scroll"><table id="tDscUni"></table></div>
+  <div class="scroll" style="margin-top:22px"><table id="tDscMem"></table></div>
+
   <h2>Share links <small id="refNote"></small></h2>
   <p class="mute">Opens is how many times the link was opened. Direct is people who joined from that person's own link. Downstream adds everyone who then joined through those people's links, and so on. Buttons is how many times that person pressed Copy or a share button.</p>
   <div class="scroll"><table id="tRef"></table></div>
@@ -322,6 +327,10 @@ td.wide{white-space:normal;min-width:320px}
   <h2>Names held back from the public list <small id="heldNote"></small></h2>
   <p class="mute">Names caught by the automatic screen, or hidden by an admin. The person is still counted; only the name is hidden.</p>
   <div class="scroll"><table id="tHidden"></table></div>
+
+  <h2>Waiting to be let into Discord <small id="waitNote"></small></h2>
+  <p class="mute">People whose code never arrived and who asked to be let in by hand. Approve or decline them with the buttons in #mod-log; they leave this list once someone does.</p>
+  <div class="scroll"><table id="tDscWait"></table></div>
   </section>
 
   <!-- Sign-ups: every person and what they wrote -->
@@ -348,7 +357,7 @@ td.wide{white-space:normal;min-width:320px}
       <button class="toggle" id="swList" aria-pressed="false" disabled><i></i>Names and universities list</button>
       <button class="toggle" id="swLetter" aria-pressed="false" disabled><i></i>Letter page</button>
       <button class="toggle" id="swAbout" aria-pressed="false" disabled><i></i>About page</button>
-      <button class="toggle" id="swDiscord" aria-pressed="false" disabled><i></i>Discord link for organizers</button>
+      <button class="toggle" id="swDiscord" aria-pressed="false" disabled><i></i>Discord link</button>
     </div>
     <p class="swsave"><button class="btn main" id="btnSwSave" disabled>Save</button><button class="btn" id="btnSwUndo" hidden>Discard changes</button><span class="mute" id="swMsg" role="status"></span></p>
     <p class="pvrow"><span class="lab">Preview in this browser</span><a class="lab" id="lnkPreviewLive" href="./" target="_blank" rel="noopener">With live data</a><a class="lab" id="lnkPreview" href="./" target="_blank" rel="noopener">With sample data</a></p>
@@ -377,6 +386,8 @@ function clear(e){while(e.firstChild)e.removeChild(e.firstChild);}
 var C=window.OFF_CONFIG||{};
 if(!C.url){$("signin").hidden=false;$("msg").textContent="No backend is configured.";return;}
 var sb=window.supabase.createClient(C.url,C.key);
+/* the Discord server (its id is public: it is in every invite link) and what the bot has recorded about it */
+var GUILD="1575762632462307399",DSC=null;
 var TAB="overview",TABS=["overview","universities","review","signups","settings"],BIOS={},CAPS=null,CLOSED=[],SHOWN={},SUGS=null,SUGOPEN=true,EV={events:[],invites:[],ok:false},ROWS=[],F={uni:"",role:"",confirmed:true,mode:"total",allUnis:false};
 var ROLES=["an undergraduate","a graduate student","a postdoc","faculty","staff"],YEARS=["Freshman","Sophomore","Junior","Senior"];
 var RLAB={"an undergraduate":"Undergraduates","a graduate student":"Graduate students","a postdoc":"Postdocs","faculty":"Faculty","staff":"Staff"};
@@ -437,8 +448,8 @@ function showTab(t,keep){if(t==="responses")t="review";if(TABS.indexOf(t)<0)t="o
   TABS.forEach(function(k){$("pane-"+k).hidden=k!==t;$("atab-"+k).setAttribute("aria-selected",String(k===t));});
   try{history.replaceState(null,"",t==="overview"?location.pathname+location.search:"#"+t);}catch(x){}
   paintFnote();if(t==="overview"&&!$("dash").hidden)plot();if(!keep)window.scrollTo(0,0);}
-/* the count on the To review tab: suggestions nobody has dealt with, and names waiting to be looked at (whatever the filters say) */
-function paintReviewN(){var n=(SUGS?SUGS.filter(function(g){return !g.done;}).length:0)+ROWS.filter(function(r){return r.name_hidden;}).length,b=$("reviewN");
+/* the count on the To review tab: suggestions nobody has dealt with, names waiting to be looked at, and people waiting to be let into Discord (whatever the filters say) */
+function paintReviewN(){var n=(SUGS?SUGS.filter(function(g){return !g.done;}).length:0)+ROWS.filter(function(r){return r.name_hidden;}).length+(DSC?DSC.waiting.length:0),b=$("reviewN");
   b.hidden=!n;b.textContent=num(n);$("atab-review").setAttribute("aria-label","To review"+(n?", "+n+" waiting":""));}
 /* the filters live on Overview but narrow every tab, so the other tabs say when one is on */
 function paintFnote(){var n=$("fnote"),parts=[];if(F.uni&&TAB!=="universities")parts.push(uniName());if(F.role)parts.push(RLAB[F.role]);if(!F.confirmed)parts.push("including unconfirmed sign-ups");
@@ -585,6 +596,7 @@ function render(){
   table($("tOrg"),["Name","University","Discord intro","Email","Confirmed","Signed up",""],org,function(r){
     var about=mk("span",BIOS[r.id]?null:"mute",BIOS[r.id]||"Not on Discord yet");about.wide=true;
     return [r.name,r.uni,about,r.email,r.verified_at?"Yes":"No",day(r.created_at),removeBtn(r)];});
+  renderDiscord();
   var up=$("uniPick");if(F.uni){var all=ROWS.filter(function(r){return r.dom===F.uni;}),lead=all.filter(isLead).length,shutU=CLOSED.indexOf(F.uni)>-1;
     up.textContent=plural(all.filter(function(r){return r.verified_at;}).length,"confirmed sign-up","confirmed sign-ups")+", "+plural(lead,"organizer","organizers")+" of "+num(capOf(F.uni))+", "+(shutU?"not taking new organizers":"taking new organizers");}
   else up.textContent="Pick one to manage its organizers, limit and links on their own.";
@@ -594,8 +606,31 @@ function render(){
 
   var q=$("inSearch").value.trim().toLowerCase(),hit=rows.filter(function(r){return !q||(r.name+" "+r.email+" "+r.uni).toLowerCase().indexOf(q)>-1;});
   $("count").textContent=num(hit.length)+(hit.length>300?" matches, showing 300":" shown");
-  table($("tAll"),["Name","Public","University","Email","Role","Year","Major","Confirmed","Signed up",""],hit.slice(0,300),function(r){
-    return [r.name,r.name_hidden?"Hidden":r.show_name?"Yes":"No",r.uni,r.email,r.role,r.year,r.major,r.verified_at?"Yes":"No",day(r.created_at),hideBtn(r)];});
+  var onD={};if(DSC)DSC.members.forEach(function(m){if(m.signup)onD[m.signup]=1;});
+  table($("tAll"),["Name","Public","University","Email","Role","Year","Major","Confirmed","Discord","Signed up",""],hit.slice(0,300),function(r){
+    return [r.name,r.name_hidden?"Hidden":r.show_name?"Yes":"No",r.uni,r.email,r.role,r.year,r.major,r.verified_at?"Yes":"No",onD[r.id]?"Yes":"",day(r.created_at),hideBtn(r)];});
+}
+
+/* Discord: one row per university channel, then the people in them, both narrowed by the university picker */
+/* the channel name the bot gives a university (supabase/functions/discord/index.ts, slug) */
+function slug(n){return n.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,90)||"campus";}
+function chanLink(c,label){if(!c)return mk("span","mute","Not made yet");var a=mk("a",null,label);a.href="https://discord.com/channels/"+GUILD+"/"+c;a.target="_blank";a.rel="noopener";return a;}
+function renderDiscord(){
+  var note=$("dscNote");
+  if(!DSC){note.textContent="Not available: the database change for this has not been applied.";table($("tDscUni"),["University"],[],null);table($("tDscMem"),["Name"],[],null);table($("tDscWait"),["Name"],[],null);return;}
+  var mem=DSC.members.filter(function(m){return !F.uni||m.dom===F.uni;}),per={},leads={};
+  DSC.members.forEach(function(m){var p=per[m.dom]=per[m.dom]||{n:0,signed:0,lead:0};p.n++;if(m.signup)p.signed++;if(m.lead)p.lead++;});
+  ROWS.forEach(function(r){if(r.verified_at&&isLead(r))leads[r.dom]=(leads[r.dom]||0)+1;});
+  var unis=DSC.unis.filter(function(u){return !F.uni||u.dom===F.uni;}).sort(function(a,b){return ((per[b.dom]||{}).n||0)-((per[a.dom]||{}).n||0)||a.uni.localeCompare(b.uni);});
+  note.textContent=plural(DSC.members.length,"person","people")+" in "+plural(DSC.unis.length,"university channel","university channels")+(F.uni?"; showing "+(unis[0]?unis[0].uni:"this university"):"");
+  table($("tDscUni"),["University","Channel","In the channel","Signed on the site","Organizers in it"],unis,function(u){var p=per[u.dom]||{n:0,signed:0,lead:0};
+    return [u.uni,chanLink(u.channel,"#"+slug(u.uni)),num(p.n),num(p.signed),num(p.lead)+" of "+num(leads[u.dom]||0)];});
+  table($("tDscMem"),["Discord name","University","Email","Signed","Organizer","Introduction","Joined"],mem.slice(0,300),function(m){
+    var i=mk("span",m.intro?null:"mute",m.intro||"None");i.wide=true;
+    return [m.name,m.uni,m.email,m.signup?"Yes":"No",m.lead?"Yes":"",i,day(m.joined)];});
+  $("waitNote").textContent=DSC.waiting.length?plural(DSC.waiting.length,"person","people"):"";
+  table($("tDscWait"),["Discord name","University","Email they typed","Introduction","Asked"],DSC.waiting,function(w){
+    var i=mk("span",null,w.intro);i.wide=true;return [w.name,w.uni,w.email,i,day(w.asked)];});
 }
 
 /* cells that start with = + - @ are prefixed so a spreadsheet does not run them as formulas */
@@ -709,6 +744,7 @@ function start(session){
       return [["","All universities",null]].concat(c.map(function(p){return [p[0],nm[p[0]],p[1]];}));},function(){return F.uni;},function(v){F.uni=v;},true);
     TABS.forEach(function(k){$("atab-"+k).addEventListener("click",function(){showTab(k);});});
     sb.rpc(C.dev?"dev_admin_bios":"admin_bios").then(function(o){if(!o.error&&o.data){BIOS=o.data;render();}},function(){});
+    sb.rpc(C.dev?"dev_admin_discord":"admin_discord").then(function(o){if(!o.error&&o.data){DSC=o.data;render();}},function(){});
     paintUni();paintRole();render();showTab(location.hash.slice(1),true);services(true);setInterval(function(){if(!document.hidden)services();},120000);
     /* the three parts of the public page that are switched on from here; a change shows there within half a minute */
     /* the switches are a draft until Save is pressed. The draft is kept in this browser so the preview can show it. */

@@ -16,7 +16,7 @@
   "site": "https://ourfuturesfirst.org",
   "start": {
     "title": "Welcome to Our Futures First",
-    "body": "Our Futures First is a student-run open letter on how AI is developed, written by people at U.S. universities. This server is where campus organizers work together before launch day.\n\n**To get in:** press **Find my campus**, type your university email and a few lines about yourself. We email you a 6-digit code (look in Junk too), you press **Enter my code** and type it in, and you land in a private chat with everyone else from your university. Your introduction is posted in #introductions and in your campus chat.\n\nYour email is only used to work out your university. It is never shown in the server. The organizing team sees it only if you ask them to add you by hand.",
+    "body": "Our Futures First is a student-run open letter on how AI is developed, written by people at U.S. universities. This server is where we talk with everyone who has signed up: news lands here first, each university has its own chat, and campus organizers work together here before launch day.\n\n**To get in:** press **Find my campus**, type your university email and a few lines about yourself. We email you a 6-digit code (look in Junk too), you press **Enter my code** and type it in, and you land in a private chat with everyone else from your university. Your introduction is posted in #introductions and in your campus chat.\n\nYour email is only used to work out your university. It is never shown in the server. The organizing team sees it only if you ask them to add you by hand.",
     "join": "Find my campus",
     "guide": "What do organizers do?"
   },
@@ -44,7 +44,7 @@
   "notSigned": "\n\nOne thing: we could not find a confirmed sign-up for this email. Add your voice at {site} so you are counted.",
   "campusFirst": "{user} is the first one here from **{uni}**. Everyone who joins from {uni} lands in this channel.",
   "campusJoined": "{user} just joined from **{uni}**. That makes {count} of you here.",
-  "campusTopic": "Organizers at {uni}. Private to people who confirmed a {uni} email.",
+  "campusTopic": "Everyone from {uni}. Private to people who confirmed a {uni} email.",
   "errors": {
     "bad_email": "That does not look like an email address. Try again with your university email.",
     "not_university": "We could not match that address to a U.S. university. Use your university (.edu) email, or write to contact@ourfuturesfirst.org.",
