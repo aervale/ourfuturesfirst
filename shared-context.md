@@ -55,7 +55,7 @@ that makes it true.
 - 2026-11-28 David: blocking unsuitable names uses the word list only; no outside screening service.
 - 2026-11-28 David, April: every live change goes through a migration file in the repo.
 - 2026-11-28 April: the Instagram button, once confirmed, makes a story image (`assets/story.js`, preview
-  `tools/story.html?n=412`) with the signer number from `signer_number()`: place among confirmed sign-ups by
+  `tools/story.html?n=412&k=0`) on one of three backgrounds (`assets/story-bg-*.jpg`, a random one first, switchable) with the signer number from `signer_number()`: place among confirmed sign-ups by
   confirmation time. A window shows it with steps; its Share button opens the
   phone's share sheet (Instagram, then Story). Opening the share sheet straight from the tap only offered to save a PNG
   on April's phone, so the tap always opens the window first.

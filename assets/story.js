@@ -1,27 +1,26 @@
-/* The Instagram story image (1080x1920) a signer can post: the star and "Our Futures First",
-   "I signed.", their signer number, the ask, and the site's address.
+/* The Instagram story image (1080x1920) a signer can post: "I signed," their signer number in large gold
+   figures, the ask, and "Add your voice / ourfuturesfirst.org", over one of three backgrounds.
    Drawn on a canvas in the site's own fonts (EB Garamond, Nunito Sans) and colours, so it needs no server.
-   storyImage(n) resolves to a PNG Blob; n is the signer number (left out if unknown).
-   The background (assets/story-bg.jpg) carries the stars, the name and the dawn line; the text sits between them.
-   Preview: tools/story.html. */
+   storyImage(n, k, base) resolves to a PNG Blob: n is the signer number (left out if unknown), k picks the
+   background (STORY_BACKGROUNDS[k], wrapping round), base is the path to assets/ ("assets/" by default).
+   Each background says where its dark, quiet area is, and the main text sits there; the address always sits
+   along the bottom, above the gold line. Preview: tools/story.html?n=412&k=0. */
 (function () {
   var W = 1080, H = 1920, PAD = 110,
-      BG = "#0C0C0E", INK = "#ECEAE0", MUTE = "rgba(236,234,224,.62)", LINE = "rgba(236,234,224,.16)",
-      INSET = "rgba(236,234,224,.05)", GOLD = "#D3993C",
+      BG = "#0C0C0E", INK = "#ECEAE0", GOLD = "#D3993C",
       HEAD = '"EB Garamond", Garamond, Georgia, serif', SANS = '"Nunito Sans", system-ui, -apple-system, sans-serif';
+
+  /* top: the baseline of "I signed,"; gap: from the number down to the ask; shade: darken from this height down, so text over a busy part stays readable */
+  var BACKS = window.STORY_BACKGROUNDS = [
+    { file: "story-bg-arcs.jpg", top: 400, gap: 118 },
+    { file: "story-bg-ribbons.jpg", top: 900, shade: 700 },
+    { file: "story-bg-paper.jpg", top: 960, shade: 640 }
+  ];
 
   function picture(src) {
     return new Promise(function (done) {
       var i = new Image(); i.onload = function () { done(i); }; i.onerror = function () { done(null); }; i.src = src;
     });
-  }
-  /* text with letter spacing, drawn letter by letter so it works in every browser; returns the width */
-  function spaced(c, text, x, y, gap, colorOf) {
-    for (var k = 0; k < text.length; k++) {
-      c.fillStyle = colorOf ? colorOf(k) : c.fillStyle;
-      c.fillText(text[k], x, y); x += c.measureText(text[k]).width + gap;
-    }
-    return x;
   }
   /* wrap words to a width; returns the lines */
   function wrap(c, text, width) {
@@ -34,55 +33,54 @@
     return lines;
   }
 
-  window.storyImage = function (n, bgSrc) {
+  window.storyImage = function (n, k, base) {
+    var back = BACKS[((k || 0) % BACKS.length + BACKS.length) % BACKS.length];
     var fonts = document.fonts ? Promise.all([
       document.fonts.load('500 200px "EB Garamond"'), document.fonts.load('400 60px "EB Garamond"'),
-      document.fonts.load('600 40px "Nunito Sans"'), document.fonts.load('700 40px "Nunito Sans"'), document.fonts.load('400 40px "Nunito Sans"')
+      document.fonts.load('600 40px "Nunito Sans"'), document.fonts.load('700 40px "Nunito Sans"')
     ]).catch(function () {}) : Promise.resolve();
-    return Promise.all([fonts, picture(bgSrc || "assets/story-bg.jpg")]).then(function (got) {
+    return Promise.all([fonts, picture((base || "assets/") + back.file)]).then(function (got) {
       var bg = got[1], cv = document.createElement("canvas"); cv.width = W; cv.height = H;
       var c = cv.getContext("2d"); c.textBaseline = "alphabetic";
       c.fillStyle = BG; c.fillRect(0, 0, W, H);
-      /* the night sky: gold stars above, "OUR FUTURES FIRST" and a dawn line along the bottom (assets/story-bg.jpg) */
       if (bg) c.drawImage(bg, 0, 0, W, H);
-      else { c.font = "600 44px " + SANS; c.fillStyle = INK; spaced(c, "OUR FUTURES FIRST", PAD, H - 220, 12); }
+      if (back.shade != null) {
+        var g = c.createLinearGradient(0, back.shade, 0, back.shade + 420);
+        g.addColorStop(0, "rgba(8,8,10,0)"); g.addColorStop(1, "rgba(8,8,10,.62)");
+        c.fillStyle = g; c.fillRect(0, back.shade, W, H - back.shade);
+      }
+      /* a soft shadow under every letter keeps it clear of the gold lines behind */
+      c.shadowColor = "rgba(0,0,0,.65)"; c.shadowBlur = 28;
 
-      /* I signed. */
-      var y = 640;
-      c.fillStyle = INK; c.font = "500 210px " + HEAD;
-      c.fillText("I signed.", PAD - 6, y);
+      /* I signed, */
+      var y = back.top;
+      c.fillStyle = INK; c.font = "500 190px " + HEAD;
+      c.fillText("I signed,", PAD - 6, y);
+
+      /* the signer number, large, in gold */
+      if (n) {
+        y += 230;
+        c.fillStyle = GOLD; c.font = "500 240px " + HEAD;
+        c.fillText("#" + Number(n).toLocaleString("en-US"), PAD - 10, y);
+      }
 
       /* the ask, with the last phrase in gold */
-      y += 175;
-      c.font = "400 64px " + HEAD;
+      y += back.gap || 135;
+      c.font = "400 62px " + HEAD;
       var ask = "I ask the U.S. government and AI companies to put our futures first.", tail = "our futures first.";
       var lines = wrap(c, ask, W - PAD * 2), at = ask.length - tail.length, pos = 0;
       lines.forEach(function (line) {
         var x = PAD;
-        for (var k = 0; k < line.length; k++) {
-          c.fillStyle = pos + k >= at ? GOLD : INK; c.fillText(line[k], x, y); x += c.measureText(line[k]).width;
+        for (var j = 0; j < line.length; j++) {
+          c.fillStyle = pos + j >= at ? GOLD : INK; c.fillText(line[j], x, y); x += c.measureText(line[j]).width;
         }
-        pos += line.length + 1; y += 82;
+        pos += line.length + 1; y += 80;
       });
 
-      /* the signer number */
-      if (n) {
-        y += 70;
-        c.strokeStyle = LINE; c.lineWidth = 2; c.beginPath(); c.moveTo(PAD, y); c.lineTo(W - PAD, y); c.stroke();
-        y += 70;
-        var bw = W - PAD * 2, bh = 230;
-        c.fillStyle = INSET;
-        if (c.roundRect) { c.beginPath(); c.roundRect(PAD, y, bw, bh, 28); c.fill(); } else c.fillRect(PAD, y, bw, bh);
-        c.font = "600 30px " + SANS; c.fillStyle = MUTE;
-        spaced(c, "SIGNER", PAD + 48, y + 72, 5);
-        c.font = "500 118px " + HEAD; c.fillStyle = GOLD;
-        c.fillText("#" + Number(n).toLocaleString("en-US"), PAD + 44, y + 190);
-      }
-
-      /* where to sign */
-      y = H - 460;
-      c.font = "400 40px " + SANS; c.fillStyle = MUTE; c.fillText("Add your voice", PAD, y);
-      c.font = "700 56px " + SANS; c.fillStyle = INK; c.fillText("ourfuturesfirst.org", PAD, y + 74);
+      /* where to sign, along the bottom above the gold line */
+      y = H - 300;
+      c.font = "600 44px " + SANS; c.fillStyle = INK; c.fillText("Add your voice", PAD, y);
+      c.font = "700 56px " + SANS; c.fillStyle = GOLD; c.fillText("ourfuturesfirst.org", PAD, y + 76);
 
       return new Promise(function (done) { cv.toBlob(done, "image/png"); });
     });

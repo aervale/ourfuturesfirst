@@ -174,10 +174,12 @@ textarea{display:block;min-height:150px;resize:none}
 @keyframes storyin{from{opacity:0;transform:translateY(24px) scale(.96)}}
 #story .lab{display:block;text-align:center;color:var(--star)}
 #story h2{text-align:center;font-size:30px;margin:6px 0 20px}
-#story .frame{position:relative;width:52%;max-width:200px;margin:0 auto 24px}
+#story .frame{position:relative;width:52%;max-width:200px;margin:0 auto 22px}
 #story .frame::before{content:"";position:absolute;inset:-18%;background:radial-gradient(closest-side,color-mix(in srgb,var(--star) 38%,transparent),transparent);filter:blur(10px);opacity:.75;pointer-events:none}
 #story img{position:relative;display:block;width:100%;border-radius:10px;border:1px solid var(--line2);transform:rotate(-3deg);box-shadow:0 18px 40px rgba(0,0,0,.5);transition:transform .35s cubic-bezier(.2,.9,.3,1.2)}
 #story .frame:hover img{transform:rotate(0) scale(1.03)}
+#story .next{text-align:center;margin:-8px 0 18px}
+#story .next .link{font-size:12px;color:var(--star)}
 #story ol{list-style:none;margin:0 0 20px;padding:0;display:grid;gap:9px;counter-reset:st}
 #story li{counter-increment:st;display:flex;gap:12px;align-items:baseline;font-size:14.5px;line-height:1.4;color:var(--mute)}
 #story li::before{content:counter(st);flex:none;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;border:1px solid color-mix(in srgb,var(--star) 55%,transparent);color:var(--star);font-size:12px;font-weight:700;transform:translateY(-1px)}
@@ -869,7 +871,8 @@ body.withcount .dcount{display:block}
   <button type="button" class="x" id="storyX" aria-label="Close">&times;</button>
   <span class="lab">Instagram</span>
   <h2 id="storyHead">Your story is ready.</h2>
-  <div class="frame"><img id="storyImg" alt="I signed. I ask the U.S. government and AI companies to put our futures first. ourfuturesfirst.org"></div>
+  <div class="frame"><img id="storyImg" alt="I signed, with my signer number. I ask the U.S. government and AI companies to put our futures first. Add your voice: ourfuturesfirst.org"></div>
+  <p class="next"><button type="button" class="link" id="storyNext">Another background</button></p>
   <ol>
     <li id="stepShare"><span><b>Share</b> it and pick Instagram, then Story.</span></li>
     <li id="stepSave" hidden><span><b>Save</b> the image, then open Instagram and add it to your story.</span></li>
@@ -1542,19 +1545,25 @@ $("btnInvite").addEventListener("click",function(){var m=$("inviteMsg"),box=$("i
 /* Instagram: once confirmed, a story image with their signer number (assets/story.js). It is made ahead, as soon
    as they are confirmed. A window shows it with the steps; its Share button opens the phone's share sheet
    (Instagram, then Story), and Save image works everywhere. Before confirming, the link is copied as before. */
-var STORY={token:null,blob:null,wait:null};
-function prepStory(){if(!window.storyImage||STORY.token===S.token)return STORY.wait;STORY.token=S.token;STORY.blob=null;
+/* k: which background (assets/story.js has three); each person starts on a random one and can switch in the window */
+var STORY={token:null,num:null,k:Math.floor(Math.random()*3),blobs:{},blob:null,wait:null};
+function drawStory(){var k=STORY.k;if(STORY.blobs[k])return Promise.resolve(STORY.blobs[k]);
+  return storyImage(STORY.num,k).then(function(b){STORY.blobs[k]=b;return b;});}
+function prepStory(){if(!window.storyImage||STORY.token===S.token)return STORY.wait;STORY.token=S.token;STORY.blob=null;STORY.blobs={};
   var n=S.live?sb.rpc("signer_number",{p_token:S.token}).then(function(r){return r.error?null:r.data;},function(){return null;}):Promise.resolve(null);
-  STORY.wait=n.then(function(k){return storyImage(k);}).then(function(b){STORY.blob=b;return b;},function(){return null;});return STORY.wait;}
+  STORY.wait=n.then(function(k){STORY.num=k;return drawStory();}).then(function(b){STORY.blob=b;return b;},function(){return null;});return STORY.wait;}
+function paintStory(b){var url=URL.createObjectURL(b);STORY.blob=b;$("storyImg").src=url;$("storySave").href=url;}
 function storyFile(b){try{return new File([b],"our-futures-first-story.png",{type:"image/png"});}catch(x){return null;}}
 function canShareFile(f){try{return !!(f&&navigator.canShare&&navigator.canShare({files:[f]}));}catch(x){return false;}}
-function showStory(b){var d=$("story"),url=URL.createObjectURL(b),f=storyFile(b);
-  var share=canShareFile(f);$("storyImg").src=url;$("storySave").href=url;$("storyShare").hidden=!share;
+function showStory(b){var d=$("story"),f=storyFile(b);
+  var share=canShareFile(f);paintStory(b);$("storyShare").hidden=!share;
   $("stepShare").hidden=!share;$("stepSave").hidden=share;
   /* a phone browser without a share sheet would save a downloaded file to Files, where Instagram can't see it: say how to put it in Photos */
   if(!share&&matchMedia("(pointer:coarse)").matches)$("stepSave").firstChild.innerHTML="<b>Press and hold</b> the image, choose Save to Photos, then add it to your Instagram story.";$("storySave").classList.toggle("ghost",share);$("storySave").classList.toggle("wide",!share);$("storyCopy").classList.toggle("wide",!share);
   if(d.showModal)d.showModal();else d.setAttribute("open","");}
 $("storyX").addEventListener("click",function(){$("story").close();});
+$("storyNext").addEventListener("click",function(){var b=this;b.disabled=true;STORY.k=(STORY.k+1)%((window.STORY_BACKGROUNDS||[0]).length);
+  drawStory().then(function(bl){b.disabled=false;paintStory(bl);},function(){b.disabled=false;});});
 $("story").addEventListener("click",function(ev){if(ev.target===this)this.close();});
 $("storyShare").addEventListener("click",function(){var f=storyFile(STORY.blob);if(canShareFile(f))navigator.share({files:[f]}).catch(function(){});});
 $("storyCopy").addEventListener("click",function(){var b=this;try{navigator.clipboard.writeText(shareUrl()).then(function(){b.textContent="Link copied";setTimeout(function(){b.textContent="Copy link";},2500);},function(){});}catch(x){}});
