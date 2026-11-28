@@ -239,6 +239,11 @@ textarea{display:block;min-height:150px;resize:none}
 #after h2{font-size:clamp(1.8rem,3.2vw,2.6rem);font-weight:var(--hx);text-transform:var(--hc);margin:10px 0 10px}
 .sub3{margin:24px 0 10px}
 #leadPop.open{margin-top:8px}
+#leadPop{transition:grid-template-rows .5s var(--ease),margin-top .5s var(--ease)}
+.leadtext{display:grid;gap:8px;opacity:0;transform:translateY(-6px);transition:opacity .35s ease,transform .35s ease}
+.leadtext .hint{margin:0}
+.leadtext a{color:var(--ink)}
+#leadPop.open .leadtext{opacity:1;transform:none;transition:opacity .6s ease .18s,transform .6s var(--ease) .18s}
 .leadbox{display:grid;gap:8px;padding:4px 0 4px 14px;border-left:2px solid var(--line2)}
 .leadbox .hint{margin:0}
 .leadbox a{color:var(--ink)}
@@ -453,11 +458,8 @@ footer{padding:22px 0 36px}
 .dcount{display:none;color:var(--mute);font-size:.875rem}
 body.withcount .dcount{display:block}
 .dcall .dcount{flex-basis:100%;margin-top:-4px}
-.dscnext .dcount{margin-top:6px}
 .after-dsc{margin:16px 0 18px}
 .after-dsc[hidden]{display:none}
-.dscnext{display:grid;gap:10px}
-.dscnext .btn{margin-top:2px}
 
 @media (max-width:920px){
   #usMap{max-width:560px;margin-left:auto;margin-right:auto;margin-bottom:40px}
@@ -644,10 +646,9 @@ body.withcount .dcount{display:block}
           </div>
           <p class="lab sub3">Can you help it reach your campus?</p>
           <div class="opts" id="spread"></div>
-          <div class="pop" id="leadPop"><div><div class="leadbox">
-            <p class="hint">We'll connect you with other groups of campus organizers at your university and contact you about next steps. Your name will be shown on the public list, marked as a campus organizer. <a href="#organizers">Click for information on what that means.</a></p>
-            <div class="dsc dscnext"><p class="hint"><b>Next step: join us on Discord.</b> It's our main way of talking with everyone who signs up: news reaches it first, and it's where we get everything set up. Confirm your university email, write a short intro, and you land in a chat with the others at your university.</p>
-              <a class="btn dbtn wide" href="https://discord.gg/NqcenEuMFR" target="_blank" rel="noopener"><svg class="dico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg><span>Join the organizers' Discord</span></a></div>
+          <div class="pop" id="leadPop"><div><div class="leadtext">
+            <p class="hint">Thank you. We'll connect you with the other campus organizers at your university and contact you about next steps. Your name will be marked as a campus organizer on the public list. <a href="#organizers">Click for information on what that means.</a></p>
+            <p class="hint dsc"><b>Next step: join our Discord below.</b> Confirm your university email, write a short intro, and you land in a chat with the others at your university.</p>
           </div></div></div>
           <div class="pop" id="sharePop"><div><div class="leadbox">
             <label class="lab" for="inInvites">Your friends' email addresses</label>
@@ -655,7 +656,7 @@ body.withcount .dcount{display:block}
             <p class="hint" id="inviteMsg" role="status"></p>
             <p class="hint">We send each of them one email with your first name and your link, and nothing after that.</p>
           </div></div></div>
-          <p class="dcall dsc after-dsc" id="dscAfter"><a class="btn dbtn" href="https://discord.gg/NqcenEuMFR" target="_blank" rel="noopener"><svg class="dico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg><span>Join our Discord</span></a><span>Discord is our main way of talking with campus organizers and getting everything set up. Join to meet the others from your university.</span></p>
+          <p class="dcall dsc after-dsc" id="dscAfter"><a class="btn dbtn" href="https://discord.gg/NqcenEuMFR" target="_blank" rel="noopener"><svg class="dico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg><span>Join our Discord</span></a><span>Discord is our main way of talking with everyone who signs up. Join to meet the others from your university.</span></p>
           <div class="mylink">
             <p class="lab">Your personal link</p>
             <div class="linkrow"><span class="trace"><input type="text" id="myLink" readonly aria-label="Your personal link"></span><button class="btn" type="button" id="btnCopy">Copy</button></div>
@@ -931,7 +932,7 @@ function buildForm(){
       qa.addEventListener("blur",function(){qa.classList.remove("open");});}
     sp.appendChild($(s.pop));spreadBtns[s.id]=b;
     if(s.id==="lead"){var full=mk("p","hint");full.id="leadFull";full.hidden=true;sp.appendChild(full);
-      /* the Discord button sits between the two offers; someone who volunteers sees the organizer one inside their panel instead */
+      /* the Discord button sits between the two offers and stays put; volunteering only adds text above it */
       sp.appendChild($("dscAfter"));}});
   renderNav();
 }
@@ -969,7 +970,7 @@ function renderLead(){
     note.appendChild(document.createTextNode(why==="closed"?"We aren't taking on campus organizers at "+(S.mine.name||"your university")+" at the moment. If you'd still like to help there, write to "
       :(S.mine.name||"Your university")+" already has "+(ROOM.cap===1?"its one campus organizer":"its "+num(ROOM.cap)+" campus organizers")+", which is as many as we take at one university for now. If you'd still like to help there, write to "));
     var a=mk("a",null,"contact@ourfuturesfirst.org");a.href="mailto:contact@ourfuturesfirst.org?subject="+encodeURIComponent("Helping at "+(S.mine.name||"my university"));note.appendChild(a);note.appendChild(document.createTextNode("."));}}
-  $("leadPop").classList.toggle("open",on);$("dscAfter").hidden=on;$("sharePop").classList.toggle("open",!!S.spread.email);
+  $("leadPop").classList.toggle("open",on);$("sharePop").classList.toggle("open",!!S.spread.email);
 }
 function go(i){
   if(busy||i===S.slide||i<0||i>=slides.length)return;
