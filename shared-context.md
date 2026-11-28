@@ -56,7 +56,9 @@ that makes it true.
 - 2026-11-28 David, April: every live change goes through a migration file in the repo.
 - 2026-11-28 April: the Instagram button, once confirmed, makes a story image (`assets/story.js`, preview
   `tools/story.html?n=412`) with the signer number from `signer_number()`: place among confirmed sign-ups by
-  confirmation time. On phones it goes to the share sheet; elsewhere a window with Save image and Copy link.
+  confirmation time. A window shows it with steps; its Share button opens the
+  phone's share sheet (Instagram, then Story). Opening the share sheet straight from the tap only offered to save a PNG
+  on April's phone, so the tap always opens the window first.
 - 2026-11-28 April: "Remove me" is counted (`removals`: date, university, whether confirmed, hours since
   signing up; nothing that identifies the person) and shown on the admin page. The privacy page says so.
 - 2026-11-28 David: the site serves only its own files, gated or not. `functions/_middleware.js` answers 404 for

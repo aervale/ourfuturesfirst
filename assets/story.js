@@ -1,5 +1,5 @@
-/* The Instagram story image (1080x1920) a signer can post: the star and "Our Futures First" with each word's
-   first letter in the star's gold, "I signed.", their signer number, the ask, and the site's address.
+/* The Instagram story image (1080x1920) a signer can post: the star and "Our Futures First",
+   "I signed.", their signer number, the ask, and the site's address.
    Drawn on a canvas in the site's own fonts (EB Garamond, Nunito Sans) and colours, so it needs no server.
    storyImage(n) resolves to a PNG Blob; n is the signer number (left out if unknown).
    Instagram covers about the top and bottom 250 px of a story with its own buttons, so nothing sits there.
@@ -46,10 +46,9 @@
 
       /* the star and the name, first letters in gold */
       var y = 330;
-      if (img) c.drawImage(img, PAD, y - 64, 84, 84);
-      c.font = "600 40px " + SANS;
-      var name = "OUR FUTURES FIRST";
-      spaced(c, name, PAD + (img ? 112 : 0), y - 6, 6, function (k) { return k === 0 || name[k - 1] === " " ? GOLD : INK; });
+      if (img) c.drawImage(img, PAD - 4, y - 92, 124, 124);
+      c.font = "600 44px " + SANS; c.fillStyle = INK;
+      spaced(c, "OUR FUTURES FIRST", PAD + (img ? 146 : 0), y - 14, 6);
 
       /* I signed. */
       y = 690;
