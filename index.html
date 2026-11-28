@@ -449,6 +449,11 @@ footer{padding:22px 0 36px}
 .btn.dbtn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:#5865F2;border-color:#5865F2;color:#FFFFFF}
 .btn.dbtn:hover{background:#4752C4;border-color:#4752C4;color:#FFFFFF}
 .dcall{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin-top:20px;color:var(--mute);font-size:.9375rem}
+/* "3 people are already there", under each Discord button, while its switch is on and Discord has answered */
+.dcount{display:none;color:var(--mute);font-size:.875rem}
+body.withcount .dcount{display:block}
+.dcall .dcount{flex-basis:100%;margin-top:-4px}
+.dscnext .dcount{margin-top:6px}
 .after-dsc{margin:16px 0 18px}
 .after-dsc[hidden]{display:none}
 .dscnext{display:grid;gap:10px}
@@ -1544,7 +1549,16 @@ window.addEventListener("hashchange",function(){route();var t=(ANCH[location.has
 function paintSwitches(){var f=S.show3;$("resPart").hidden=!f.results;$("whoPart").hidden=!f.who;$("resSection").hidden=!f.results&&!f.who;
   document.body.classList.toggle("noresults",!f.results);document.body.classList.toggle("nosharing",f.sharing===false);
   document.body.classList.toggle("nolist",f.list===false);document.body.classList.toggle("noletter",f.letter===false);document.body.classList.toggle("noabout",f.about===false);
-  document.body.classList.toggle("nodiscord",f.discord===false);orgTip();route();}
+  document.body.classList.toggle("nodiscord",f.discord===false);orgTip();paintDcount();route();}
+/* how many people are in our Discord: read from its public invite, once per visit, only while the switch is on */
+var DCOUNT=null;
+function paintDcount(){var on=!!S.show3.discord_count&&S.show3.discord!==false;
+  if(on&&DCOUNT===null){DCOUNT=0;fetch("https://discord.com/api/v10/invites/NqcenEuMFR?with_counts=true").then(function(r){return r.json();})
+    .then(function(j){DCOUNT=+j.approximate_member_count||0;paintDcount();},function(){});}
+  document.body.classList.toggle("withcount",on&&DCOUNT>0);if(!(DCOUNT>0))return;
+  document.querySelectorAll("a.dbtn").forEach(function(a){var c=a.nextElementSibling;
+    if(!c||!c.classList.contains("dcount")){c=mk("span","dcount");a.parentNode.insertBefore(c,a.nextSibling);}
+    c.textContent=DCOUNT===1?"1 person is already there":num(DCOUNT)+" people are already there";});}
 function loadSwitches(){if(!S.live||PLIVE)return;sb.rpc("page_switches").then(function(r){if(r.error||!r.data)return;S.show3=r.data;renderAll();},function(){});}
 function renderAll(){$("previewNote").hidden=S.live&&!PLIVE;paintSwitches();paintSuggest();renderWidget();updateResults();renderAfter();}
 function loadBoard(){return sb.rpc("board").then(function(r){if(!r.error&&r.data){S.remote=r.data;renderAll();}else if(!S.remote.total)setTimeout(loadBoard,3000);});}
