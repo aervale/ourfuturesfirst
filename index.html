@@ -243,6 +243,11 @@ textarea{display:block;min-height:150px;resize:none}
 .leadbox .hint{margin:0}
 .leadbox a{color:var(--ink)}
 .leadbox textarea{min-height:120px}
+/* "What does a campus organizer do?" under the organizer option: the answer shows on hover or focus, and on a tap */
+.orgq{position:relative;z-index:6;margin:-2px 0 4px 2px;font-size:.875rem}
+.orgq a{position:relative;color:var(--ink);text-decoration:underline dotted;text-underline-offset:4px;text-decoration-color:var(--accent);text-decoration-thickness:2px;cursor:help}
+.orgq a::after{content:attr(data-tip);position:absolute;left:0;top:calc(100% + 8px);z-index:3;width:max-content;max-width:min(340px,80vw);padding:10px 12px;background:var(--pop);border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.5);color:var(--ink);font-size:.8125rem;line-height:1.45;white-space:pre-line;opacity:0;pointer-events:none;transition:opacity .15s}
+.orgq a:hover::after,.orgq a:focus-visible::after,.orgq a.open::after{opacity:1}
 .err{color:var(--accent);margin:12px 0 0;min-height:1.5em;font-size:.9375rem}
 
 /* board */
@@ -914,7 +919,12 @@ function buildForm(){
     b.addEventListener("click",function(){var was=!!S.spread[s.id];set(!was);renderLead();
       patch({spread:spreadList()}).then(function(){flash(b);},function(){set(was);renderLead();$("copyMsg").textContent=FAIL.save;});});
     if(s.id==="email"){b.classList.add("sharebit");$(s.pop).classList.add("sharebit");}
-    sp.appendChild(b);sp.appendChild($(s.pop));spreadBtns[s.id]=b;
+    sp.appendChild(b);
+    if(s.id==="lead"){var q=mk("p","orgq"),qa=mk("a",null,"What does a campus organizer do?");qa.id="orgWhat";qa.href="#organizers";q.appendChild(qa);sp.appendChild(q);
+      /* with About off there is no page to go to, so a click (or tap) shows the answer in place instead */
+      qa.addEventListener("click",function(e){if(document.body.classList.contains("noabout")){e.preventDefault();qa.classList.toggle("open");}});
+      qa.addEventListener("blur",function(){qa.classList.remove("open");});}
+    sp.appendChild($(s.pop));spreadBtns[s.id]=b;
     if(s.id==="lead"){var full=mk("p","hint");full.id="leadFull";full.hidden=true;sp.appendChild(full);
       /* the Discord button sits between the two offers; someone who volunteers sees the organizer one inside their panel instead */
       sp.appendChild($("dscAfter"));}});
@@ -941,8 +951,13 @@ function loadRoom(){var d=S.mine&&S.mine.dom;if(!S.live||!d||!S.token)return;
   sb.rpc("organizer_room",{p_dom:d}).then(function(r){if(r.error||!r.data)return;ROOM={dom:d,cap:r.data.cap,count:r.data.count,closed:!!r.data.closed};renderLead();},function(){});}
 /* "closed": an admin has switched organizers off for this university. "full": it has reached its number. */
 function leadFull(){if(S.spread.lead||!S.mine||ROOM.dom!==S.mine.dom)return "";return ROOM.closed?"closed":ROOM.count>=ROOM.cap?"full":"";}
+/* the answer under "What does a campus organizer do?"; Discord is mentioned only while its switch is on */
+function orgTip(){var a=$("orgWhat");if(!a)return;var dsc=!document.body.classList.contains("nodiscord"),about=!document.body.classList.contains("noabout");
+  a.setAttribute("data-tip","Campus organizers help the letter reach their university: telling friends and classmates, sharing it with clubs and mailing lists, and reaching out to faculty and staff."
+    +"\n\n"+(dsc?"You'll meet the other organizers at your university on our Discord, and we'll work out next steps with you there.":"We'll connect you with the other organizers at your university and work out next steps with you.")
+    +" Your name is marked as an organizer on the public list."+(about?"\n\nClick for more.":""));}
 function renderLead(){
-  paintShow();
+  paintShow();orgTip();
   var on=!!S.spread.lead,why=leadFull(),full=!!why,note=$("leadFull"),b=spreadBtns.lead;
   if(b){b.disabled=full;b.classList.toggle("full",full);}
   if(note){note.hidden=!full;if(full){clear(note);
@@ -1529,7 +1544,7 @@ window.addEventListener("hashchange",function(){route();var t=(ANCH[location.has
 function paintSwitches(){var f=S.show3;$("resPart").hidden=!f.results;$("whoPart").hidden=!f.who;$("resSection").hidden=!f.results&&!f.who;
   document.body.classList.toggle("noresults",!f.results);document.body.classList.toggle("nosharing",f.sharing===false);
   document.body.classList.toggle("nolist",f.list===false);document.body.classList.toggle("noletter",f.letter===false);document.body.classList.toggle("noabout",f.about===false);
-  document.body.classList.toggle("nodiscord",f.discord===false);route();}
+  document.body.classList.toggle("nodiscord",f.discord===false);orgTip();route();}
 function loadSwitches(){if(!S.live||PLIVE)return;sb.rpc("page_switches").then(function(r){if(r.error||!r.data)return;S.show3=r.data;renderAll();},function(){});}
 function renderAll(){$("previewNote").hidden=S.live&&!PLIVE;paintSwitches();paintSuggest();renderWidget();updateResults();renderAfter();}
 function loadBoard(){return sb.rpc("board").then(function(r){if(!r.error&&r.data){S.remote=r.data;renderAll();}else if(!S.remote.total)setTimeout(loadBoard,3000);});}
