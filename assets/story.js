@@ -4,7 +4,8 @@
    storyImage(n, k, base) resolves to a PNG Blob: n is the signer number (left out if unknown), k picks the
    background (STORY_BACKGROUNDS[k], wrapping round), base is the path to assets/ ("assets/" by default).
    Each background says where its dark, quiet area is, and the main text sits there; the address always sits
-   along the bottom, above the gold line. Preview: tools/story.html?n=412&k=0. */
+   along the bottom, above the gold line. Preview: tools/story.html?n=412&k=0.
+   Browsers keep this file for 4 hours: after changing it, bump ?v= on its <script> tag in index.html. */
 (function () {
   var W = 1080, H = 1920, PAD = 110,
       BG = "#0C0C0E", INK = "#ECEAE0", GOLD = "#D3993C",
