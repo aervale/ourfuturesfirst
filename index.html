@@ -1384,6 +1384,11 @@ function track(kind,ref,via){if(!S.live||!ref)return;try{sb.rpc("log_event",{p_k
 try{var om=/[?&]r=([a-z0-9]{8})\b/.exec(location.search),sm=/[?&]s=([a-z])\b/.exec(location.search);
   if(om&&sessionStorage.getItem("off_open")!==om[1]){sessionStorage.setItem("off_open",om[1]);track("open",om[1],sm?sm[1]:"");}}catch(x){}
 var REF="";try{var rm=/[?&]r=([a-z0-9]{8})\b/.exec(location.search);if(rm)localStorage.setItem("off_ref",rm[1]);REF=localStorage.getItem("off_ref")||"";}catch(x){}
+/* named links (?l=), made on the admin page and handed out by the team: the open is counted once per visit,
+   and the link is remembered so the sign-up can be credited to it */
+var LINK="";try{var lm=/[?&]l=([a-z0-9-]{3,40})\b/.exec(location.search);if(lm){localStorage.setItem("off_link",lm[1]);
+  if(S.live&&sessionStorage.getItem("off_lopen")!==lm[1]){sessionStorage.setItem("off_lopen",lm[1]);sb.rpc("open_link",{p_slug:lm[1]}).then(function(){},function(){});}}
+  LINK=localStorage.getItem("off_link")||"";}catch(x){}
 /* spam check: a Cloudflare Turnstile token goes with every request for an emailed link */
 var capId=null,capWait=null;
 function captcha(){
@@ -1475,6 +1480,7 @@ $("form").addEventListener("submit",function(e){
   row.email=email;
   save(row).then(function(u){
     S.mine={dom:u.dom,name:u.name};S.email=email;S.token=u.token||null;S.ref=u.ref||"";S.submitted=true;S.panel="unis";idle();loadRoom();
+    if(LINK&&S.live&&S.token)sb.rpc("claim_link",{p_token:S.token,p_slug:LINK}).then(function(){},function(){});
     /* for a few seconds the new +1 beside their university is the loudest thing on the page, and its dot lights on the map */
     S.fresh=true;setTimeout(function(){S.fresh=false;},7000);S.sentAt=Date.now();$("resendMsg").textContent="";
     setTimeout(function(){if(DOTS[u.name]){DOTS[u.name](true);setTimeout(function(){DOTS[u.name](false);},2600);}},500);

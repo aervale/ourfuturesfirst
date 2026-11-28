@@ -172,3 +172,31 @@ create function public.dev_admin_discord() returns jsonb language sql stable sec
   end;
 $$;
 grant execute on function public.dev_admin_discord() to anon, authenticated;
+
+-- Named links (local test mode): made and removed without signing in, plus a few samples with opens and sign-ups.
+create function public.dev_admin_links() returns jsonb language sql stable security definer set search_path = public as $$ select links_json(); $$;
+create function public.dev_admin_make_link(p_slug text, p_label text, p_dom text) returns jsonb language plpgsql security definer set search_path = public as $$
+declare s text := lower(trim(coalesce(p_slug, ''))); l text := trim(coalesce(p_label, '')); u text := '';
+begin
+  if s !~ '^[a-z0-9][a-z0-9-]{1,38}[a-z0-9]$' then return jsonb_build_object('error', 'bad_slug'); end if;
+  if l = '' or char_length(l) > 120 then return jsonb_build_object('error', 'bad_label'); end if;
+  if exists (select 1 from links where slug = s) then return jsonb_build_object('error', 'taken'); end if;
+  if coalesce(p_dom, '') <> '' then select coalesce(min(uni), (select name from uni_domains where domain = p_dom limit 1), p_dom) into u from signups where dom = p_dom; end if;
+  insert into links (slug, label, dom, uni, made_by) values (s, l, nullif(p_dom, ''), coalesce(u, ''), 'local test mode');
+  return jsonb_build_object('links', links_json());
+end $$;
+create function public.dev_admin_remove_link(p_slug text) returns jsonb language sql security definer set search_path = public as $$
+  delete from links where slug = p_slug; select jsonb_build_object('links', links_json());
+$$;
+grant execute on function public.dev_admin_links(), public.dev_admin_make_link(text, text, text), public.dev_admin_remove_link(text) to anon, authenticated;
+insert into links (slug, label, dom, uni, made_by, created_at) values
+  ('mit-the-tech', 'The Tech newsletter', 'mit.edu', 'MIT', 'david@example.edu', now() - interval '6 days'),
+  ('harvard-cs-list', 'Harvard CS undergrad mailing list', 'harvard.edu', 'Harvard', 'april@example.edu', now() - interval '4 days'),
+  ('instagram-bio', 'Instagram bio link', null, '', 'april@example.edu', now() - interval '9 days'),
+  ('stanford-flyer', 'Flyers in Gates', 'stanford.edu', 'Stanford', 'david@example.edu', now() - interval '2 days');
+insert into link_opens (slug, at)
+select l.slug, now() - (abs(hashtext(l.slug || g)) % 1000) / 1000.0 * (now() - l.created_at) from links l, generate_series(1, 60) g
+where abs(hashtext(g || l.slug)) % 100 < case l.slug when 'instagram-bio' then 90 when 'mit-the-tech' then 60 else 30 end;
+insert into link_signups (signup_id, slug)
+select s.id, case when s.dom = 'mit.edu' then 'mit-the-tech' when s.dom = 'harvard.edu' then 'harvard-cs-list' when s.dom = 'stanford.edu' then 'stanford-flyer' else 'instagram-bio' end
+from signups s where abs(hashtext(s.email || 'l')) % 90 = 0 on conflict do nothing;

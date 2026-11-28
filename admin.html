@@ -106,6 +106,10 @@ input:focus{outline:0;background:var(--field-on)}
 #swMsg{font-size:.875rem}
 .caps{margin-top:6px}
 .capline{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:0 0 6px}
+.mklink .mkrow{display:grid;grid-template-columns:110px 1fr;gap:10px;align-items:center;margin:0 0 10px}
+.mklink select{font:inherit;color:var(--ink);background:var(--field);border:0;border-radius:var(--r);padding:9px 10px;max-width:340px}
+.mklink .slug{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.mklink .slug input{max-width:220px}
+@media (max-width:560px){.mklink .mkrow{grid-template-columns:1fr;gap:4px}}
 .caps input[type=number]{width:84px;padding:7px 10px}
 .caprow{display:grid;grid-template-columns:minmax(0,240px) 84px 140px 170px;gap:14px;align-items:center;padding:5px 0;font-size:.9rem}
 .caprow .st{font-family:var(--mono);font-size:12px;color:var(--mute)}
@@ -306,6 +310,16 @@ td.wide{white-space:normal;min-width:320px}
     <p class="capline"><select id="capAdd" aria-label="Show another university"></select></p>
   </div>
   <div class="scroll" style="margin-top:22px"><table id="tOrg"></table></div>
+
+  <h2>Links we hand out <small id="lnkNote"></small></h2>
+  <p class="mute">Make one link for each place you post or send it: a club's mailing list, a newsletter, a flyer. Each counts its own opens and the sign-ups that came through it.</p>
+  <div class="card mklink">
+    <div class="mkrow"><label class="lab" for="lnkLabel">What it's for</label><input id="lnkLabel" maxlength="120" placeholder="The Tech newsletter"></div>
+    <div class="mkrow"><label class="lab" for="lnkUni">University</label><select id="lnkUni"></select></div>
+    <div class="mkrow"><label class="lab" for="lnkSlug">Link</label><span class="slug"><span class="mute">ourfuturesfirst.org/?l=</span><input id="lnkSlug" maxlength="40" spellcheck="false" autocomplete="off"></span></div>
+    <p class="capline"><button class="btn small" id="btnLink">Make link</button><span class="mute" id="lnkMsg" role="status"></span></p>
+  </div>
+  <div class="scroll" style="margin-top:16px"><table id="tLinks"></table></div>
 
   <h2>Discord <small id="dscNote"></small></h2>
   <p class="mute">Read from the Discord bot's records, so it matches the server. Everyone who confirms a university email in Discord lands in that university's private channel; the channel is made when the first person arrives.</p>
@@ -596,7 +610,7 @@ function render(){
   table($("tOrg"),["Name","University","Discord intro","Email","Confirmed","Signed up",""],org,function(r){
     var about=mk("span",BIOS[r.id]?null:"mute",BIOS[r.id]||"Not on Discord yet");about.wide=true;
     return [r.name,r.uni,about,r.email,r.verified_at?"Yes":"No",day(r.created_at),removeBtn(r)];});
-  renderDiscord();
+  renderDiscord();paintLinkForm();renderLinks();
   var up=$("uniPick");if(F.uni){var all=ROWS.filter(function(r){return r.dom===F.uni;}),lead=all.filter(isLead).length,shutU=CLOSED.indexOf(F.uni)>-1;
     up.textContent=plural(all.filter(function(r){return r.verified_at;}).length,"confirmed sign-up","confirmed sign-ups")+", "+plural(lead,"organizer","organizers")+" of "+num(capOf(F.uni))+", "+(shutU?"not taking new organizers":"taking new organizers");}
   else up.textContent="Pick one to manage its organizers, limit and links on their own.";
@@ -610,6 +624,40 @@ function render(){
   table($("tAll"),["Name","Public","University","Email","Role","Year","Major","Confirmed","Discord","Signed up",""],hit.slice(0,300),function(r){
     return [r.name,r.name_hidden?"Hidden":r.show_name?"Yes":"No",r.uni,r.email,r.role,r.year,r.major,r.verified_at?"Yes":"No",onD[r.id]?"Yes":"",day(r.created_at),hideBtn(r)];});
 }
+
+/* Named links: made here, handed out by the team, each with its own counts. Narrowed by the university picker. */
+var LINKS=null,LSLUG=false;
+function linkUrl(s){return "https://ourfuturesfirst.org/?l="+s;}
+function suggestSlug(){if(LSLUG)return;var d=$("lnkUni").value,u=d?slug(d.split(".")[0]):"",l=slug($("lnkLabel").value).split("-").filter(function(w){return w&&!/^(the|a|an|of|and|for|to|in)$/.test(w);}).slice(0,3).join("-");
+  $("lnkSlug").value=(u&&l?u+"-"+l:u||l).slice(0,40).replace(/-$/,"");}
+function paintLinkForm(){var sel=$("lnkUni"),keep=sel.value||F.uni,nm={};ROWS.forEach(function(r){nm[r.dom]=r.uni;});clear(sel);
+  [["","Not for one university"]].concat(Object.keys(nm).sort(function(a,b){return nm[a].localeCompare(nm[b]);}).map(function(d){return [d,nm[d]];})).forEach(function(o){var e=mk("option",null,o[1]);e.value=o[0];sel.appendChild(e);});
+  sel.value=F.uni||keep||"";}
+function copyBtn(text){var b=mk("button","btn small","Copy");b.addEventListener("click",function(){
+  (navigator.clipboard?navigator.clipboard.writeText(text):Promise.reject()).then(function(){b.textContent="Copied";setTimeout(function(){b.textContent="Copy";},1500);},function(){window.prompt("Copy this link",text);});});return b;}
+function removeLinkBtn(l){var b=mk("button","btn small","Remove"),armed=false,t;
+  b.addEventListener("click",function(){
+    if(!armed){armed=true;b.textContent="Remove it and its counts";t=setTimeout(function(){armed=false;b.textContent="Remove";},4000);return;}
+    clearTimeout(t);b.disabled=true;sb.rpc(C.dev?"dev_admin_remove_link":"admin_remove_link",{p_slug:l.slug}).then(function(o){if(!o.error&&o.data)LINKS=o.data.links;renderLinks();});});
+  return b;}
+function renderLinks(){
+  if(!LINKS){$("lnkNote").textContent="";$("btnLink").disabled=true;$("lnkMsg").textContent="Not available yet: the database change for links has not been applied.";table($("tLinks"),["Link"],[],null);return;}
+  $("btnLink").disabled=false;if(/^Not available/.test($("lnkMsg").textContent))$("lnkMsg").textContent="";
+  var ls=LINKS.filter(function(l){return !F.uni||l.dom===F.uni;}),op=ls.reduce(function(a,l){return a+l.opens;},0),su=ls.reduce(function(a,l){return a+l.signups;},0);
+  $("lnkNote").textContent=ls.length?plural(ls.length,"link","links")+", "+num(op)+" opens, "+plural(su,"sign-up","sign-ups"):"";
+  table($("tLinks"),["Link","For","University","Made by","Opens","Last 7 days","Sign-ups","Confirmed","Made","",""],ls,function(l){
+    var a=mk("a",null,"?l="+l.slug);a.href=linkUrl(l.slug);a.target="_blank";a.rel="noopener";
+    return [a,l.label,l.uni||"Any",(l.made_by||"").split("@")[0],num(l.opens),num(l.opens7),num(l.signups),num(l.confirmed),day(l.made),copyBtn(linkUrl(l.slug)),removeLinkBtn(l)];});
+}
+function makeLink(){var m=$("lnkMsg"),s=$("lnkSlug").value.trim().toLowerCase(),l=$("lnkLabel").value.trim(),b=$("btnLink");
+  if(!l){m.textContent="Say what it's for first.";$("lnkLabel").focus();return;}
+  if(!/^[a-z0-9][a-z0-9-]{1,38}[a-z0-9]$/.test(s)){m.textContent="Use 3 to 40 lowercase letters, numbers and dashes.";$("lnkSlug").focus();return;}
+  b.disabled=true;m.textContent="Making it";
+  sb.rpc(C.dev?"dev_admin_make_link":"admin_make_link",{p_slug:s,p_label:l,p_dom:$("lnkUni").value}).then(function(o){b.disabled=false;
+    var e=o.error?(/not_admin/.test(o.error.message)?"Your sign-in has expired. Reload and ask for a new link.":"That didn't save. Try again."):o.data&&o.data.error;
+    if(e){m.textContent=e==="taken"?"That link is already used. Pick another name.":e==="bad_slug"?"Use 3 to 40 lowercase letters, numbers and dashes.":e==="bad_label"?"Say what it's for first.":e;return;}
+    LINKS=o.data.links;$("lnkLabel").value="";$("lnkSlug").value="";LSLUG=false;m.textContent="Made "+linkUrl(s)+". Copy it from the table.";renderLinks();},
+    function(){b.disabled=false;m.textContent="That didn't save. Try again.";});}
 
 /* Discord: one row per university channel, then the people in them, both narrowed by the university picker */
 /* the channel name the bot gives a university (supabase/functions/discord/index.ts, slug) */
@@ -745,6 +793,10 @@ function start(session){
     TABS.forEach(function(k){$("atab-"+k).addEventListener("click",function(){showTab(k);});});
     sb.rpc(C.dev?"dev_admin_bios":"admin_bios").then(function(o){if(!o.error&&o.data){BIOS=o.data;render();}},function(){});
     sb.rpc(C.dev?"dev_admin_discord":"admin_discord").then(function(o){if(!o.error&&o.data){DSC=o.data;render();}},function(){});
+    sb.rpc(C.dev?"dev_admin_links":"admin_links").then(function(o){if(!o.error&&o.data){LINKS=o.data;render();}},function(){});
+    $("btnLink").addEventListener("click",makeLink);
+    $("lnkLabel").addEventListener("input",suggestSlug);$("lnkUni").addEventListener("change",suggestSlug);
+    $("lnkSlug").addEventListener("input",function(){LSLUG=!!this.value;});
     paintUni();paintRole();render();showTab(location.hash.slice(1),true);services(true);setInterval(function(){if(!document.hidden)services();},120000);
     /* the three parts of the public page that are switched on from here; a change shows there within half a minute */
     /* the switches are a draft until Save is pressed. The draft is kept in this browser so the preview can show it. */
