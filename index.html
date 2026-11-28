@@ -166,6 +166,13 @@ textarea{display:block;min-height:150px;resize:none}
 .btn:hover{background:var(--ink);border-color:var(--ink)}
 .btn.ghost{color:var(--ink);background:var(--inset);border-color:var(--line2);font-weight:500}
 .btn.ghost:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+/* the Instagram story window (assets/story.js draws the image) */
+#story{border:1px solid var(--line2);border-radius:var(--r);background:var(--pop);color:var(--ink);padding:20px;max-width:min(380px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto}
+#story::backdrop{background:rgba(0,0,0,.6)}
+#story img{display:block;width:100%;max-width:260px;margin:0 auto 14px;border-radius:var(--r);border:1px solid var(--line)}
+#story p{margin:0 0 14px;font-size:14px;color:var(--mute);text-align:center}
+#story .acts{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+#story .x{position:absolute;top:8px;right:10px;background:none;border:0;color:var(--mute);font-size:22px;cursor:pointer;line-height:1}
 .btn:disabled{background:var(--line);border-color:var(--line);color:var(--faint);cursor:default}
 .btn.wide{display:block;width:100%;text-align:center;padding:14px 22px;font-size:13px}
 .saved{margin-left:auto;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);opacity:0}
@@ -839,8 +846,15 @@ body.withcount .dcount{display:block}
   <span class="by">Run by students at U.S. universities.</span>
 </div></footer>
 
+<dialog id="story" aria-label="Your Instagram story">
+  <button type="button" class="x" id="storyX" aria-label="Close">&times;</button>
+  <img id="storyImg" alt="I signed. I ask the U.S. government and AI companies to put our futures first. ourfuturesfirst.org">
+  <p>Post it to your story, then add a link sticker with your link so friends can sign.</p>
+  <div class="acts"><button type="button" class="btn" id="storyShare" hidden>Share</button><a class="btn ghost" id="storySave" download="our-futures-first-story.png">Save image</a><button type="button" class="btn ghost" id="storyCopy">Copy link</button></div>
+</dialog>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="config.js"></script>
+<script src="assets/story.js"></script>
 <script>/* design panel (palettes and fonts): only on your own machine, or with ?design in the address */
 if(/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)||/[?&]design\b/.test(location.search)){["assets/design/coolors.js","assets/design/panel.js"].forEach(function(src){var s=document.createElement("script");s.src=src;s.async=false;document.body.appendChild(s);});}
 </script>
@@ -1313,7 +1327,7 @@ function renderAfter(){
   $("afterHead").textContent=S.verified?"You're in.":"Check your email.";
   $("afterSub").textContent=S.verified?"You're counted"+(u?" for "+u.name:"")+"."
     :S.live?"We sent a link to "+S.email+". Open it within 24 hours and you're counted.":"Preview mode: no email is sent.";
-  $("afterHelp").hidden=!S.token;$("resendRow").hidden=S.verified||!S.live;$("waitNote").hidden=S.verified||!S.live;paintResend();
+  if(S.verified&&S.token)prepStory();$("afterHelp").hidden=!S.token;$("resendRow").hidden=S.verified||!S.live;$("waitNote").hidden=S.verified||!S.live;paintResend();
   var url=shareUrl(),via=function(c){return e(msg+shareUrl(c));},msg="Students are writing an open letter on regulating AI development and asking what should be in it. It takes two minutes: ",e=encodeURIComponent;
   $("myLink").value=url.replace(/^https?:\/\//,"");
   paintReach();
@@ -1485,7 +1499,28 @@ $("btnInvite").addEventListener("click",function(){var m=$("inviteMsg"),box=$("i
   sb.rpc("send_invites",{p_token:S.token,p_emails:list}).then(function(r){
     if(r.error){m.textContent=/slow_down/.test(r.error.message)?"Too many invitations for now. Please try again in an hour.":FAIL.save;return;}var d=r.data;box.value="";
     m.textContent=d.added?"We'll email "+(d.added===1?"them":d.added===2?"both":"all "+d.added)+" an invitation with your link. "+(d.limit-d.total)+" more left.":d.total>=d.limit?"You've reached the limit of "+d.limit+" invitations.":"Those are already invited.";});});
-$("shInsta").addEventListener("click",function(){copy("Link copied. Paste it into your story or a DM.",this);track("instagram",S.ref);});
+/* Instagram: once confirmed, a story image with their signer number (assets/story.js). It is made ahead, as soon
+   as they are confirmed, so a tap can go straight to the phone's share sheet (which wants an immediate answer to
+   the tap). Elsewhere, or before confirming, a window with the image or the link copied as before. */
+var STORY={token:null,blob:null,wait:null};
+function prepStory(){if(!window.storyImage||STORY.token===S.token)return STORY.wait;STORY.token=S.token;STORY.blob=null;
+  var n=S.live?sb.rpc("signer_number",{p_token:S.token}).then(function(r){return r.error?null:r.data;},function(){return null;}):Promise.resolve(null);
+  STORY.wait=n.then(function(k){return storyImage(k);}).then(function(b){STORY.blob=b;return b;},function(){return null;});return STORY.wait;}
+function storyFile(b){try{return new File([b],"our-futures-first-story.png",{type:"image/png"});}catch(x){return null;}}
+function canShareFile(f){try{return !!(f&&navigator.canShare&&navigator.canShare({files:[f]}));}catch(x){return false;}}
+function showStory(b){var d=$("story"),url=URL.createObjectURL(b),f=storyFile(b);
+  $("storyImg").src=url;$("storySave").href=url;$("storyShare").hidden=!canShareFile(f);
+  if(d.showModal)d.showModal();else d.setAttribute("open","");}
+$("storyX").addEventListener("click",function(){$("story").close();});
+$("story").addEventListener("click",function(ev){if(ev.target===this)this.close();});
+$("storyShare").addEventListener("click",function(){var f=storyFile(STORY.blob);if(canShareFile(f))navigator.share({files:[f]}).catch(function(){});});
+$("storyCopy").addEventListener("click",function(){var b=this;try{navigator.clipboard.writeText(shareUrl()).then(function(){b.textContent="Link copied";setTimeout(function(){b.textContent="Copy link";},2500);},function(){});}catch(x){}});
+$("shInsta").addEventListener("click",function(){var b=this;track("instagram",S.ref);
+  if(!S.verified||!S.token||!window.storyImage){copy("Link copied. Paste it into your story or a DM.",b);return;}
+  var phone=matchMedia("(pointer:coarse)").matches,f=STORY.blob&&storyFile(STORY.blob);
+  if(phone&&canShareFile(f)){navigator.share({files:[f]}).catch(function(x){if(x&&x.name!=="AbortError")showStory(STORY.blob);});return;}
+  b.disabled=true;(STORY.blob?Promise.resolve(STORY.blob):prepStory()).then(function(bl){b.disabled=false;
+    if(bl)showStory(bl);else copy("Link copied. Paste it into your story or a DM.",b);});});
 
 /* ---------- backend ---------- */
 var FAIL={busy:"A lot of people are signing up from your network right now. Please try again in a few minutes.",not_university:NOTUS,mail:"Your answers are saved, but we couldn't send the email. Wait a minute and try again.",save:"That didn't save. Check your connection and try again."};

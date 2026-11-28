@@ -54,6 +54,9 @@ that makes it true.
 - 2026-11-28 David: no per-university "in charge" or coordinator on the admin page.
 - 2026-11-28 David: blocking unsuitable names uses the word list only; no outside screening service.
 - 2026-11-28 David, April: every live change goes through a migration file in the repo.
+- 2026-11-28 April: the Instagram button, once confirmed, makes a story image (`assets/story.js`, preview
+  `tools/story.html?n=412`) with the signer number from `signer_number()`: place among confirmed sign-ups by
+  confirmation time. On phones it goes to the share sheet; elsewhere a window with Save image and Copy link.
 - 2026-11-28 April: "Remove me" is counted (`removals`: date, university, whether confirmed, hours since
   signing up; nothing that identifies the person) and shown on the admin page. The privacy page says so.
 - 2026-11-28 David: the site serves only its own files, gated or not. `functions/_middleware.js` answers 404 for

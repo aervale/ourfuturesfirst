@@ -1,0 +1,15 @@
+<!doctype html>
+<!-- Preview of the Instagram story image (assets/story.js). Serve the repo and open /tools/story.html?n=412.
+     To save a PNG: chrome --headless --window-size=1080,1920 --screenshot=story.png "http://localhost:4177/tools/story.html?n=412" -->
+<html lang="en"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Nunito+Sans:wght@400..700&display=block" rel="stylesheet">
+<style>html,body{margin:0;background:#0C0C0E}img{display:block;width:1080px;height:1920px}</style>
+</head><body>
+<script src="../assets/story.js"></script>
+<script>
+var n = new URLSearchParams(location.search).get("n") || 412;
+storyImage(n, "../assets/star.svg").then(function (b) {
+  var i = new Image(); i.src = URL.createObjectURL(b); document.body.appendChild(i);
+});
+</script>
+</body></html>
